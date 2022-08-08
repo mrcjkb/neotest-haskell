@@ -4,10 +4,10 @@ local lib = require('neotest.lib')
 local base = require('neotest-haskell.base')
 
 
+---@type neotest.Adapter
 local HaskellNeotestAdapter = { name = "neotest-haskell" }
 
----@type neotest.Adapter
-HaskellNeotestAdapter.root = lib.files.match_root_pattern("haskell")
+HaskellNeotestAdapter.root = lib.files.match_root_pattern("cabal.project", "stack.yaml")
 
 function HaskellNeotestAdapter.is_test_file(file_path)
   return base.is_test_file(file_path)
