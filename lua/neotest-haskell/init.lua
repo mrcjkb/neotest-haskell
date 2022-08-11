@@ -10,6 +10,7 @@ local HaskellNeotestAdapter = { name = "neotest-haskell" }
 HaskellNeotestAdapter.root = lib.files.match_root_pattern("cabal.project", "stack.yaml")
 
 function HaskellNeotestAdapter.is_test_file(file_path)
+  print("Calling is_test_file")
   return base.is_test_file(file_path)
 end
 
@@ -35,7 +36,7 @@ function HaskellNeotestAdapter.discover_positions(path)
   ;; qualified describe blocks (e.g. Test.describe)
   ((function_call
       name: (
-        dot_index_expression 
+        dot_index_expression
           field: (identifier) @func_name
       )
       arguments: (arguments (_) @test.name (function_definition))
@@ -43,7 +44,7 @@ function HaskellNeotestAdapter.discover_positions(path)
   ;; qualified it blocks (e.g. Test.it)
   ((function_call
       name: (
-        dot_index_expression 
+        dot_index_expression
           field: (identifier) @func_name
       )
       arguments: (arguments (_) @test.name (function_definition))
@@ -51,7 +52,7 @@ function HaskellNeotestAdapter.discover_positions(path)
   ;; qualified prop blocks (e.g. Test.prop)
   ((function_call
       name: (
-        dot_index_expression 
+        dot_index_expression
           field: (identifier) @func_name
       )
       arguments: (arguments (_) @test.name (function_definition))
@@ -59,5 +60,29 @@ function HaskellNeotestAdapter.discover_positions(path)
   ]]
   return lib.treesitter.parse_positions(path, query, { nested_namespaces = true })
 end
+
+---@async
+---@param args neotest.RunArgs
+---@return neotest.RunSpec
+function HaskellNeotestAdapter.build_spec(args)
+  print(args)
+  -- TODO
+  return {}
+end
+
+---@async
+---@param spec neotest.RunSpec
+---@param result neotest.StrategyResult
+---@return neotest.Result[]
+function HaskellNeotestAdapter.results(spec, result)
+  -- TODO
+  return {}
+end
+
+setmetatable(HaskellNeotestAdapter, {
+  __call = function()
+    return HaskellNeotestAdapter
+  end,
+})
 
 return HaskellNeotestAdapter
