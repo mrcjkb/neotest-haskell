@@ -24,35 +24,35 @@ end
 function HaskellNeotestAdapter.discover_positions(path)
   local query = [[
   ;; describe
-  ((exp_apply
+  (exp_apply
     (exp_name (variable) @func_name) (#match? @func_name "^describe$")
-    (exp_literal) @test.description
-  )) @test.definition
+    (exp_literal) @test.desc.description
+  ) @test.desc.definition
   ;; it
-  ((exp_apply
+  (exp_apply
     (exp_name (variable) @func_name) (#match? @func_name "^it$")
-    (exp_literal) @test.description
-  )) @test.definition
+    (exp_literal) @test.it.description
+  ) @test.it.definition
   ;; prop
-  ((exp_apply
+  (exp_apply
     (exp_name (variable) @func_name) (#match? @func_name "^prop$")
-    (exp_literal) @test.description
-  ) @test.definition
+    (exp_literal) @test.prop.description
+  ) @test.prop.definition
   ;; describe (qualified)
   (exp_apply
     (exp_name (qualified_variable (variable) @func_name)) (#match? @func_name "^describe$")
-    (exp_literal) @test.description
-  ) @test.definition
+    (exp_literal) @test.desc.description
+  ) @test.desc.definition
   ;; it (qualified)
   (exp_apply
     (exp_name (qualified_variable (variable) @func_name)) (#match? @func_name "^it$")
-    (exp_literal) @test.description
-  ) @test.definition
+    (exp_literal) @test.it.description
+  ) @test.it.definition
   ;; prop (qualified)
   (exp_apply
     (exp_name (qualified_variable (variable) @func_name)) (#match? @func_name "^prop$")
-    (exp_literal) @test.description
-  ) @test.definition
+    (exp_literal) @test.prop.description
+  ) @test.prop.definition
   ]]
   local result = lib.treesitter.parse_positions(path, query, { nested_namespaces = true })
   -- print(vim.inspect(result))
