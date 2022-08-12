@@ -10,62 +10,45 @@ local HaskellNeotestAdapter = { name = "neotest-haskell" }
 HaskellNeotestAdapter.root = lib.files.match_root_pattern("cabal.project", "stack.yaml")
 
 function HaskellNeotestAdapter.is_test_file(file_path)
-  print("Calling is_test_file")
   return base.is_test_file(file_path)
 end
+
+  -- ;; describe (qualified)
+  -- (exp_apply
+  --   (exp_name (qualified_variable (_) (variable) @func_name) (#match? @func_name "^describe$"))
+  --   (exp_literal) @test_path
+  -- ) @test.definition
 
 ---@async
 ---@return neotest.Tree | nil
 function HaskellNeotestAdapter.discover_positions(path)
   local query = [[
-  ;; describe blocks
-  ((function_call
-      name: (identifier) @func_name (#match? @func_name "^describe$")
-      arguments: (arguments (_) @namespace.name (function_definition))
-  )) @namespace.definition
-  ;; it blocks
-  ((function_call
-      name: (identifier) @func_name
-      arguments: (arguments (_) @test.name (function_definition))
-  ) (#match? @func_name "^it$")) @test.definition
-  ;; prop blocks
-  ((function_call
-      name: (identifier) @func_name
-      arguments: (arguments (_) @test.name (function_definition))
-  ) (#match? @func_name "^prop$")) @test.definition
-  ;; qualified describe blocks (e.g. Test.describe)
-  ((function_call
-      name: (
-        dot_index_expression
-          field: (identifier) @func_name
-      )
-      arguments: (arguments (_) @test.name (function_definition))
-    ) (#match? @func_name "^describe$")) @test.definition
-  ;; qualified it blocks (e.g. Test.it)
-  ((function_call
-      name: (
-        dot_index_expression
-          field: (identifier) @func_name
-      )
-      arguments: (arguments (_) @test.name (function_definition))
-    ) (#match? @func_name "^it$")) @test.definition
-  ;; qualified prop blocks (e.g. Test.prop)
-  ((function_call
-      name: (
-        dot_index_expression
-          field: (identifier) @func_name
-      )
-      arguments: (arguments (_) @test.name (function_definition))
-    ) (#match? @func_name "^prop$")) @test.definition
+  ;; describe
+  (exp_apply
+    (exp_name (variable) @func_name) (#match? @func_name "^describe$")
+    (exp_literal) @test_name
+  ) @test.definition
+  ;; it
+  (exp_apply
+    (exp_name (variable) @func_name) (#match? @func_name "^it$")
+    (exp_literal) @test_name
+  ) @test.definition
+  ;; prop
+  (exp_apply
+    (exp_name (variable) @func_name) (#match? @func_name "^prop$")
+    (exp_literal) @test_name
+  ) @test.definition
   ]]
-  return lib.treesitter.parse_positions(path, query, { nested_namespaces = true })
+  local result = lib.treesitter.parse_positions(path, query, { nested_namespaces = true })
+  print(vim.inspect(result))
+  return result
 end
 
 ---@async
 ---@param args neotest.RunArgs
 ---@return neotest.RunSpec
 function HaskellNeotestAdapter.build_spec(args)
-  print(args)
+  print("DEBUG: Building spec: " .. vim.inspect(args))
   -- TODO
   return {}
 end
@@ -75,6 +58,7 @@ end
 ---@param result neotest.StrategyResult
 ---@return neotest.Result[]
 function HaskellNeotestAdapter.results(spec, result)
+  print("DEBUG: Collecting results...")
   -- TODO
   return {}
 end
