@@ -13,43 +13,10 @@ function HaskellNeotestAdapter.is_test_file(file_path)
   return base.is_test_file(file_path)
 end
 
-local treesitter_query = [[
-;; describe (unqualified)
-((exp_apply
-  (exp_name (variable) @func_name)
-  (exp_literal) @test.name
-) (#match? @func_name "^describe$")) @test.definition
-;; describe (qualified)
-((exp_apply
-  (exp_name (qualified_variable (variable) @func_name))
-  (exp_literal) @test.name
-) (#match? @func_name "^describe$")) @test.definition
-;; it (unqualified)
-((exp_apply
-  (exp_name (variable) @func_name)
-  (exp_literal) @test.name
-) (#match? @func_name "^it$")) @test.definition
-;; it (qualified)
-((exp_apply
-  (exp_name (qualified_variable (variable) @func_name))
-  (exp_literal) @test.name
-) (#match? @func_name "^it$")) @test.definition
-;; prop (unqualified)
-((exp_apply
-  (exp_name (variable) @func_name)
-  (exp_literal) @test.name
-) (#match? @func_name "^prop$")) @test.definition
-;; prop (qualified)
-((exp_apply
-  (exp_name (qualified_variable (variable) @func_name))
-  (exp_literal) @test.name
-) (#match? @func_name "^prop$")) @test.definition
-]]
-
 ---@async
 ---@return neotest.Tree | nil
 function HaskellNeotestAdapter.discover_positions(path)
-  return lib.treesitter.parse_positions(path, treesitter_query, { nested_namespaces = true })
+  return base.parse_positions(path)
 end
 
 ---@async
