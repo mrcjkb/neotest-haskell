@@ -1,6 +1,5 @@
 local lib = require('neotest.lib')
 local logger = require("neotest.logging")
-local async = require("neotest.async")
 
 local M = {}
 
@@ -9,15 +8,19 @@ function M.is_test_file(file_path)
       or vim.endswith(file_path, "Test.hs")
 end
 
+-- Wrapper around neotest.lib.treesitter.parse_positions
+-- @type neotest.Tree
 local function parse_positions(path, query)
   return lib.treesitter.parse_positions(path, query, { nested_tests = true })
 end
 
+-- @param test_name: The name of the test for which to query for a parent
 -- @return a treesitter query for a 'describe'
 -- with a child test that matches 'test_name'
+-- @type string
+-- NOTE: This query does not detect parent 'describe's defined in another function thatn the child (TODO?)
 local function mk_parent_query(test_name)
   local test_name_escaped = vim.fn.escape(test_name, '"')
-  -- TODO: Add queries for function calls
   return string.format([[
   ;; describe (unqualified) with child that matches test_name
   ((exp_apply
@@ -43,6 +46,8 @@ local function mk_parent_query(test_name)
   ]], test_name_escaped, test_name_escaped)
 end
 
+-- @param path: Test file path
+-- @type neotest.Tree
 function M.parse_positions(path)
   local tests_query = [[
   ;; describe (unqualified)
@@ -84,11 +89,20 @@ function M.parse_positions(path)
   return parse_positions(path, tests_query)
 end
 
+-- @param test_name: The test name to format
+-- @return the name, formatted for a hspec --match expression
+-- @type string
 local function hspec_format(test_name)
   -- TODO: Escape '/' characters?
   return test_name:gsub('"', '')
 end
 
+-- Helper function for 'M.get_hspec_match(test_name, path)'
+-- @parem acc: The accumulated result (formatted for a hspec --match expression)
+-- @param test_name: The quoted, unformatted test name
+-- @param path: The path to the file containing the tests
+-- @return the hspec match for the test
+-- @type string
 local function get_hspec_match(acc, test_name, path)
   local parent_query = mk_parent_query(test_name)
   logger.debug('Querying treesitter for parent "describe": ' .. vim.inspect(parent_query))
@@ -116,7 +130,10 @@ end
 --      ...
 --    ```
 --  - Result: "/Run/My test"
+-- @param test_name: The quoted, unformatted test name
+-- @param path: The path to the file containing the tests
 -- @return the hspec match for the test (see example).
+-- @type string
 function M.get_hspec_match(test_name, path)
   local acc = hspec_format(test_name)
   return get_hspec_match(acc, test_name, path)
