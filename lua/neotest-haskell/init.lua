@@ -23,17 +23,17 @@ end
 ---@param args neotest.RunArgs
 ---@return neotest.RunSpec
 function HaskellNeotestAdapter.build_spec(args)
-  print("[DEBUG] Building spec...")
-  -- local results_path = vim.fn.tempname()
   local tree = args.tree
   if not tree then
     return
   end
   local pos = args.tree:data()
-  if pos.type == "dir" then
+  if pos.type ~= "test" then
     return
   end
-  print("[DEBUG] pos: " .. vim.inspect(pos))
+  -- print("[DEBUG] pos: " .. vim.inspect(pos))
+  local hspec_match = base.get_hspec_match(pos.name, pos.path)
+  vim.pretty_print(hspec_match)
   -- local filters = {}
   -- TODO
   return {}
