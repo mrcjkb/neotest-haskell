@@ -8,6 +8,10 @@ function M.is_test_file(file_path)
       or vim.endswith(file_path, "Test.hs")
 end
 
+M.match_package_root_pattern = lib.files.match_root_pattern('*.cabal', 'package.yaml')
+
+M.match_project_root_pattern = lib.files.match_root_pattern("cabal.project", 'stack.yaml')
+
 -- Wrapper around neotest.lib.treesitter.parse_positions
 -- @type neotest.Tree
 local function parse_positions(path, query)
@@ -136,7 +140,7 @@ end
 -- @type string
 function M.get_hspec_match(test_name, path)
   local acc = hspec_format(test_name)
-  return get_hspec_match(acc, test_name, path)
+  return '"--match \"/' .. get_hspec_match(acc, test_name, path) .. '/\""'
 end
 
 return M
