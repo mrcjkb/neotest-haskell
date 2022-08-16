@@ -7,3 +7,5 @@
 
 - [ ] Cabal v2 support [in progress...]
 - [ ] Stack support
+- [ ] Implement tests for Cabal commands
+- [ ] Implement tests for Stack commands

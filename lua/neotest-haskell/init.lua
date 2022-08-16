@@ -38,7 +38,6 @@ function HaskellNeotestAdapter.build_spec(args)
   local project_root = base.match_project_root_pattern(pos.path)
 
   local command = nil
-  local results_path = async.fn.tempname()
   if lib.files.exists(project_root .. '/cabal.project') then
     logger.debug('Building spec for Cabal project...')
     for _, package_file_path in ipairs(async.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
@@ -47,16 +46,16 @@ function HaskellNeotestAdapter.build_spec(args)
         local package_name = package_file_name:gsub('.cabal', '')
         command = vim.tbl_flatten({
           'cabal',
-          'new-test',
-          package_name,
-          '--test-options',
+          'new-run',
+          package_name .. '-test',
+          '--',
+          '--match',
           hspec_match,
-          '--test-machine-log=' .. results_path,
         })
-        vim.pretty_print(command)
+        vim.notify('(async) Running: cabal new-run ' .. package_name .. '-test -- --match ' .. hspec_match)
+        break
       end
     end
-    logger.error( 'Could not determine Cabal package name.')
   elseif lib.files.exists(project_root .. 'package.yaml') then
     error("Stack not supported yet.") -- TODO
     logger.debug('Building spec for Stack project...')
@@ -68,9 +67,9 @@ function HaskellNeotestAdapter.build_spec(args)
       'test',
       package_arg,
       '--ta',
-      hspec_match,
-      -- TODO: Set results path
+      '"--match \\"' .. hspec_match .. '\\"', -- FIXME
     })
+    vim.notify('(async) Running: stack test ' .. package_arg .. ' --ta ' .. hspec_match)
   else
     logger.error( 'Project is neither a Cabal nor a Stack project.')
   end
@@ -82,7 +81,6 @@ function HaskellNeotestAdapter.build_spec(args)
   return {
     command = command,
     context = {
-      results_path = results_path,
       file = pos.path,
     },
   }
@@ -97,7 +95,12 @@ function HaskellNeotestAdapter.results(spec, result)
   vim.pretty_print(spec)
   print("Result:")
   vim.pretty_print(result)
-  -- TODO
+  local out_file = result.output
+  if vim.tbl_contains(spec.command, 'cabal') then
+    print('Out file: ' .. out_file)
+    return base.cabal_results(out_file)
+  end
+  -- TODO process stack output
   return {}
 end
 

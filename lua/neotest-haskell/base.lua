@@ -140,7 +140,21 @@ end
 -- @type string
 function M.get_hspec_match(test_name, path)
   local acc = hspec_format(test_name)
-  return '"--match \"/' .. get_hspec_match(acc, test_name, path) .. '/\""'
+  return '"/' .. get_hspec_match(acc, test_name, path) .. '/"'
+end
+
+---@async
+---@param out_path string: Path to machine readable cabal test results output file
+---@return neotest.Result[]
+function M.cabal_results(out_path)
+  local success, data = pcall(lib.files.read, out_path)
+  if not success then
+    vim.notify('Failed to read cabal output.', vim.log.levels.ERROR)
+    return {}
+  end
+  print('Data:')
+  vim.pretty_print(data)
+  return {} -- TODO
 end
 
 return M
