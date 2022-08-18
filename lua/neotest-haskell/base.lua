@@ -160,15 +160,23 @@ local function get_hspec_match(acc, test_name, path)
   local parent_query = mk_parent_query(test_name)
   logger.debug('Querying treesitter for parent "describe": ' .. vim.inspect(parent_query))
   local parent_tree = parse_positions(path, parent_query)
+  local parent_name_list = {}
   for _, parent_node in parent_tree:iter_nodes() do
     local data = parent_node:data()
     if data.type == "test" then
-      local parent_name = data.name
-      local parent_name_formatted = hspec_format(parent_name)
-      return get_hspec_match(parent_name_formatted .. '/' .. acc, parent_name, path)
+      parent_name_list[#parent_name_list+1] = data.name
     end
   end
-  return acc
+  if #parent_name_list > 1 then
+    -- If there is more than one match,
+    -- we cannot determine which one is the parent, so we break here
+    -- TODO: Maybe this can be solved by comparing the ranges?
+    return acc
+  end
+  local parent_name = parent_name_list[1]
+  local parent_name_formatted = hspec_format(parent_name)
+  return get_hspec_match(parent_name_formatted .. '/' .. acc, parent_name, path)
+  -- return acc
 end
 
 -- Runs a treesitter query for the tests in the test file 'path',
