@@ -57,6 +57,17 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
 
+  ; describe (unqualified, no do notation) with child that matches test_name
+  ((exp_apply
+    (exp_name (variable) @func_name)
+    (exp_literal) @test.name
+  ) (exp_apply
+    (exp_literal) @child_name
+  )
+  (#eq? @func_name "describe")
+  (#eq? @child_name "%s")
+  ) @test.definition
+
   ;; describe (qualified) with child that matches test_name (multiple queries)
   ((exp_apply
     (exp_name (qualified_variable (variable) @func_name))
@@ -88,7 +99,19 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
 
+  ; describe (qualified, no do notation) with child that matches test_name
+  ((exp_apply
+    (exp_name (qualified_variable (variable) @func_name))
+    (exp_literal) @test.name
+  ) (exp_apply
+    (exp_literal) @child_name
+  )
+  (#eq? @func_name "describe")
+  (#eq? @child_name "%s")
+  ) @test.definition
   ]], test_name_escaped
+    , test_name_escaped
+    , test_name_escaped
     , test_name_escaped
     , test_name_escaped
     , test_name_escaped
@@ -158,15 +181,27 @@ local function get_hspec_match(acc, test_name, path)
   local parent_query = mk_parent_query(test_name)
   logger.debug('Querying treesitter for parent "describe": ' .. vim.inspect(parent_query))
   local parent_tree = parse_positions(path, parent_query)
+  local parent_names_list = {}
   for _, parent_node in parent_tree:iter_nodes() do
     local data = parent_node:data()
     if data.type == "test" then
       local parent_name = data.name
-      local parent_name_formatted = hspec_format(parent_name)
-      return get_hspec_match(parent_name_formatted .. '/' .. acc, parent_name, path)
+      parent_names_list[#parent_names_list+1] = parent_name
     end
   end
-  return acc
+  if #parent_names_list == 0 then
+    return acc
+  end
+  -- In case of multiple parents at the same level, accumulate all but the last parent
+  local parent_names_acc = ''
+  for idx, parent_name in ipairs(parent_names_list) do
+    local parent_name_formatted = hspec_format(parent_name)
+    if idx < #parent_names_list then
+      parent_names_acc = parent_name_formatted .. '/' .. parent_names_acc
+    end
+  end
+  local last_parent_name = hspec_format(parent_names_list[#parent_names_list])
+  return get_hspec_match(parent_names_acc .. last_parent_name .. '/' .. acc, parent_names_list[1], path)
 end
 
 -- Runs a treesitter query for the tests in the test file 'path',
