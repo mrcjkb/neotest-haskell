@@ -26,7 +26,7 @@ end
 local function mk_parent_query(test_name)
   local test_name_escaped = vim.fn.escape(test_name, '"')
   return string.format([[
-  ;; describe (unqualified) with child that matches test_name
+  ;; describe (unqualified) with child that matches test_name (multiple queries)
   ((exp_apply
     (exp_name (variable) @func_name)
     (exp_literal) @test.name
@@ -37,7 +37,27 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
 
-  ;; describe (qualified) with child that matches test_name
+  ((exp_apply
+    (exp_name (variable) @func_name)
+    (exp_literal) @test.name
+  ) (_ (_ (_ (_ (exp_apply
+    (exp_literal) @child_name
+  )))))
+  (#eq? @func_name "describe")
+  ; (#eq? @child_name "%s")
+  ) @test.definition
+
+  ((exp_apply
+    (exp_name (variable) @func_name)
+    (exp_literal) @test.name
+  ) (_ (_ (_ (_ (_ (exp_apply
+    (exp_literal) @child_name
+  ))))))
+  (#eq? @func_name "describe")
+  (#eq? @child_name "%s")
+  ) @test.definition
+
+  ;; describe (qualified) with child that matches test_name (multiple queries)
   ((exp_apply
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @test.name
@@ -47,6 +67,27 @@ local function mk_parent_query(test_name)
   (#eq? @func_name "describe")
   (#eq? @child_name "%s")
   ) @test.definition
+
+  ((exp_apply
+    (exp_name (qualified_variable (variable) @func_name))
+    (exp_literal) @test.name
+  ) (_ (_ (_ (_ (exp_apply
+    (exp_literal) @child_name
+  )))))
+  (#eq? @func_name "describe")
+  (#eq? @child_name "%s")
+  ) @test.definition
+
+  ((exp_apply
+    (exp_name (qualified_variable (variable) @func_name))
+    (exp_literal) @test.name
+  ) (_ (_ (_ (_ (_ (exp_apply
+    (exp_literal) @child_name
+  ))))))
+  (#eq? @func_name "describe")
+  (#eq? @child_name "%s")
+  ) @test.definition
+
   ]], test_name_escaped, test_name_escaped)
 end
 
