@@ -47,16 +47,6 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
 
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (_ (_ (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  ))))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
   ; describe (unqualified, no do notation) with child that matches test_name
   ((exp_apply
     (exp_name (variable) @func_name)
@@ -89,15 +79,6 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
 
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (_ (_ (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  ))))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
 
   ; describe (qualified, no do notation) with child that matches test_name
   ((exp_apply
@@ -110,8 +91,6 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
   ]], test_name_escaped
-    , test_name_escaped
-    , test_name_escaped
     , test_name_escaped
     , test_name_escaped
     , test_name_escaped
