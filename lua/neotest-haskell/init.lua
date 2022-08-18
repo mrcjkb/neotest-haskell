@@ -37,7 +37,7 @@ function HaskellNeotestAdapter.build_spec(args)
     return
   end
 
-  local hspec_match = base.get_hspec_match(pos.name, pos.path)
+  local hspec_match = base.get_hspec_match(pos)
   local package_root = base.match_package_root_pattern(pos.path)
   local project_root = base.match_project_root_pattern(pos.path)
 

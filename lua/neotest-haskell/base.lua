@@ -47,6 +47,16 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
 
+  ((exp_apply
+    (exp_name (variable) @func_name)
+    (exp_literal) @test.name
+  ) (_ (_ (_ (_ (_ (exp_apply
+    (exp_literal) @child_name
+  ))))))
+  (#eq? @func_name "describe")
+  (#eq? @child_name "%s")
+  ) @test.definition
+
   ; describe (unqualified, no do notation) with child that matches test_name
   ((exp_apply
     (exp_name (variable) @func_name)
@@ -80,6 +90,17 @@ local function mk_parent_query(test_name)
   ) @test.definition
 
 
+  ((exp_apply
+    (exp_name (qualified_variable (variable) @func_name))
+    (exp_literal) @test.name
+  ) (_ (_ (_ (_ (_ (exp_apply
+    (exp_literal) @child_name
+  ))))))
+  (#eq? @func_name "describe")
+  (#eq? @child_name "%s")
+  ) @test.definition
+
+
   ; describe (qualified, no do notation) with child that matches test_name
   ((exp_apply
     (exp_name (qualified_variable (variable) @func_name))
@@ -91,6 +112,8 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
   ]], test_name_escaped
+    , test_name_escaped
+    , test_name_escaped
     , test_name_escaped
     , test_name_escaped
     , test_name_escaped
@@ -150,43 +173,40 @@ local function hspec_format(test_name)
   return test_name:gsub('"', '')
 end
 
--- Helper function for 'M.get_hspec_match(test_name, path)'
--- @parem acc: The accumulated result (formatted for a hspec --match expression)
--- @param test_name: The quoted, unformatted test name
--- @param path: The path to the file containing the tests
+-- Helper function for 'M.get_hspec_match(position)'
+-- @param position the position of the test to get the match for
 -- @return the hspec match for the test
 -- @type string
-local function get_hspec_match(acc, test_name, path)
+local function get_hspec_match(position)
+  local test_name = position.name
+  local path = position.path
+  local row = position.range[1]
   local parent_query = mk_parent_query(test_name)
   logger.debug('Querying treesitter for parent "describe": ' .. vim.inspect(parent_query))
   local parent_tree = parse_positions(path, parent_query)
-  local parent_name_list = {}
+  local nearest
   for _, parent_node in parent_tree:iter_nodes() do
     local data = parent_node:data()
     if data.type == "test" then
-      parent_name_list[#parent_name_list+1] = data.name
+      if data.range and data.range[1] <= row - 1 then
+        nearest = parent_node
+      else
+        break
+      end
     end
   end
-  if #parent_name_list == 0 then
-    return acc
+  if not nearest then
+    return hspec_format(test_name)
   end
-  local parent_name = parent_name_list[1]
-  local parent_name_formatted = hspec_format(parent_name)
-  if #parent_name_list > 1 then
-    -- If there is more than one match,
-    -- we cannot determine which one is the parent, so we skip the branch here
-    -- TODO: Maybe this can be solved by comparing the ranges?
-    return acc
-  end
-  return get_hspec_match(parent_name_formatted .. '/' .. acc, parent_name, path)
-  -- return acc
+  local parent_position = nearest:data()
+  return get_hspec_match(parent_position) .. '/' .. hspec_format(test_name)
 end
 
 -- Runs a treesitter query for the tests in the test file 'path',
 -- and if there is a test that matches 'test_name',
 -- prepends any parent 'describe's to the test name.
 -- Example:
---  - test_name: "My test"
+--  - position.name: "My test"
 --  - Hspec tests in path:
 --    ```
 --    describe "Run" $ do
@@ -194,13 +214,11 @@ end
 --      ...
 --    ```
 --  - Result: "/Run/My test"
--- @param test_name: The quoted, unformatted test name
--- @param path: The path to the file containing the tests
+-- @param position the position of the test to get the match for
 -- @return the hspec match for the test (see example).
 -- @type string
-function M.get_hspec_match(test_name, path)
-  local acc = hspec_format(test_name)
-  return '"/' .. get_hspec_match(acc, test_name, path) .. '/"'
+function M.get_hspec_match(position)
+  return '"/' .. get_hspec_match(position) .. '/"'
 end
 
 ---@async
