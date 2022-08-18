@@ -8,17 +8,21 @@ local logger = require("neotest.logging")
 ---@type neotest.Adapter
 local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 
+
 HaskellNeotestAdapter.root = base.match_package_root_pattern
+
 
 function HaskellNeotestAdapter.is_test_file(file_path)
   return base.is_test_file(file_path)
 end
+
 
 ---@async
 ---@return neotest.Tree | nil
 function HaskellNeotestAdapter.discover_positions(path)
   return base.parse_positions(path)
 end
+
 
 ---@async
 ---@param args neotest.RunArgs
@@ -82,15 +86,24 @@ function HaskellNeotestAdapter.build_spec(args)
     command = command,
     context = {
       file = pos.path,
+      pos_id = pos.id,
+      pos_path = pos.path,
     },
   }
 end
+
 
 ---@async
 ---@param spec neotest.RunSpec
 ---@param result neotest.StrategyResult
 ---@return neotest.Result[]
 function HaskellNeotestAdapter.results(spec, result)
+  local pos_id = spec.context.pos_id
+  if result.code == 0 then
+    return { [pos_id] = {
+      status = "passed"
+    } }
+  end
   print("Spec:")
   vim.pretty_print(spec)
   print("Result:")

@@ -44,7 +44,7 @@ local function mk_parent_query(test_name)
     (exp_literal) @child_name
   )))))
   (#eq? @func_name "describe")
-  ; (#eq? @child_name "%s")
+  (#eq? @child_name "%s")
   ) @test.definition
 
   ((exp_apply
@@ -88,7 +88,13 @@ local function mk_parent_query(test_name)
   (#eq? @child_name "%s")
   ) @test.definition
 
-  ]], test_name_escaped, test_name_escaped)
+  ]], test_name_escaped
+    , test_name_escaped
+    , test_name_escaped
+    , test_name_escaped
+    , test_name_escaped
+    , test_name_escaped
+    )
 end
 
 -- @param path: Test file path
