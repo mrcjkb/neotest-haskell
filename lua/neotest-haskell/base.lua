@@ -167,14 +167,17 @@ local function get_hspec_match(acc, test_name, path)
       parent_name_list[#parent_name_list+1] = data.name
     end
   end
-  if #parent_name_list > 1 then
-    -- If there is more than one match,
-    -- we cannot determine which one is the parent, so we break here
-    -- TODO: Maybe this can be solved by comparing the ranges?
+  if #parent_name_list == 0 then
     return acc
   end
   local parent_name = parent_name_list[1]
   local parent_name_formatted = hspec_format(parent_name)
+  if #parent_name_list > 1 then
+    -- If there is more than one match,
+    -- we cannot determine which one is the parent, so we skip the branch here
+    -- TODO: Maybe this can be solved by comparing the ranges?
+    return acc
+  end
   return get_hspec_match(parent_name_formatted .. '/' .. acc, parent_name, path)
   -- return acc
 end
