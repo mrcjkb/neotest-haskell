@@ -94,7 +94,7 @@ local function mk_parent_query(test_name)
     , test_name_escaped
     , test_name_escaped
     , test_name_escaped
-    )
+  )
 end
 
 -- @param path: Test file path
