@@ -3,11 +3,6 @@ local logger = require("neotest.logging")
 
 local M = {}
 
-function M.is_test_file(file_path)
-  return vim.endswith(file_path, "Spec.hs")
-      or vim.endswith(file_path, "Test.hs")
-end
-
 M.match_package_root_pattern = lib.files.match_root_pattern('*.cabal', 'package.yaml')
 
 M.match_project_root_pattern = lib.files.match_root_pattern("cabal.project", 'stack.yaml')
@@ -219,20 +214,6 @@ end
 -- @type string
 function M.get_hspec_match(position)
   return '"/' .. get_hspec_match(position) .. '/"'
-end
-
----@async
----@param out_path string: Path to machine readable cabal test results output file
----@return neotest.Result[]
-function M.cabal_results(out_path)
-  local success, data = pcall(lib.files.read, out_path)
-  if not success then
-    vim.notify('Failed to read cabal output.', vim.log.levels.ERROR)
-    return {}
-  end
-  print('Data:')
-  vim.pretty_print(data)
-  return {} -- TODO
 end
 
 return M

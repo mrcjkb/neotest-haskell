@@ -1,7 +1,7 @@
-local async = require('neotest.async')
-local Path = require('plenary.path')
 local lib = require('neotest.lib')
 local base = require('neotest-haskell.base')
+local cabal = require("neotest-haskell.cabal")
+local stack = require("neotest-haskell.stack")
 local logger = require("neotest.logging")
 
 
@@ -13,7 +13,8 @@ HaskellNeotestAdapter.root = base.match_package_root_pattern
 
 
 function HaskellNeotestAdapter.is_test_file(file_path)
-  return base.is_test_file(file_path)
+  return vim.endswith(file_path, "Spec.hs")
+      or vim.endswith(file_path, "Test.hs")
 end
 
 
@@ -43,37 +44,9 @@ function HaskellNeotestAdapter.build_spec(args)
 
   local command = nil
   if lib.files.exists(project_root .. '/cabal.project') then
-    logger.debug('Building spec for Cabal project...')
-    for _, package_file_path in ipairs(async.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
-      if lib.files.exists(package_file_path) then
-        local package_file_name = vim.fn.fnamemodify(package_file_path, ':t')
-        local package_name = package_file_name:gsub('.cabal', '')
-        command = vim.tbl_flatten({
-          'cabal',
-          'new-run',
-          package_name .. '-test',
-          '--',
-          '--match',
-          hspec_match,
-        })
-        vim.notify('(async) Running: cabal new-run ' .. package_name .. '-test -- --match ' .. hspec_match)
-        break
-      end
-    end
+    return cabal.build_command(package_root, hspec_match)
   elseif lib.files.exists(project_root .. 'package.yaml') then
-    error("Stack not supported yet.") -- TODO
-    logger.debug('Building spec for Stack project...')
-    local is_subpackage = package_root ~= project_root
-    local package_name = vim.fn.fnamemodify(package_root, ':t')
-    local package_arg = is_subpackage and { package_name } or {}
-    command = vim.tbl_flatten({
-      'stack',
-      'test',
-      package_arg,
-      '--ta',
-      '"--match \\"' .. hspec_match .. '\\"', -- FIXME
-    })
-    vim.notify('(async) Running: stack test ' .. package_arg .. ' --ta ' .. hspec_match)
+    return stack.build_command(project_root, package_root, hspec_match)
   else
     logger.error( 'Project is neither a Cabal nor a Stack project.')
   end
@@ -111,10 +84,9 @@ function HaskellNeotestAdapter.results(spec, result)
   local out_file = result.output
   if vim.tbl_contains(spec.command, 'cabal') then
     print('Out file: ' .. out_file)
-    return base.cabal_results(out_file)
+    return cabal.results(out_file)
   end
-  -- TODO process stack output
-  return {}
+  return stack.results(out_file)
 end
 
 setmetatable(HaskellNeotestAdapter, {
