@@ -22,6 +22,10 @@ local function get_test_suite_name(cabal_file_path)
   for capture in string.gmatch(data, 'test%-suite (.-)\n') do
      table.insert(captures, capture)
   end
+  if #captures == 0 then
+    logger.error('Cound not extract test suite name(s) from cabal file.')
+    return assume_test_suite_name(cabal_file_path)
+  end
   if #captures > 1 then
     local coro = coroutine.create(
       function()
