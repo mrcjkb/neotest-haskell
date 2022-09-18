@@ -11,10 +11,10 @@ local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 
 HaskellNeotestAdapter.root = base.match_package_root_pattern
 
+local is_test_file = base.is_test_file
 
 function HaskellNeotestAdapter.is_test_file(file_path)
-  return vim.endswith(file_path, "Spec.hs")
-      or vim.endswith(file_path, "Test.hs")
+  return is_test_file(file_path)
 end
 
 
@@ -90,7 +90,8 @@ function HaskellNeotestAdapter.results(spec, result)
 end
 
 setmetatable(HaskellNeotestAdapter, {
-  __call = function()
+  __call = function(_, opts)
+    is_test_file = opts.is_test_file or is_test_file
     return HaskellNeotestAdapter
   end,
 })

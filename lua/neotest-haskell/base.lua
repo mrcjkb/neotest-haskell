@@ -3,6 +3,14 @@ local logger = require("neotest.logging")
 
 local M = {}
 
+M.is_test_file = function(file_path)
+  if not vim.endswith(file_path, ".hs") then
+    return false
+  end
+  return vim.endswith(file_path, "Spec.hs")
+      or vim.endswith(file_path, "Test.hs")
+end
+
 M.match_package_root_pattern = lib.files.match_root_pattern('*.cabal', 'package.yaml')
 
 M.match_project_root_pattern = lib.files.match_root_pattern("cabal.project", 'stack.yaml')
