@@ -45,15 +45,14 @@ function HaskellNeotestAdapter.build_spec(args)
   end
 
   local hspec_match = base.get_hspec_match(pos)
-  vim.pretty_print(hspec_match)
   local package_root = base.match_package_root_pattern(pos.path)
   local project_root = base.match_project_root_pattern(pos.path)
 
   local command = nil
   if lib.files.exists(project_root .. '/cabal.project') then
-    return cabal.build_command(package_root, hspec_match)
+    command = cabal.build_command(package_root, hspec_match)
   elseif lib.files.exists(project_root .. 'package.yaml') then
-    return stack.build_command(project_root, package_root, hspec_match)
+    command = stack.build_command(project_root, package_root, hspec_match)
   else
     logger.error( 'Project is neither a Cabal nor a Stack project.')
   end
