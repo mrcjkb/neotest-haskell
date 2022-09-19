@@ -9,7 +9,7 @@ local logger = require("neotest.logging")
 local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 
 
-HaskellNeotestAdapter.root = base.match_package_root_pattern
+HaskellNeotestAdapter.root = base.match_project_root_pattern
 
 local is_test_file = base.is_test_file
 local filter_dir = base.filter_dir

@@ -11,8 +11,9 @@ M.is_test_file = function(file_path)
       or vim.endswith(file_path, "Test.hs")
 end
 
-M.filter_dir = function(_, rel_path, _)
-  return string.match(rel_path, '/test/')
+M.filter_dir = function(name)
+  return name ~= 'dist-newstile'
+     and name ~= '.stack-work'
 end
 
 M.match_package_root_pattern = lib.files.match_root_pattern('*.cabal', 'package.yaml')
