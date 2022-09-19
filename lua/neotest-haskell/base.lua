@@ -23,7 +23,7 @@ M.match_project_root_pattern = lib.files.match_root_pattern('cabal.project', 'st
 -- Wrapper around neotest.lib.treesitter.parse_positions
 -- @type neotest.Tree
 local function parse_positions(path, query)
-  return lib.treesitter.parse_positions(path, query, { nested_tests = true })
+  return lib.treesitter.parse_positions(path, query, { nested_namespaces = true, nested_tests = true, })
 end
 
 -- @param test_name: The name of the test for which to query for a parent
@@ -190,7 +190,6 @@ local function get_hspec_match(position)
   local path = position.path
   local row = position.range[1]
   local parent_query = mk_parent_query(test_name)
-  logger.debug('Querying treesitter for parent "describe": ' .. vim.inspect(parent_query))
   local parent_tree = parse_positions(path, parent_query)
   local nearest
   for _, parent_node in parent_tree:iter_nodes() do

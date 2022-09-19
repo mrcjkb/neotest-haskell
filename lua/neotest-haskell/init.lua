@@ -25,7 +25,9 @@ end
 ---@async
 ---@return neotest.Tree | nil
 function HaskellNeotestAdapter.discover_positions(path)
-  return base.parse_positions(path)
+  local pos = base.parse_positions(path)
+  logger.debug("Found positions: " .. vim.inspect(pos))
+  return pos
 end
 
 
@@ -43,6 +45,7 @@ function HaskellNeotestAdapter.build_spec(args)
   end
 
   local hspec_match = base.get_hspec_match(pos)
+  vim.pretty_print(hspec_match)
   local package_root = base.match_package_root_pattern(pos.path)
   local project_root = base.match_project_root_pattern(pos.path)
 
