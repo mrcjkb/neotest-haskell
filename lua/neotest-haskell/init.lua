@@ -75,6 +75,11 @@ end
 ---@return neotest.Result[]
 function HaskellNeotestAdapter.results(spec, result)
   local pos_id = spec.context.pos_id
+  return { [pos_id] = {
+    status = result.code == 0 and "passed" or "failed"
+  } }
+
+  -- TODO [WIP]
   if result.code == 0 then
     return { [pos_id] = {
       status = "passed"
