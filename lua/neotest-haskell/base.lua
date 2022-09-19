@@ -17,7 +17,7 @@ end
 
 M.match_package_root_pattern = lib.files.match_root_pattern('*.cabal', 'package.yaml')
 
-M.match_project_root_pattern = lib.files.match_root_pattern("cabal.project", 'stack.yaml')
+M.match_project_root_pattern = lib.files.match_root_pattern('cabal.project', 'stack.yaml')
 
 -- Wrapper around neotest.lib.treesitter.parse_positions
 -- @type neotest.Tree
