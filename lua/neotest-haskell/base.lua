@@ -11,6 +11,10 @@ M.is_test_file = function(file_path)
       or vim.endswith(file_path, "Test.hs")
 end
 
+M.filter_dir = function(_, rel_path, _)
+  return string.match(rel_path, '/test/')
+end
+
 M.match_package_root_pattern = lib.files.match_root_pattern('*.cabal', 'package.yaml')
 
 M.match_project_root_pattern = lib.files.match_root_pattern("cabal.project", 'stack.yaml')

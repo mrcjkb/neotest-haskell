@@ -12,11 +12,15 @@ local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 HaskellNeotestAdapter.root = base.match_package_root_pattern
 
 local is_test_file = base.is_test_file
+local filter_dir = base.filter_dir
 
 function HaskellNeotestAdapter.is_test_file(file_path)
   return is_test_file(file_path)
 end
 
+function HaskellNeotestAdapter.filter_dir(...)
+  return filter_dir(...)
+end
 
 ---@async
 ---@return neotest.Tree | nil
@@ -92,6 +96,7 @@ end
 setmetatable(HaskellNeotestAdapter, {
   __call = function(_, opts)
     is_test_file = opts.is_test_file or is_test_file
+    filter_dir = opts.filter_dir or filter_dir
     return HaskellNeotestAdapter
   end,
 })
