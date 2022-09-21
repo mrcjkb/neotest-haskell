@@ -80,21 +80,21 @@ function HaskellNeotestAdapter.results(spec, result)
   } }
 
   -- TODO [WIP]
-  if result.code == 0 then
-    return { [pos_id] = {
-      status = "passed"
-    } }
-  end
-  print("Spec:")
-  vim.pretty_print(spec)
-  print("Result:")
-  vim.pretty_print(result)
-  local out_file = result.output
-  if vim.tbl_contains(spec.command, 'cabal') then
-    print('Out file: ' .. out_file)
-    return cabal.results(out_file)
-  end
-  return stack.results(out_file)
+  -- if result.code == 0 then
+  --   return { [pos_id] = {
+  --     status = "passed"
+  --   } }
+  -- end
+  -- print("Spec:")
+  -- vim.pretty_print(spec)
+  -- print("Result:")
+  -- vim.pretty_print(result)
+  -- local out_file = result.output
+  -- if vim.tbl_contains(spec.command, 'cabal') then
+  --   print('Out file: ' .. out_file)
+  --   return cabal.results(out_file)
+  -- end
+  -- return stack.results(out_file)
 end
 
 setmetatable(HaskellNeotestAdapter, {
