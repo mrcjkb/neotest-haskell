@@ -81,7 +81,7 @@ function HaskellNeotestAdapter.results(spec, result)
 
   -- TODO [WIP]
   -- if result.code == 0 then
-  --   return { [pos_id] = {
+  --   return { [pos_id] = {k
   --     status = "passed"
   --   } }
   -- end
