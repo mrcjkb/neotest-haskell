@@ -225,7 +225,7 @@ end
 -- @return the hspec match for the test (see example).
 -- @type string
 function M.get_hspec_match(position)
-  return '"/' .. get_hspec_match(position) .. '/"'
+  return '/' .. get_hspec_match(position) .. '/'
 end
 
 return M
