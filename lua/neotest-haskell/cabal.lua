@@ -27,24 +27,40 @@ function M.build_command(package_root, hspec_match)
       '--test-option',
       hspec_match,
     })
-    print('neotest-haskell: cabal new-test ' .. package_name .. ' --test-option -m --test-option ' .. hspec_match)
+    vim.notify('neotest-haskell: cabal new-test ' .. package_name .. ' --test-option -m --test-option ' .. hspec_match, vim.log.levels.INFO)
   end
   return command
 end
 
 ---@async
+---@param context table: Spec context with the following fields:
+--- - file: Absolute path to the test file
+--- - pos_id: Postition ID of the test that was discovered - '<file>:"<test.name>"' [@see base.parse_positions]
+--- - pos_path: Absolute path to the file containing the test (== file)
 ---@param out_path string: Path to cabal test results output file
 ---@return neotest.Result[]
-function M.parse_results(out_path)
+function M.parse_results(context, out_path)
+  local pos_id = context.pos_id
   vim.pretty_print(out_path)
   local success, data = pcall(lib.files.read, out_path)
+  vim.pretty_print(data)
   if not success then
     vim.notify('Failed to read cabal output.', vim.log.levels.ERROR)
-    return {}
+    return { [pos_id] = {
+      status = 'failed',
+    } }
   end
-  print('Data:')
-  vim.pretty_print(data)
-  return {} -- TODO
+  -- print('Data:')
+  -- vim.pretty_print(data)
+  return { [pos_id] = {
+    status = 'failed',
+    short = 'Test failed.',
+    errors = {
+      {
+        message = data,
+      },
+    },
+  } }
 end
 
 return M
