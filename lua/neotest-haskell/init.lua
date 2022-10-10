@@ -61,7 +61,7 @@ function HaskellNeotestAdapter.build_spec(args)
 
   if lib.files.exists(project_root .. '/cabal.project') then
     return mkCommand(cabal.build_command(package_root, hspec_match))
-  elseif lib.files.exists(project_root .. 'package.yaml') then
+  elseif lib.files.exists(project_root .. '/package.yaml') then
     return mkCommand(stack.build_command(project_root, package_root, hspec_match))
   end
 
@@ -75,26 +75,16 @@ end
 ---@return neotest.Result[]
 function HaskellNeotestAdapter.results(spec, result)
   local pos_id = spec.context.pos_id
-  return { [pos_id] = {
-    status = result.code == 0 and "passed" or "failed"
-  } }
-
-  -- TODO [WIP]
-  -- if result.code == 0 then
-  --   return { [pos_id] = {k
-  --     status = "passed"
-  --   } }
-  -- end
-  -- print("Spec:")
-  -- vim.pretty_print(spec)
-  -- print("Result:")
-  -- vim.pretty_print(result)
-  -- local out_file = result.output
-  -- if vim.tbl_contains(spec.command, 'cabal') then
-  --   print('Out file: ' .. out_file)
-  --   return cabal.results(out_file)
-  -- end
-  -- return stack.results(out_file)
+  if result.code == 0 then
+    return { [pos_id] = {
+      status = 'passed'
+    } }
+  end
+  if vim.tbl_contains(spec.command, 'cabal') then
+    return cabal.parse_results(spec.context, result.output)
+  end
+  return {}
+  -- return stack.parse_results(spec.context, result.output)
 end
 
 setmetatable(HaskellNeotestAdapter, {
