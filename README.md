@@ -44,7 +44,7 @@ use({
 
 - [x] Run cabal v2 tests with Hspec
 - [x] Support both single + multi-package cabal v2 projects
-- [ ] Support cabal v2 projects with more than one test suite per package
+- [x] Support cabal v2 projects with more than one test suite per package
 - [ ] Parse cabal v2 Hspec test results
 
 
@@ -59,3 +59,4 @@ use({
 ### Further down the line
 
 - [ ] Add support for [tasty](https://hackage.haskell.org/package/tasty)
+- [ ] Provide `nvim-dap` configuration 
