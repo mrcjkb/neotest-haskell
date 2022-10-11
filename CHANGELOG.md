@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2022-10-11
+### Added
+- Parse hspec test results and display error messages as virtual text.
+
 ## [0.0.3] - 2022-10-10
 ### Fixed
 - Remove double-quotes from match argument, which caused hspec not to be able ot find any matches.
