@@ -63,6 +63,56 @@ use({
 
 ```
 
+## Examples
+
+### Hspec
+
+```haskell
+module FixtureSpec ( spec ) where
+import Test.Hspec
+import Test.Hspec.QuickCheck
+import Control.Exception ( evaluate )
+
+spec :: Spec
+spec = describe "Prelude.head" $ do
+  it "returns the first element of a list" $ head [23 ..] `shouldBe` (23 :: Int)
+
+  prop "returns the first element of an *arbitrary* list" $ \x xs ->
+    head (x : xs) `shouldBe` (x :: Int)
+
+  describe "Empty list" $
+    it "throws an exception if used with an empty list"
+      $             evaluate (head [])
+      `shouldThrow` anyException
+```
+
+In the above listing, calling `:lua require('neotest').run.run()`
+with the cursor on the line...
+```haskell
+  describe "Empty list" $
+```
+...will run the tests with the following Cabal command:
+
+```sh
+# Assuming a Cabal backage called "my_package"
+cabal new-run my_package --test-option -m --test-option "/Prelude.head/EmptyList/"
+```
+...which will run the `"throws an exception if used with an empty list"` test.
+
+Calling `:lua require('neotest').run.run()`
+with the cursor on the line...
+```haskell
+spec = describe "Prelude.head" $ do
+```
+...will run the tests with the following Cabal command:
+
+```sh
+# Assuming a Cabal backage called "my_package"
+cabal new-run my_package --test-option -m --test-option "/Prelude.head/"
+```
+...which will run all tests in the module.
+
+
 ## TODO
 
 ### Cabal support
