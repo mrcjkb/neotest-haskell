@@ -44,11 +44,11 @@ local function get_hspec_errors(raw_lines, pos)
         message = error_message,
       },}
     elseif pos_found then
-      error_message = error_message and error_message .. '\n' .. line or line
+      error_message = error_message and error_message .. '\n' .. trimmed or trimmed
     end
     if failures_found and trimmed:match('.*' .. pos) then
       pos_found = true
-    elseif string.match(line, 'Failures:') then
+    elseif trimmed:match('Failures:') then
       failures_found = true
     end
   end
