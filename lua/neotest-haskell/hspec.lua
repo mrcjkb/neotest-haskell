@@ -293,7 +293,7 @@ function M.parse_results(context, out_path)
         errors = get_hspec_errors(lines, pos)
       },
     }
-    result = vim.tbl_extend('keep', result, failure)
+    result = vim.tbl_extend('force', result, failure)
   end
   for _, pos in ipairs(success_positions) do
     local passed = { [pos_path .. '::"' .. pos .. '"'] = {
