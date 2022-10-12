@@ -34,11 +34,11 @@ end
 function HaskellNeotestAdapter.build_spec(args)
   local tree = args and args.tree
   if not tree then
-    return {}
+    return nil
   end
   local pos = args.tree:data()
   if pos.type ~= "test" then
-    return {}
+    return nil
   end
 
   local mkCommand = function(command)
@@ -57,7 +57,7 @@ function HaskellNeotestAdapter.build_spec(args)
 
   if lib.files.exists(project_root .. '/cabal.project') then
     return mkCommand(cabal.build_command(package_root, pos))
-  elseif lib.files.exists(project_root .. '/package.yaml') then
+  elseif lib.files.exists(project_root .. '/stack.yaml') then
     return mkCommand(stack.build_command(project_root, package_root, pos))
   end
 
@@ -76,8 +76,7 @@ function HaskellNeotestAdapter.results(spec, result)
   if vim.tbl_contains(spec.command, 'cabal') then
     return cabal.parse_results(spec.context, result.output)
   end
-  return {}
-  -- return stack.parse_results(spec.context, result.output)
+  return stack.parse_results(spec.context, result.output)
 end
 
 setmetatable(HaskellNeotestAdapter, {

@@ -1,5 +1,4 @@
 local hspec = require('neotest-haskell.hspec')
-local util = require('neotest-haskell.util')
 local async = require('neotest.async')
 local lib = require('neotest.lib')
 local logger = require("neotest.logging")
@@ -13,6 +12,7 @@ local function get_package_file(package_root)
   end
 end
 
+---@async
 function M.build_command(package_root, pos)
   logger.debug('Building spec for Cabal project...')
   local command = {
@@ -33,6 +33,7 @@ function M.build_command(package_root, pos)
     or command
 end
 
+---@async
 function M.parse_results(context, out_path)
   return hspec.parse_results(context, out_path)
 end
