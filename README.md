@@ -12,7 +12,7 @@
 * Parses hspec `--match` filters for the cursor's position using TreeSitter.
 * Parses hspec (cabal v2) test results and displays error messages as virtual text.
 
-![neotest-haskell](https://user-images.githubusercontent.com/12857160/194965194-a65d18b6-b6f7-48c1-bdde-a6831bf1b362.png)
+![neotest-haskell](https://user-images.githubusercontent.com/12857160/195384747-c956e9d0-74fd-4156-90a7-06b458789bd2.png)
 
 ## Configuration
 
