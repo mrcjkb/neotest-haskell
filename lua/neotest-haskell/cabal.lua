@@ -87,11 +87,6 @@ function M.parse_results(context, out_path)
   end
   local result = { [pos_id] = {
     status = 'failed',
-    errors = {
-      {
-        message = data,
-      },
-    },
   } }
   for _, pos in ipairs(failure_positions) do
     local failure = { [pos_path .. '::"' .. pos .. '"'] = {
