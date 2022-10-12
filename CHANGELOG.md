@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [Do not display full output as virtual text.](https://github.com/MrcJkb/neotest-haskell/issues/12)
   To display output, see `:h neotest.output.open()`
+- Run all tests if no package is found
+- Run tests without options if no (hspec) test options can be found
 
 ## [0.1.0] - 2022-10-11
 ### Added
