@@ -16,8 +16,27 @@
 
 ## Configuration
 
-* Requires [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) and the parser for haskell.
-* Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+### Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+
+Requires [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) and the parser for haskell.
+
+
+```lua
+use {
+  'nvim-treesitter/nvim-treesitter',
+  config = function()
+    require('nvim-treesitter.configs').setup {
+      ensure_installed = {
+        'haskell',
+        --...,
+      },
+      -- Automatically install missing parsers when entering buffer
+      auto_install = true,
+      -- ...,
+    }
+  end,
+}
+```
 
 ```lua
 use({
@@ -41,8 +60,8 @@ use({
     vim.keymap.set('n', '<leader>ns', function() require('neotest').summary.toggle() end, opts)
   end
 })
-```
 
+```
 
 ## TODO
 
