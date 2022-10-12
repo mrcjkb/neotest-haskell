@@ -96,13 +96,13 @@ with the cursor on the line...
 
 ```sh
 # Assuming a Cabal package called "my_package"
-cabal new-run my_package --test-option -m --test-option "/Prelude.head/EmptyList/"
+cabal new-run my_package --test-option -m --test-option "/Prelude.head/Empty list/"
 ```
 ...or with the following Stack command:
 
 ```sh
 # Assuming a Stack package called "my_package"
-stack test my_package --ta "--match \"/Prelude.head/EmptyList/\""
+stack test my_package --ta "--match \"/Prelude.head/Empty list/\""
 ```
 ...which will run the `"throws an exception if used with an empty list"` test.
 
