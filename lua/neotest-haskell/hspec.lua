@@ -220,7 +220,7 @@ M.get_cabal_test_opts = function(pos)
 end
 
 -- Get the error messages
-local function get_hspec_errors(raw_lines, pos)
+local function get_hspec_errors(raw_lines, test_name)
   local failures_found = false
   local pos_found = false
   local error_message = nil
@@ -233,7 +233,7 @@ local function get_hspec_errors(raw_lines, pos)
     elseif pos_found then
       error_message = error_message and error_message .. '\n' .. trimmed or trimmed
     end
-    if failures_found and trimmed:match('.*' .. pos) then
+    if failures_found and trimmed:match('.*' .. test_name) then
       pos_found = true
     elseif trimmed:match('Failures:') then
       failures_found = true
