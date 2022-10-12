@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- [Support for Stack projects with Hspec](https://github.com/MrcJkb/neotest-haskell/issues/3)
+### Fixed
+- Error message when running outside of test definitions
 
 ## [0.1.1] - 2022-10-12
 ### Fixed

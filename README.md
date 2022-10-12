@@ -1,6 +1,6 @@
 # neotest-haskell
 
-**[WIP]** [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell (cabal-v2 or stack with [Hspec](https://hackage.haskell.org/package/hspec))
+A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 ## Status
 
@@ -8,9 +8,10 @@
 
 ## Features
 
-* Supports cabal v2 (single/multi-package) projects.
-* Parses hspec `--match` filters for the cursor's position using TreeSitter.
-* Parses hspec (cabal v2) test results and displays error messages as virtual text.
+* Supports [Cabal v2](https://www.haskell.org/cabal/) (single/multi-package) projects.
+* Supports [Stack](https://docs.haskellstack.org/en/stable/) (single/multi-package) projects.
+* Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using TreeSitter.
+* Parses Hspec test results and displays error messages as virtual text.
 
 ![neotest-haskell](https://user-images.githubusercontent.com/12857160/195435665-6ef3175e-039d-4473-a322-a51eefab0a27.png)
 
@@ -125,10 +126,10 @@ cabal new-run my_package --test-option -m --test-option "/Prelude.head/"
 
 ### Stack support
 
-- [ ] Run stack tests with Hspec
-- [ ] Support both single + multi-package stack projects
-- [ ] Support stack projects with more than one test suite per package
-- [ ] Parse stack Hspec test results
+- [x] Run stack tests with Hspec
+- [x] Support both single + multi-package stack projects
+- [x] Support stack projects with more than one test suite per package
+- [x] Parse stack Hspec test results
 
 
 ### Further down the line
