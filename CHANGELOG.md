@@ -6,18 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- [Support for Stack projects with Hspec](https://github.com/MrcJkb/neotest-haskell/issues/3)
+- Stack support!
 ### Fixed
-- Error message when running outside of test definitions
+- Error message when running outside of test definitions.
+- Virtual text not shown when cursor is on `it` or `prop` test.
 
 ## [0.1.1] - 2022-10-12
 ### Fixed
 - [Whitespace of virtual text error messages not trimmed](https://github.com/MrcJkb/neotest-haskell/issues/13)
 ### Changed
-- [Do not display full output as virtual text.](https://github.com/MrcJkb/neotest-haskell/issues/12)
-  To display output, see `:h neotest.output.open()`
-- Run all tests if no package is found
-- Run tests without options if no (hspec) test options can be found
+- [Do not display full output as virtual text.](https://github.com/MrcJkb/neotest-haskell/issues/12).
+  To display output, see `:h neotest.output.open()`.
+- Run all tests if no package is found.
+- Run tests without options if no (hspec) test options can be found.
 
 ## [0.1.0] - 2022-10-11
 ### Added

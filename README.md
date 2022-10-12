@@ -95,8 +95,14 @@ with the cursor on the line...
 ...will run the tests with the following Cabal command:
 
 ```sh
-# Assuming a Cabal backage called "my_package"
+# Assuming a Cabal package called "my_package"
 cabal new-run my_package --test-option -m --test-option "/Prelude.head/EmptyList/"
+```
+...or with the following Stack command:
+
+```sh
+# Assuming a Stack package called "my_package"
+stack test my_package --ta "--match \"/Prelude.head/EmptyList/\""
 ```
 ...which will run the `"throws an exception if used with an empty list"` test.
 
@@ -108,8 +114,14 @@ spec = describe "Prelude.head" $ do
 ...will run the tests with the following Cabal command:
 
 ```sh
-# Assuming a Cabal backage called "my_package"
+# Assuming a Cabal package called "my_package"
 cabal new-run my_package --test-option -m --test-option "/Prelude.head/"
+```
+...or with the following Stack command:
+
+```sh
+# Assuming a Stack package called "my_package"
+stack test my_package --ta "--match \"/Prelude.head/\""
 ```
 ...which will run all tests in the module.
 
