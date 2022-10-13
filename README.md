@@ -145,7 +145,13 @@ stack test my_package --ta "--match \"/Prelude.head/\""
 - [x] Parse stack Hspec test results
 
 
-### Further down the line
+### Testing frameworks
 
-- [ ] Add support for [tasty](https://hackage.haskell.org/package/tasty)
+- [x] [hspec](https://hackage.haskell.org/package/hspec)
+- [ ] [tasty](https://hackage.haskell.org/package/tasty)
+- [ ] [sydtest](https://github.com/NorfairKing/sydtest)
+- [ ] [yesod-test](https://hackage.haskell.org/package/yesod-test)
+- [ ] Extract interface so that users can add their own adapters
+
+### Other
 - [ ] Provide `nvim-dap` configuration
