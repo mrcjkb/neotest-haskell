@@ -2,9 +2,11 @@
 
 A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
-## Status
-
-* This test runner is still under early development, so there may be breaking changes.
+## Quick links
+- [Features](#featues)
+- [Installation / Configuration](#installation-configuration)
+- [Examples](#examples)
+- [TODO](#todo)
 
 ## Features
 
@@ -155,3 +157,14 @@ stack test my_package --ta "--match \"/Prelude.head/\""
 
 ### Other
 - [ ] Provide `nvim-dap` configuration
+
+
+## Recommendations
+
+Here are some other plugins I recommend for Haskell (and nix) development in neovim:
+
+* [MrcJkb/haskell-tools.nvim](https://github.com/MrcJkb/haskell-tools.nvim): Language server protocol setup
+* [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle): Hoogle search
+* [MrcJkb/telescope-manix](https://github.com/MrcJkb/telescope-manix): Nix search
+* [mfussenegger/nvim-lint](https://github.com/mfussenegger/nvim-lint): As a fallback in case there are problems with haskell-language-server (e.g. in large monnorepos)
+* [aloussase/scout](https://github.com/aloussase/scout): CLI for searching Hackage with telescope.nvim integration
