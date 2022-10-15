@@ -7,6 +7,7 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 - [Installation / Configuration](#installation-and-configuration)
 - [Examples](#examples)
 - [TODO](#todo)
+- [Recommendations](#recommendations)
 
 ## Features
 
