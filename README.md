@@ -4,7 +4,7 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 ## Quick links
 - [Features](#featues)
-- [Installation / Configuration](#installation-configuration)
+- [Installation / Configuration](#installation-and-configuration)
 - [Examples](#examples)
 - [TODO](#todo)
 
@@ -17,7 +17,7 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 ![neotest-haskell](https://user-images.githubusercontent.com/12857160/195435665-6ef3175e-039d-4473-a322-a51eefab0a27.png)
 
-## Installation / Configuration
+## Installation And Configuration
 See also: [neotest installation instructions](https://github.com/nvim-neotest/neotest#installation).
 
 ### Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
