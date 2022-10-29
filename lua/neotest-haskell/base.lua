@@ -8,6 +8,7 @@ M.is_test_file = function(file_path)
   end
   return vim.endswith(file_path, "Spec.hs")
       or vim.endswith(file_path, "Test.hs")
+      or vim.endswith(file_path, "Tests.hs")
 end
 
 M.filter_dir = function(name)
