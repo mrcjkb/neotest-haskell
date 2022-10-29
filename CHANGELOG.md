@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Virtual text not displayed if test name contains lua `match` special characters.
+- Detect files ending in "Tests.hs" as test files
 
 ## [0.2.0] - 2022-10-12
 ### Added
