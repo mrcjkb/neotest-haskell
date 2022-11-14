@@ -12,6 +12,7 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 - [Installation / Configuration](#installation-and-configuration)
 - [Examples](#examples)
 - [TODO](#todo)
+- [Troubleshooting](#troubleshooting)
 - [Recommendations](#recommendations)
 
 ## Features
@@ -164,6 +165,22 @@ stack test my_package --ta "--match \"/Prelude.head/\""
 ### Other
 - [ ] Provide `nvim-dap` configuration
 
+
+## Troubleshooting
+
+#### Minimal config
+
+To troubleshoot this plugin with a minimal config in a temporary directory, use [minimal.lua](./tests/minimal.lua).
+
+With `bash` or `zsh`, call:
+```bash
+NVIM_DATA_MINIMAL=$(mktemp -d) nvim -u minimal.lua
+```
+
+With `fish`, call:
+```fish
+NVIM_DATA_MINIMAL=(mktemp -d) nvim -u minimal.lua
+```
 
 ## Recommendations
 

@@ -1,0 +1,46 @@
+name: Bug Report
+description: Report a problem with neotest-haskell
+labels: [bug]
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        _Before reporting:_ search [existing issues](https://github.com/MrcJkb/neotest-haskell/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
+        To reproduce the issue with a minimal config with neotest-haskell, see [minimal.lua](https://github.com/MrcJkb/neotest-haskell/blob/master/tests/minimal.lua).
+        See also: [Troubleshooting section of README.md](https://github.com/MrcJkb/neotest-haskell/blob/master/README.md#minimal-config).
+
+  - type: input
+    attributes:
+      label: "Neovim version (nvim -v)"
+      placeholder: "v0.8.0"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: "Operating system/version"
+      placeholder: "NixOS 22.05"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "How to reproduce the issue"
+      description: |
+        - Steps to reproduce using `NVIM_DATA_MINIMAL=$(mktemp -d) -u minimal.lua` (minimal config).
+      placeholder: |
+        NVIM_DATA_MINIMAL=$(mktemp -d) -u ./tests/minimal.lua
+        :edit foo.hs
+        yiwp
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "Expected behaviour"
+      description: "Describe the behaviour you expect. May include logs, images, or videos."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "Actual behaviour"
+    validations:
+      required: true
