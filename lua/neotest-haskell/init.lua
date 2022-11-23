@@ -1,13 +1,11 @@
 local base = require('neotest-haskell.base')
 local hspec = require('neotest-haskell.hspec')
-local cabal = require("neotest-haskell.cabal")
-local stack = require("neotest-haskell.stack")
+local cabal = require('neotest-haskell.cabal')
+local stack = require('neotest-haskell.stack')
 local lib = require('neotest.lib')
-local logger = require("neotest.logging")
-
+local logger = require('neotest.logging')
 
 local HaskellNeotestAdapter = { name = 'neotest-haskell' }
-
 
 HaskellNeotestAdapter.root = base.match_project_root_pattern
 
@@ -25,10 +23,9 @@ end
 ---@async
 function HaskellNeotestAdapter.discover_positions(path)
   local pos = hspec.parse_positions(path)
-  logger.debug("Found positions: " .. vim.inspect(pos))
+  logger.debug('Found positions: ' .. vim.inspect(pos))
   return pos
 end
-
 
 ---@async
 function HaskellNeotestAdapter.build_spec(args)
@@ -37,7 +34,7 @@ function HaskellNeotestAdapter.build_spec(args)
     return nil
   end
   local pos = args.tree:data()
-  if pos.type ~= "test" then
+  if pos.type ~= 'test' then
     return nil
   end
 
@@ -64,13 +61,12 @@ function HaskellNeotestAdapter.build_spec(args)
   logger.error('Project is neither a Cabal nor a Stack project.')
 end
 
-
 ---@async
 function HaskellNeotestAdapter.results(spec, result)
   local pos_id = spec.context.pos_id
   if result.code == 0 then
     return { [pos_id] = {
-      status = 'passed'
+      status = 'passed',
     } }
   end
   if vim.tbl_contains(spec.command, 'cabal') then
