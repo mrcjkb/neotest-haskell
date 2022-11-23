@@ -1,5 +1,5 @@
 local hspec = require('neotest-haskell.hspec')
-local logger = require("neotest.logging")
+local logger = require('neotest.logging')
 
 local M = {}
 
@@ -16,9 +16,7 @@ function M.build_command(project_root, package_root, pos)
     table.insert(command, package_name)
   end
   local test_opts = hspec.get_stack_test_opts(pos)
-  return test_opts
-    and vim.list_extend(command, test_opts)
-    or command
+  return test_opts and vim.list_extend(command, test_opts) or command
 end
 
 ---@async

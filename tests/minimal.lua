@@ -13,7 +13,7 @@ local data_path = fn.stdpath('data')
 local pack_path = data_path .. '/site'
 vim.opt.packpath:remove(pack_path)
 
--- append temporary config and pack dir
+--append temporary config and pack dir
 data_path = os.getenv('NVIM_DATA_MINIMAL')
 if not data_path then
   error('$NVIM_DATA_MINIMAL environment variable not set!')
@@ -34,31 +34,24 @@ if vim.fn.empty(vim.fn.glob(packer_install_path)) > 0 then
 else
   vim.cmd('packadd packer.nvim')
   vim.cmd('packadd plenary.nvim')
-  vim.cmd('runtime! plugin/plenary.nvim')
+  vim.cmd('runtime! plugin/plenary.vim')
 end
 
 local packer = require('packer')
 
-packer.init({
+packer.init {
   package_root = data_path .. '/pack',
-  compile_path = data_path .. '/plugin/packer_compiled.lua'
-})
+  compile_path = data_path .. '/plugin/packer_compiled.lua',
+}
 
 packer.startup(function(use)
-  use 'wbthomason/packer.nvim'
+  use('wbthomason/packer.nvim')
+  use('nvim-lua/plenary.nvim')
   use {
     'nvim-neotest/neotest',
     requires = {
-      'nvim-lua/plenary.nvim',
       'MrcJkb/neotest-haskell',
     },
-    config = function()
-      require('neotest').setup({
-      adapters = {
-        require('neotest-haskell'),
-      }
-    })
-    end
   }
 
   if install_plugins then

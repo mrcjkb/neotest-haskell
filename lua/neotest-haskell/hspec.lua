@@ -1,4 +1,4 @@
-local util = require("neotest-haskell.util")
+local util = require('neotest-haskell.util')
 local lib = require('neotest.lib')
 
 local M = {}
@@ -10,7 +10,8 @@ local M = {}
 -- NOTE: This query does not detect parent 'describe's defined in another function thatn the child (TODO?)
 local function mk_parent_query(test_name)
   local test_name_escaped = vim.fn.escape(test_name, '"')
-  return string.format([[
+  return string.format(
+    [[
   ;; describe (unqualified) with child that matches test_name (multiple queries)
   ((exp_apply
     (exp_name (variable) @func_name)
@@ -96,14 +97,15 @@ local function mk_parent_query(test_name)
   (#eq? @func_name "describe")
   (#eq? @child_name "%s")
   ) @test.definition
-  ]], test_name_escaped
-    , test_name_escaped
-    , test_name_escaped
-    , test_name_escaped
-    , test_name_escaped
-    , test_name_escaped
-    , test_name_escaped
-    , test_name_escaped
+  ]],
+    test_name_escaped,
+    test_name_escaped,
+    test_name_escaped,
+    test_name_escaped,
+    test_name_escaped,
+    test_name_escaped,
+    test_name_escaped,
+    test_name_escaped
   )
 end
 
@@ -171,7 +173,7 @@ local function parse_hspec_match(position)
   local nearest
   for _, parent_node in parent_tree:iter_nodes() do
     local data = parent_node:data()
-    if data.type == "test" then
+    if data.type == 'test' then
       if data.range and data.range[1] <= row - 1 then
         nearest = parent_node
       else
@@ -241,9 +243,9 @@ local function get_hspec_errors(raw_lines, test_name)
   for _, line in ipairs(raw_lines) do
     local trimmed = line:match('^%s*(.*)')
     if pos_found and trimmed:match('To rerun use:') then
-      return {{
+      return { {
         message = error_message,
-      },}
+      } }
     elseif pos_found then
       error_message = error_message and error_message .. '\n' .. trimmed or trimmed
     end
@@ -279,27 +281,27 @@ function M.parse_results(context, out_path)
     local failed = line:match('%s*(.*)%s.✘')
     local succeeded = line:match('%s*(.*)%s.✔')
     if failed then
-      failure_positions[#failure_positions+1] = failed
+      failure_positions[#failure_positions + 1] = failed
     elseif succeeded then
-      success_positions[#success_positions+1] = succeeded
+      success_positions[#success_positions + 1] = succeeded
     end
   end
   local result = { [pos_id] = {
     status = 'failed',
   } }
   for _, pos in ipairs(failure_positions) do
-    local failure = { [pos_path .. '::"' .. pos .. '"'] = {
+    local failure = {
+      [pos_path .. '::"' .. pos .. '"'] = {
         status = 'failed',
-        errors = get_hspec_errors(lines, pos)
+        errors = get_hspec_errors(lines, pos),
       },
     }
     result = vim.tbl_extend('force', result, failure)
   end
   for _, pos in ipairs(success_positions) do
     local passed = { [pos_path .. '::"' .. pos .. '"'] = {
-        status = 'passed',
-      },
-    }
+      status = 'passed',
+    } }
     result = vim.tbl_extend('keep', result, passed)
   end
   return result
