@@ -29,20 +29,18 @@ local install_plugins = false
 
 if vim.fn.empty(vim.fn.glob(packer_install_path)) > 0 then
   vim.cmd('!git clone git@github.com:wbthomason/packer.nvim ' .. packer_install_path)
-  vim.cmd('packadd packer.nvim')
   install_plugins = true
-else
-  vim.cmd('packadd packer.nvim')
-  vim.cmd('packadd plenary.nvim')
-  vim.cmd('runtime! plugin/plenary.vim')
 end
+vim.cmd('packadd packer.nvim')
 
 local packer = require('packer')
 
 packer.init {
-  package_root = data_path .. '/pack',
+  package_root = data_path .. '/site/pack',
   compile_path = data_path .. '/plugin/packer_compiled.lua',
 }
+
+vim.cmd('runtime! plugin/plenary.vim')
 
 packer.startup(function(use)
   use('wbthomason/packer.nvim')
@@ -52,6 +50,9 @@ packer.startup(function(use)
     requires = {
       'MrcJkb/neotest-haskell',
     },
+    config = function()
+      -- add your neotest setup here.
+    end,
   }
 
   if install_plugins then
