@@ -241,7 +241,7 @@ local function get_hspec_errors(raw_lines, test_name)
   local pos_found = false
   local error_message = nil
   for _, line in ipairs(raw_lines) do
-    local trimmed = line:match('^%s*(.*)')
+    local trimmed = line:match('^%s*(.*)'):gsub('%s*$', '')
     if pos_found and trimmed:match('To rerun use:') then
       return { {
         message = error_message,
