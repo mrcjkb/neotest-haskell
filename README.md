@@ -59,7 +59,7 @@ use({
   "nvim-neotest/neotest",
   requires = {
     -- ...,
-    "MrcJkb/neotest-haskell",
+    "mrcjkb/neotest-haskell",
   }
   config = function()
     require("neotest").setup({
