@@ -241,13 +241,13 @@ local function get_hspec_errors(raw_lines, test_name)
   local pos_found = false
   local error_message = nil
   for _, line in ipairs(raw_lines) do
-    local trimmed = line:match('^%s*(.*)'):gsub('%s*$', '')
+    local trimmed = (line:match('^%s*(.*)') or line):gsub('%s*$', '')
     if pos_found and trimmed:match('To rerun use:') then
       return { {
         message = error_message,
       } }
     elseif pos_found then
-      error_message = error_message and error_message:gsub('%s*$', '') .. '\n' .. trimmed or trimmed
+      error_message = error_message and error_message .. '\n' .. trimmed or trimmed
     end
     if failures_found and trimmed:match('.*' .. util.escape(test_name) .. '.*') then
       pos_found = true
