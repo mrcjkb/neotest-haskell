@@ -24,6 +24,7 @@
 [![GPL2 License][license-shield]][license-url]
 [![Issues][issues-shield]][issues-url]
 [![Build Status][ci-shield]][ci-url]
+[![LuaRocks][luarocks-shield]][luarocks-url]
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=for-the-badge)](#contributors-)
@@ -283,6 +284,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 specification. Contributions of any kind welcome!
 
 <!-- MARKDOWN LNIKS & IMAGES -->
+<!-- markdownlint-disable -->
 [neovim-shield]: https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white
 [neovim-url]: https://neovim.io/
 [lua-shield]: https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white
@@ -297,6 +299,5 @@ specification. Contributions of any kind welcome!
 [license-url]: https://github.com/mrcjkb/neotest-haskell/blob/master/LICENSE
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/mrcjkb/neotest-haskell/nix-build.yml?style=for-the-badge
 [ci-url]: https://github.com/mrcjkb/neotest-haskell/actions/workflows/nix-build.yml
-<!-- markdownlint-disable -->
-<!-- [luarocks-shield]: https://img.shields.io/luarocks/v/MrcJkb/neotest-haskell?logo=lua&color=purple&style=for-the-badge -->
-<!-- [luarocks-url]: https://luarocks.org/modules/MrcJkb/neotest-haskell -->
+[luarocks-shield]: https://img.shields.io/luarocks/v/MrcJkb/neotest-haskell?logo=lua&color=purple&style=for-the-badge
+[luarocks-url]: https://luarocks.org/modules/MrcJkb/neotest-haskell
