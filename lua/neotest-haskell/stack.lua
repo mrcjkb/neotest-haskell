@@ -1,10 +1,10 @@
 local hspec = require('neotest-haskell.hspec')
 local logger = require('neotest.logging')
 
-local M = {}
+local stack = {}
 
 ---@async
-function M.build_command(project_root, package_root, pos)
+function stack.build_command(project_root, package_root, pos)
   logger.debug('Building spec for Stack project...')
   local command = {
     'stack',
@@ -20,8 +20,8 @@ function M.build_command(project_root, package_root, pos)
 end
 
 ---@async
-function M.parse_results(context, out_path)
+function stack.parse_results(context, out_path)
   return hspec.parse_results(context, out_path)
 end
 
-return M
+return stack

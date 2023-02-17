@@ -1,7 +1,7 @@
 local util = require('neotest-haskell.util')
 local lib = require('neotest.lib')
 
-local M = {}
+local hspec = {}
 
 -- @param test_name: The name of the test for which to query for a parent
 -- @return a treesitter query for a 'describe'
@@ -111,7 +111,7 @@ end
 
 -- @param path: Test file path
 -- @type neotest.Tree
-function M.parse_positions(path)
+function hspec.parse_positions(path)
   local tests_query = [[
   ;; describe (unqualified)
   ((exp_apply
@@ -209,10 +209,9 @@ local function get_hspec_match(pos)
   return hspec_match
 end
 
--- @param pos the position of the test to get the match for
--- @return the cabal test options for matching an hspec filter
--- @type table
-M.get_cabal_test_opts = function(pos)
+--- @param pos table the position of the test to get the match for
+--- @return table test_opts The cabal test options for matching an hspec filter
+function hspec.get_cabal_test_opts(pos)
   return {
     '--test-option',
     '-m',
@@ -225,10 +224,9 @@ M.get_cabal_test_opts = function(pos)
   }
 end
 
--- @param pos the position of the test to get the match for
--- @return the stack test options for matching an hspec filter
--- @type table
-M.get_stack_test_opts = function(pos)
+--- @param pos table The position of the test to get the match for
+--- @return table test_opts The stack test options for matching an hspec filter
+function hspec.get_stack_test_opts(pos)
   return {
     '--ta',
     '--match "' .. get_hspec_match(pos) .. '" --no-color --format=checks',
@@ -264,7 +262,7 @@ end
 --- - pos_id: Postition ID of the test that was discovered - '<file>::"<test.name>"' [@see base.parse_positions]
 --- - pos_path: Absolute path to the file containing the test (== file)
 ---@param out_path string: Path to an hspec test results output file
-function M.parse_results(context, out_path)
+function hspec.parse_results(context, out_path)
   local pos_id = context.pos_id
   local pos_path = context.pos_path
   local success, data = pcall(lib.files.read, out_path)
@@ -307,4 +305,4 @@ function M.parse_results(context, out_path)
   return result
 end
 
-return M
+return hspec
