@@ -27,7 +27,7 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 * Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using TreeSitter.
 * Parses Hspec test results and displays error messages as virtual text.
 
-![neotest-haskell](https://user-images.githubusercontent.com/12857160/195435665-6ef3175e-039d-4473-a322-a51eefab0a27.png)
+![neotest-haskell](https://user-images.githubusercontent.com/12857160/219817610-169b107c-3583-46d7-bc52-a7ee2383b1f8.gif)
 
 ## Installation And Configuration
 See also: [neotest installation instructions](https://github.com/nvim-neotest/neotest#installation).
