@@ -5,22 +5,31 @@ local stack = require('neotest-haskell.stack')
 local lib = require('neotest.lib')
 local logger = require('neotest.logging')
 
+---@type neotest.Adapter
 local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 
+---@type fun(file:string):(string|nil)
 HaskellNeotestAdapter.root = base.match_project_root_pattern
 
+---@type fun(name:string):boolean
 local is_test_file = base.is_test_file
+
+---@type fun(name:string):boolean
 local filter_dir = base.filter_dir
 
+---@type fun(name:string):boolean
 function HaskellNeotestAdapter.is_test_file(file_path)
   return is_test_file(file_path)
 end
 
+---@type fun(name:string):boolean
 function HaskellNeotestAdapter.filter_dir(...)
   return filter_dir(...)
 end
 
 ---@async
+---@param path string The file path
+---@return neotest.Tree|nil pos
 function HaskellNeotestAdapter.discover_positions(path)
   local pos = hspec.parse_positions(path)
   logger.debug('Found positions: ' .. vim.inspect(pos))

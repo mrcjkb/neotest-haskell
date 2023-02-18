@@ -4,7 +4,7 @@ local lib = require('neotest.lib')
 local logger = require('neotest.logging')
 local Path = require('plenary.path')
 
-local M = {}
+local cabal = {}
 
 local function get_package_file(package_root)
   for _, package_file_path in ipairs(async.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
@@ -13,7 +13,7 @@ local function get_package_file(package_root)
 end
 
 ---@async
-function M.build_command(package_root, pos)
+function cabal.build_command(package_root, pos)
   logger.debug('Building spec for Cabal project...')
   local command = {
     'cabal',
@@ -32,8 +32,8 @@ function M.build_command(package_root, pos)
 end
 
 ---@async
-function M.parse_results(context, out_path)
+function cabal.parse_results(context, out_path)
   return hspec.parse_results(context, out_path)
 end
 
-return M
+return cabal
