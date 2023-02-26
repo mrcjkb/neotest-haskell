@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for test files (See [#45](https://github.com/mrcjkb/neotest-haskell/issues/45)).
   Running `neotes.run.run(vim.api.nvim_buf_get_name)` will now run a single process for the top-level Hspec node.
+- Support for simple cabal projects. These are projects with a single package and no `cabal.project` file.
 
 ## [0.2.2] - 2023-01-14
 ### Fixed

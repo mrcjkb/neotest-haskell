@@ -12,20 +12,24 @@ local function get_package_file(package_root)
   end
 end
 
+--- @param pos table position from neotest
+--- @param package_root string|nil package root directory; can be nil for projects without multiple modules
 ---@async
-function cabal.build_command(package_root, pos)
+function cabal.build_command(pos, package_root)
   logger.debug('Building spec for Cabal project...')
   local command = {
     'cabal',
     'test',
   }
-  local package_file_path = get_package_file(package_root)
-  local package_file_name = vim.fn.fnamemodify(package_file_path, ':t')
-  local package_name = package_file_name:gsub('.cabal', '')
-  if lib.files.exists(package_file_path) then
-    table.insert(command, package_name)
-  else
-    table.insert(command, 'all')
+  if package_root then
+    local package_file_path = get_package_file(package_root)
+    local package_file_name = vim.fn.fnamemodify(package_file_path, ':t')
+    local package_name = package_file_name:gsub('.cabal', '')
+    if lib.files.exists(package_file_path) then
+      table.insert(command, package_name)
+    else
+      table.insert(command, 'all')
+    end
   end
   local test_opts = hspec.get_cabal_test_opts(pos)
   return test_opts and vim.list_extend(command, test_opts) or command

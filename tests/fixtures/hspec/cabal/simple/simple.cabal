@@ -1,0 +1,16 @@
+cabal-version:      3.0
+name:               simple
+version:            0.1.0.0
+build-type:         Simple
+common warnings
+    ghc-options: -Wall
+
+test-suite simple-test
+    import:           warnings
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Spec.hs
+    build-depends:    base >=4.9 && < 5
+                    , hspec ==2.*
+                    , hspec-discover
