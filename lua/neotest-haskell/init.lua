@@ -64,7 +64,7 @@ function HaskellNeotestAdapter.build_spec(args)
 
   if lib.files.exists(project_root .. '/cabal.project') then
     return mkCommand(cabal.build_command(package_root, pos))
-  elseif lib.files.exists(project_root .. '/stack.yaml') then
+  elseif lib.files.exists(project_root .. '/stack.yaml') and vim.fn.executable('stack') == 1 then
     return mkCommand(stack.build_command(project_root, package_root, pos))
   end
 
