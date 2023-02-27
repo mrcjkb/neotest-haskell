@@ -38,12 +38,13 @@ end
 
 ---@async
 function HaskellNeotestAdapter.build_spec(args)
+  local supported_types = { 'test', 'file' }
   local tree = args and args.tree
   if not tree then
     return nil
   end
   local pos = args.tree:data()
-  if pos.type ~= 'test' then
+  if not vim.tbl_contains(supported_types, pos.type) then
     return nil
   end
 

@@ -17,7 +17,7 @@ function cabal.build_command(package_root, pos)
   logger.debug('Building spec for Cabal project...')
   local command = {
     'cabal',
-    'new-test',
+    'test',
   }
   local package_file_path = get_package_file(package_root)
   local package_file_name = vim.fn.fnamemodify(package_file_path, ':t')
