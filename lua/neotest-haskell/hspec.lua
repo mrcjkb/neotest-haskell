@@ -1,5 +1,6 @@
 local util = require('neotest-haskell.util')
 local lib = require('neotest.lib')
+local logger = require('neotest.logging')
 
 local hspec = {}
 
@@ -109,10 +110,25 @@ local function mk_parent_query(test_name)
   )
 end
 
+local describe_query = [[
+  ;; describe (unqualified)
+  ((exp_apply
+    (exp_name (variable) @func_name)
+    (exp_literal) @test.name
+  ) (#eq? @func_name "describe")) @test.definition
+
+  ;; describe (qualified)
+  ((exp_apply
+    (exp_name (qualified_variable (variable) @func_name))
+    (exp_literal) @test.name
+  ) (#eq? @func_name "describe")) @test.definition
+]]
+
 -- @param path: Test file path
 -- @type neotest.Tree
 function hspec.parse_positions(path)
-  local tests_query = [[
+  local tests_query = describe_query
+    .. [[
   ;; describe (unqualified)
   ((exp_apply
     (exp_name (variable) @func_name)
@@ -160,11 +176,25 @@ local function hspec_format(test_name)
   return test_name:gsub('"', '')
 end
 
--- Helper function for 'M.get_hspec_match(position)'
--- @param position the position of the test to get the match for
--- @return the hspec match for the test
--- @type string
-local function parse_hspec_match(position)
+--- Parses the top level hspec node in a file
+--- @param path string The test file path
+--- @return string hspec_match_path The hspec match path for the top level node of the hspec tree
+local function parse_top_level_hspec_node(path)
+  local positions = util.parse_positions(path, describe_query)
+  local top_level
+  for _, node in positions:iter_nodes() do
+    local data = node:data()
+    if data.type == 'test' then
+      top_level = (top_level and data.range[1] < top_level.range[1] and data or top_level) or data
+    end
+  end
+  return top_level and hspec_format(top_level.name) or ''
+end
+
+--- Recursively parses the hspec tree, starting at a child node, up to its parents.
+--- @param position table neotest.Position The position of the test to get the match for
+--- @return string hspec_match_path The hspec match path for the test
+local function parse_hspec_tree(position)
   local test_name = position.name
   local path = position.path
   local row = position.range[1]
@@ -174,7 +204,7 @@ local function parse_hspec_match(position)
   for _, parent_node in parent_tree:iter_nodes() do
     local data = parent_node:data()
     if data.type == 'test' then
-      if data.range and data.range[1] <= row - 1 then
+      if data.range[1] <= row - 1 then
         nearest = parent_node
       else
         break
@@ -185,24 +215,30 @@ local function parse_hspec_match(position)
     return hspec_format(test_name)
   end
   local parent_position = nearest:data()
-  return parse_hspec_match(parent_position) .. '/' .. hspec_format(test_name)
+  return parse_hspec_tree(parent_position) .. '/' .. hspec_format(test_name)
 end
 
--- Runs a treesitter query for the tests in the test file 'path',
--- and if there is a test that matches 'test_name',
--- prepends any parent 'describe's to the test name.
--- Example:
---  - position.name: "My test"
---  - Hspec tests in path:
---    ```
---    describe "Run" $ do
---      it "My test" $ do
---      ...
---    ```
---  - Result: "/Run/My test"
--- @param pos the position of the test to get the match for
--- @return the hspec match for the test (see example).
--- @type string
+local function parse_hspec_match(position)
+  if position.type == 'file' then
+    return parse_top_level_hspec_node(position.path)
+  end
+  return parse_hspec_tree(position)
+end
+
+--- Runs a treesitter query for tests at a `neotest.Position`,
+--- and if there is a test that matches <test_name>,
+--- prepends any parent <describe>s to the test name.
+--- Example:
+---  - position.name: "My test"
+---  - Hspec tests in path:
+---    ```
+---    describe "Run" $ do
+---      it "My test" $ do
+---      ...
+---    ```
+---  - Result: "/Run/My test"
+--- @param pos table (neotest.Position) The position of the test to get the match for
+--- @return string hspec_match The hspec match for the test (see example).
 local function get_hspec_match(pos)
   local hspec_match = '/' .. parse_hspec_match(pos) .. '/'
   vim.notify('HSpec: --match: ' .. hspec_match, vim.log.levels.INFO)
@@ -256,6 +292,28 @@ local function get_hspec_errors(raw_lines, test_name)
   return {}
 end
 
+--- Initialise an empty results table for each test node
+--- in the given path. This is necessary to prevent neotest
+--- from displaying parent nodes of succeeded tests as 'passed'
+--- if an unrelated test has failed.
+--- @param path string The test file path.
+--- @return table initial_result A neotest result table with all positions initialised as empty.
+local function init_empty_result(path)
+  local init_result = {}
+  local positions = hspec.parse_positions(path)
+  if not positions then
+    logger.warn('Could not get positions to initialise result for ' .. path)
+    return init_result
+  end
+  for _, node in positions:iter_nodes() do
+    local pos = node:data()
+    if pos.type == 'test' then
+      init_result[pos.id] = {}
+    end
+  end
+  return init_result
+end
+
 ---@async
 ---@param context table: Spec context with the following fields:
 --- - file: Absolute path to the test file
@@ -284,23 +342,21 @@ function hspec.parse_results(context, out_path)
       success_positions[#success_positions + 1] = succeeded
     end
   end
-  local result = { [pos_id] = {
+  local result = init_empty_result(context.pos_path)
+
+  result[pos_id] = {
     status = 'failed',
-  } }
+  }
   for _, pos in ipairs(failure_positions) do
-    local failure = {
-      [pos_path .. '::"' .. pos .. '"'] = {
-        status = 'failed',
-        errors = get_hspec_errors(lines, pos),
-      },
+    result[pos_path .. '::"' .. pos .. '"'] = {
+      status = 'failed',
+      errors = get_hspec_errors(lines, pos),
     }
-    result = vim.tbl_extend('force', result, failure)
   end
   for _, pos in ipairs(success_positions) do
-    local passed = { [pos_path .. '::"' .. pos .. '"'] = {
+    result[pos_path .. '::"' .. pos .. '"'] = {
       status = 'passed',
-    } }
-    result = vim.tbl_extend('keep', result, passed)
+    }
   end
   return result
 end
