@@ -311,7 +311,6 @@ local function init_empty_result(path)
       init_result[pos.id] = {}
     end
   end
-  vim.pretty_print(init_result)
   return init_result
 end
 
