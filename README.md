@@ -7,7 +7,7 @@
 [![Nix build](https://github.com/MrcJkb/neotest-haskell/actions/workflows/nix-build.yml/badge.svg)](https://github.com/MrcJkb/neotest-haskell/actions/workflows/nix-build.yml)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
@@ -207,6 +207,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Trouble-Truffle"><img src="https://avatars.githubusercontent.com/u/90542764?v=4?s=100" width="100px;" alt="Perigord"/><br /><sub><b>Perigord</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/commits?author=Trouble-Truffle" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/saep"><img src="https://avatars.githubusercontent.com/u/1560366?v=4?s=100" width="100px;" alt="Sebastian Witte"/><br /><sub><b>Sebastian Witte</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/commits?author=saep" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/andy-bell101"><img src="https://avatars.githubusercontent.com/u/13719403?v=4?s=100" width="100px;" alt="Andy Bell"/><br /><sub><b>Andy Bell</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/commits?author=andy-bell101" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

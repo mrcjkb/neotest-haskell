@@ -23,6 +23,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "andy-bell101",
+      "name": "Andy Bell",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13719403?v=4",
+      "profile": "https://github.com/andy-bell101",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
