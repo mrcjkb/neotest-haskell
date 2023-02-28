@@ -19,7 +19,6 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 - [TODO](#todo)
 - [Troubleshooting](#troubleshooting)
 - [Recommendations](#recommendations)
-- [Contributors](#contributors)
 
 ## Features
 
