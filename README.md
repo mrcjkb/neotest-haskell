@@ -187,13 +187,10 @@ NVIM_DATA_MINIMAL=/tmp/minimal nvim -u minimal.lua
 
 ## Recommendations
 
-Here are some other plugins I recommend for Haskell (and nix) development in neovim:
+Here are some other plugins I recommend for Haskell development:
 
 * [mrcjkb/haskell-tools.nvim](https://github.com/MrcJkb/haskell-tools.nvim): Toolset to improve the Haskell experience in Neovim
 * [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle): Hoogle search
-* [mrcjkb/telescope-manix](https://github.com/MrcJkb/telescope-manix): Nix search
-* [mfussenegger/nvim-lint](https://github.com/mfussenegger/nvim-lint): As a fallback in case there are problems with haskell-language-server (e.g. in large monnorepos)
-* [aloussase/scout](https://github.com/aloussase/scout): CLI for searching Hackage with telescope.nvim integration
 
 ## Contributors ✨
 
