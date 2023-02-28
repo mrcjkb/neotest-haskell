@@ -60,12 +60,14 @@ function HaskellNeotestAdapter.build_spec(args)
   end
 
   local package_root = base.match_package_root_pattern(pos.path)
-  local project_root = base.match_project_root_pattern(pos.path)
+  local project_root = base.match_project_root_pattern(pos.path) or package_root
 
   if lib.files.exists(project_root .. '/cabal.project') then
-    return mkCommand(cabal.build_command(package_root, pos))
+    return mkCommand(cabal.build_command(pos, package_root))
   elseif lib.files.exists(project_root .. '/stack.yaml') then
     return mkCommand(stack.build_command(project_root, package_root, pos))
+  elseif package_root then
+    return mkCommand(cabal.build_command(pos))
   end
 
   logger.error('Project is neither a Cabal nor a Stack project.')
