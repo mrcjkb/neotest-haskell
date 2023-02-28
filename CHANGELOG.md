@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.3.0] - 2023-02-28
 ### Added
 - Support for test files (See [#45](https://github.com/mrcjkb/neotest-haskell/issues/45)).
   Running `neotes.run.run(vim.api.nvim_buf_get_name)` will now run a single process for the top-level Hspec node.
