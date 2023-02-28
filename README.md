@@ -24,7 +24,7 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 * Supports [Cabal](https://www.haskell.org/cabal/) (single/multi-package) projects.
 * Supports [Stack](https://docs.haskellstack.org/en/stable/) (single/multi-package) projects.
-* Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using TreeSitter.
+* Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using tree-sitter.
 * Parses Hspec test results and displays error messages as virtual text.
 
 ![neotest-haskell](https://user-images.githubusercontent.com/12857160/219817610-169b107c-3583-46d7-bc52-a7ee2383b1f8.gif)
