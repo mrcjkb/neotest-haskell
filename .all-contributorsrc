@@ -14,6 +14,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "saep",
+      "name": "Sebastian Witte",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1560366?v=4",
+      "profile": "https://github.com/saep",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -21,5 +30,5 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "projectName": "neotest-haskell",
-  "projectOwner": "MrcJkb"
+  "projectOwner": "mrcjkb"
 }
