@@ -1,0 +1,17 @@
+name: simple
+version: 0.1.0.0
+build-type:         Simple
+
+dependencies:
+  - base >=4.9 && < 5
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs: 
+      - test
+    dependencies:
+      - hspec ==2.*
+      - hspec-discover
+    build-tools: hspec-discover
+
