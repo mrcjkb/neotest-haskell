@@ -260,8 +260,8 @@ function hspec.get_cabal_test_opts(pos)
   }
 end
 
---- @param pos table The position of the test to get the match for
---- @return table test_opts The stack test options for matching an hspec filter
+--- @param pos neotest.Position The position of the test to get the match for
+--- @return string[] test_opts The stack test options for matching an hspec filter
 function hspec.get_stack_test_opts(pos)
   return {
     '--ta',

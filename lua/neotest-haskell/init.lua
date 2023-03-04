@@ -1,7 +1,6 @@
 local base = require('neotest-haskell.base')
+local runner = require('neotest-haskell.runner')
 local hspec = require('neotest-haskell.hspec')
-local cabal = require('neotest-haskell.cabal')
-local stack = require('neotest-haskell.stack')
 local logger = require('neotest.logging')
 local lib = require('neotest.lib')
 
@@ -58,6 +57,8 @@ function HaskellNeotestAdapter.discover_positions(path)
 end
 
 ---@async
+---@param args neotest.RunArgs
+---@return neotest.RunSpec|nil
 function HaskellNeotestAdapter.build_spec(args)
   local supported_types = { 'test', 'file' }
   local tree = args and args.tree
@@ -68,34 +69,20 @@ function HaskellNeotestAdapter.build_spec(args)
   if not vim.tbl_contains(supported_types, pos.type) then
     return nil
   end
-
-  local mkCommand = function(command)
-    return {
-      command = command,
-      context = {
-        file = pos.path,
-        pos_id = pos.id,
-        pos_path = pos.path,
-      },
-    }
-  end
-
-  local build_tool = base.select_build_tool(pos.path, build_tools)
-
-  if build_tool.build_tool == 'stack' then
-    return mkCommand(stack.build_command(build_tool.project_root, build_tool.package_root, pos))
-  elseif build_tool.build_tool == 'cabal' then
-    if build_tool.is_multi_package_project then
-      return mkCommand(cabal.build_command(pos, build_tool.package_root))
-    else
-      return mkCommand(cabal.build_command(pos))
-    end
-  end
-
-  logger.error('Project is neither a Cabal nor a Stack project.')
+  local mk_command = runner.select_build_tool(pos.path, build_tools)
+  return {
+    command = mk_command(pos),
+    context = {
+      file = pos.path,
+      pos_id = pos.id,
+      pos_path = pos.path,
+    },
+  }
 end
 
 ---@async
+---@param spec neotest.RunSpec
+---@return neotest.Result[]|nil
 function HaskellNeotestAdapter.results(spec, result)
   local pos_id = spec.context.pos_id
   if result.code == 0 then
@@ -105,10 +92,7 @@ function HaskellNeotestAdapter.results(spec, result)
       },
     }
   end
-  if vim.tbl_contains(spec.command, 'cabal') then
-    return cabal.parse_results(spec.context, result.output)
-  end
-  return stack.parse_results(spec.context, result.output)
+  return hspec.parse_results(spec.context, result.output)
 end
 
 setmetatable(HaskellNeotestAdapter, {
