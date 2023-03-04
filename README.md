@@ -66,7 +66,13 @@ use({
       -- ...,
       adapters = {
         -- ...,
-        require("neotest-haskell"),
+        require("neotest-haskell"){
+          -- Default: Use stack if possible and then try cabal
+          build_tools = { "stack", "cabal" },
+          -- If you were to use { "cabal", "stack" }, then cabal will almost
+          -- always be chosen because almost all stack projects can be built
+          -- with cabal.
+        },
       }
     })
     -- Suggested keymaps

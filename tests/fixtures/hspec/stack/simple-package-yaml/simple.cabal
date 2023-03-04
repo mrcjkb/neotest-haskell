@@ -1,0 +1,25 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.35.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           simple
+version:        0.1.0.0
+build-type:     Simple
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      FirstSpec
+      Paths_simple
+  hs-source-dirs:
+      test
+  build-tool-depends:
+      hspec-discover:hspec-discover
+  build-depends:
+      base >=4.9 && <5
+    , hspec ==2.*
+    , hspec-discover
+  default-language: Haskell2010

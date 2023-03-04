@@ -1,0 +1,7 @@
+flags: {}
+packages:
+- 'subpackage1'
+- 'subpackage2'
+
+resolver: lts-20.2
+extra-deps: []

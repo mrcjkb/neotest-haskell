@@ -1,7 +1,1 @@
-module Spec(main) where
-
-import Fix2.FixtureSpec (spec)
-import Test.Hspec (hspec)
-
-main :: IO ()
-main = hspec spec
+{-# OPTIONS_GHC -F -pgmF hspec-discover #-}
