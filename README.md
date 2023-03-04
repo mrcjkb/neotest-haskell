@@ -12,13 +12,16 @@
 
 A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
+
 ## Quick links
 - [Features](#featues)
-- [Installation / Configuration](#installation-and-configuration)
+- [Installation](#installation)
+- [Configuration](#configuration)
 - [Examples](#examples)
 - [TODO](#todo)
 - [Troubleshooting](#troubleshooting)
 - [Recommendations](#recommendations)
+
 
 ## Features
 
@@ -29,61 +32,59 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 ![neotest-haskell](https://user-images.githubusercontent.com/12857160/219817610-169b107c-3583-46d7-bc52-a7ee2383b1f8.gif)
 
-## Installation And Configuration
+
+## Installation
+
 See also: [neotest installation instructions](https://github.com/nvim-neotest/neotest#installation).
 
-### Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+* Requires [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter) and the parser for haskell.
 
-Requires [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) and the parser for haskell.
-
-
-```lua
-use {
-  'nvim-treesitter/nvim-treesitter',
-  config = function()
-    require('nvim-treesitter.configs').setup {
-      ensure_installed = {
-        'haskell',
-        --...,
-      },
-      -- Automatically install missing parsers when entering buffer
-      auto_install = true,
-      -- ...,
-    }
-  end,
-}
-```
+The following example uses [`packer.nvim`](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use({
-  "nvim-neotest/neotest",
+  'nvim-neotest/neotest',
   requires = {
     -- ...,
-    "mrcjkb/neotest-haskell",
+    'mrcjkb/neotest-haskell',
+    'nvim-treesitter/nvim-treesitter',
   }
-  config = function()
-    require("neotest").setup({
-      -- ...,
-      adapters = {
-        -- ...,
-        require("neotest-haskell"){
-          -- Default: Use stack if possible and then try cabal
-          build_tools = { "stack", "cabal" },
-          -- If you were to use { "cabal", "stack" }, then cabal will almost
-          -- always be chosen because almost all stack projects can be built
-          -- with cabal.
-        },
-      }
-    })
-    -- Suggested keymaps
-    local opts = { noremap = true, }
-    vim.keymap.set('n', '<leader>nr', function() require('neotest').run.run() end, opts)
-    vim.keymap.set('n', '<leader>no', function() require('neotest').output.open() end, opts)
-    vim.keymap.set('n', '<leader>ns', function() require('neotest').summary.toggle() end, opts)
-  end
 })
-
 ```
+
+
+## Configuration
+
+Make sure the Haskell parser for tree-sitter is installed:
+
+```lua
+require('nvim-treesitter.configs').setup {
+  ensure_installed = {
+    'haskell',
+    --...,
+  },
+}
+```
+
+Add `neotest-haskell` to your `neotest` adapters:
+
+```lua
+require('neotest').setup {
+  -- ...,
+  adapters = {
+    -- ...,
+    require('neotest-haskell') {
+      -- Default: Use stack if possible and then try cabal
+      build_tools = { 'stack', 'cabal' },
+    },
+  }
+}
+```
+> **Note**
+>
+> If you were to use `build_tools = { 'cabal', 'stack' }`, then cabal will almost
+> always be chosen, because almost all stack projects can be built with cabal.
+
 
 ## Examples
 
@@ -115,13 +116,13 @@ with the cursor on the line...
 ```
 ...will run the tests with the following Cabal command:
 
-```sh
+```console
 # Assuming a Cabal package called "my_package"
 cabal new-run my_package --test-option -m --test-option "/Prelude.head/Empty list/"
 ```
 ...or with the following Stack command:
 
-```sh
+```console
 # Assuming a Stack package called "my_package"
 stack test my_package --ta "--match \"/Prelude.head/Empty list/\""
 ```
@@ -134,13 +135,13 @@ spec = describe "Prelude.head" $ do
 ```
 ...will run the tests with the following Cabal command:
 
-```sh
+```console
 # Assuming a Cabal package called "my_package"
 cabal new-run my_package --test-option -m --test-option "/Prelude.head/"
 ```
 ...or with the following Stack command:
 
-```sh
+```console
 # Assuming a Stack package called "my_package"
 stack test my_package --ta "--match \"/Prelude.head/\""
 ```
