@@ -2,3 +2,4 @@ Session.vim
 .direnv
 .pre-commit-config.yaml
 result
+.stack-work
