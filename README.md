@@ -48,6 +48,7 @@ use({
     -- ...,
     'mrcjkb/neotest-haskell',
     'nvim-treesitter/nvim-treesitter',
+    'nvim-lua/plenary.nvim',
   }
 })
 ```
