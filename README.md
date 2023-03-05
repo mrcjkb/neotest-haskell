@@ -119,7 +119,7 @@ with the cursor on the line...
 
 ```console
 # Assuming a Cabal package called "my_package"
-cabal new-run my_package --test-option -m --test-option "/Prelude.head/Empty list/"
+cabal test my_package --test-option -m --test-option "/Prelude.head/Empty list/"
 ```
 ...or with the following Stack command:
 
@@ -138,7 +138,7 @@ spec = describe "Prelude.head" $ do
 
 ```console
 # Assuming a Cabal package called "my_package"
-cabal new-run my_package --test-option -m --test-option "/Prelude.head/"
+cabal test my_package --test-option -m --test-option "/Prelude.head/"
 ```
 ...or with the following Stack command:
 
