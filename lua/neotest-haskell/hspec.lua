@@ -4,124 +4,18 @@ local logger = require('neotest.logging')
 
 local hspec = {}
 
--- @param test_name: The name of the test for which to query for a parent
--- @return a treesitter query for a 'describe'
--- with a child test that matches 'test_name'
--- @type string
--- NOTE: This query does not detect parent 'describe's defined in another function thatn the child (TODO?)
-local function mk_parent_query(test_name)
-  local test_name_escaped = vim.fn.escape(test_name, '"')
-  return string.format(
-    [[
-  ;; describe (unqualified) with child that matches test_name (multiple queries)
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  ))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (_ (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  )))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (_ (_ (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  ))))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
-  ; describe (unqualified, no do notation) with child that matches test_name
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (exp_apply
-    (exp_literal) @child_name
-  )
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
-  ;; describe (qualified) with child that matches test_name (multiple queries)
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  ))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (_ (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  )))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
-
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (_ (_ (_ (_ (_ (exp_apply
-    (exp_literal) @child_name
-  ))))))
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-
-
-  ; describe (qualified, no do notation) with child that matches test_name
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (exp_apply
-    (exp_literal) @child_name
-  )
-  (#eq? @func_name "describe")
-  (#eq? @child_name "%s")
-  ) @test.definition
-  ]],
-    test_name_escaped,
-    test_name_escaped,
-    test_name_escaped,
-    test_name_escaped,
-    test_name_escaped,
-    test_name_escaped,
-    test_name_escaped,
-    test_name_escaped
-  )
-end
-
 local describe_query = [[
   ;; describe (unqualified)
-  ((exp_apply
+  (_ (_ (exp_apply
     (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (#eq? @func_name "describe")) @test.definition
+    (exp_literal) @namespace.name
+  ) (#eq? @func_name "describe"))) @namespace.definition
 
   ;; describe (qualified)
-  ((exp_apply
+  (_ (_ (exp_apply
     (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (#eq? @func_name "describe")) @test.definition
+    (exp_literal) @namespace.name
+  ) (#eq? @func_name "describe"))) @namespace.definition
 ]]
 
 -- @param path: Test file path
@@ -129,18 +23,6 @@ local describe_query = [[
 function hspec.parse_positions(path)
   local tests_query = describe_query
     .. [[
-  ;; describe (unqualified)
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (#eq? @func_name "describe")) @test.definition
-
-  ;; describe (qualified)
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (#eq? @func_name "describe")) @test.definition
-
   ;; it (unqualified)
   ((exp_apply
     (exp_name (variable) @func_name)
@@ -177,99 +59,104 @@ local function hspec_format(test_name)
 end
 
 --- Parses the top level hspec node in a file
---- @param path string The test file path
---- @return string hspec_match_path The hspec match path for the top level node of the hspec tree
-local function parse_top_level_hspec_node(path)
-  local positions = util.parse_positions(path, describe_query)
-  local top_level
-  for _, node in positions:iter_nodes() do
+--- @param mk_match_opts fun(match_exp:string):string[]
+--- @param pos neotest.Tree
+--- @return string[] match_opts The hspec match options
+local function parse_top_level_hspec_nodes(mk_match_opts, pos)
+  local match_opts = {}
+  for _, node in pos:iter_nodes() do
     local data = node:data()
-    if data.type == 'test' then
-      top_level = (top_level and data.range[1] < top_level.range[1] and data or top_level) or data
-    end
-  end
-  return top_level and hspec_format(top_level.name) or ''
-end
-
---- Recursively parses the hspec tree, starting at a child node, up to its parents.
---- @param position table neotest.Position The position of the test to get the match for
---- @return string hspec_match_path The hspec match path for the test
-local function parse_hspec_tree(position)
-  local test_name = position.name
-  local path = position.path
-  local row = position.range[1]
-  local parent_query = mk_parent_query(test_name)
-  local parent_tree = util.parse_positions(path, parent_query)
-  local nearest
-  for _, parent_node in parent_tree:iter_nodes() do
-    local data = parent_node:data()
-    if data.type == 'test' then
-      if data.range[1] <= row - 1 then
-        nearest = parent_node
-      else
-        break
+    if data.type == 'namespace' then
+      local parent = node:parent()
+      local parent_data = parent and parent:data()
+      if not parent_data or parent_data.type ~= 'namespace' then
+        vim.list_extend(match_opts, mk_match_opts('/' .. hspec_format(data.name) .. '/'))
       end
     end
   end
-  if not nearest then
-    return hspec_format(test_name)
+  return match_opts
+end
+
+--- Recursively parses the hspec tree, starting at a child node, up to its parents.
+--- @param pos neotest.Tree The position of the test to get the match for
+--- @return string hspec_match_path The hspec match path for the test
+local function parse_hspec_tree(pos)
+  local data = pos:data()
+  local result = hspec_format(data.name)
+  for parent in pos:iter_parents() do
+    if not parent then
+      return result
+    end
+    local parent_data = parent:data()
+    if parent_data.type ~= 'namespace' then
+      return result
+    end
+    result = hspec_format(parent_data.name) .. '/' .. result
   end
-  local parent_position = nearest:data()
-  return parse_hspec_tree(parent_position) .. '/' .. hspec_format(test_name)
+  return result
 end
 
-local function parse_hspec_match(position)
-  if position.type == 'file' then
-    return parse_top_level_hspec_node(position.path)
+---Gets the --match filter for a position.
+---Example:
+--- - position.name: "My test"
+--- - Hspec tests in path:
+---   ```
+---   describe "Run" $ do
+---     it "My test" $ do
+---     ...
+---   ```
+--- - Result: "/Run/My test"
+---@param mk_match_opts fun(match_exp:string):string[]
+---@param pos neotest.Tree
+---@return string[] hspec_match The hspec match for the test (see example).
+local function get_hspec_match(mk_match_opts, pos)
+  local data = pos:data()
+  if data.type == 'file' then
+    return parse_top_level_hspec_nodes(mk_match_opts, pos)
   end
-  return parse_hspec_tree(position)
+  return mk_match_opts('/' .. parse_hspec_tree(pos) .. '/')
 end
 
---- Runs a treesitter query for tests at a `neotest.Position`,
---- and if there is a test that matches <test_name>,
---- prepends any parent <describe>s to the test name.
---- Example:
----  - position.name: "My test"
----  - Hspec tests in path:
----    ```
----    describe "Run" $ do
----      it "My test" $ do
----      ...
----    ```
----  - Result: "/Run/My test"
---- @param pos table (neotest.Position) The position of the test to get the match for
---- @return string hspec_match The hspec match for the test (see example).
-local function get_hspec_match(pos)
-  local hspec_match = '/' .. parse_hspec_match(pos) .. '/'
-  vim.notify('HSpec: --match: ' .. hspec_match, vim.log.levels.INFO)
-  return hspec_match
-end
-
---- @param pos table the position of the test to get the match for
---- @return table test_opts The cabal test options for matching an hspec filter
+---@param pos neotest.Tree
+---@return table test_opts The cabal test options for matching an hspec filter
 function hspec.get_cabal_test_opts(pos)
-  return {
-    '--test-option',
-    '-m',
-    '--test-option',
-    get_hspec_match(pos),
+  local function mk_match_opts(match_exp)
+    return {
+      '--test-option',
+      '-m',
+      '--test-option',
+      match_exp,
+    }
+  end
+  local match_opts = get_hspec_match(mk_match_opts, pos)
+  return vim.list_extend(match_opts, {
     '--test-option',
     '--no-color',
     '--test-option',
     '--format=checks',
-  }
+  })
 end
 
---- @param pos neotest.Position The position of the test to get the match for
---- @return string[] test_opts The stack test options for matching an hspec filter
+---@param pos neotest.Tree
+---@return string[] test_opts The stack test options for matching an hspec filter
 function hspec.get_stack_test_opts(pos)
-  return {
+  local function mk_match_opts(match_exp)
+    return {
+      '--ta',
+      '--match "' .. match_exp .. '"',
+    }
+  end
+  local match_opts = get_hspec_match(mk_match_opts, pos)
+  return vim.list_extend(match_opts, {
     '--ta',
-    '--match "' .. get_hspec_match(pos) .. '" --no-color --format=checks',
-  }
+    '--no-color --format=checks',
+  })
 end
 
--- Get the error messages
+---Get the error messages.
+---@param raw_lines string[]
+---@param test_name string
+---@return neotest.Error[] hspec_errors
 local function get_hspec_errors(raw_lines, test_name)
   local failures_found = false
   local pos_found = false
@@ -292,43 +179,51 @@ local function get_hspec_errors(raw_lines, test_name)
   return {}
 end
 
---- Initialise an empty results table for each test node
---- in the given path. This is necessary to prevent neotest
---- from displaying parent nodes of succeeded tests as 'passed'
---- if an unrelated test has failed.
---- @param path string The test file path.
---- @return table initial_result A neotest result table with all positions initialised as empty.
-local function init_empty_result(path)
-  local init_result = {}
-  local positions = hspec.parse_positions(path)
-  if not positions then
-    logger.warn('Could not get positions to initialise result for ' .. path)
-    return init_result
-  end
-  for _, node in positions:iter_nodes() do
-    local pos = node:data()
-    if pos.type == 'test' then
-      init_result[pos.id] = {}
+---@async
+---@param context RunContext: Spec context with the following fields:
+---@param out_path string: Path to an hspec test results output file
+---@param tree neotest.Tree
+---@return neotest.Result[] results
+function hspec.parse_results(context, out_path, tree)
+  local results = {}
+
+  ---Set the status of the test and maybe its parents.
+  ---@param node neotest.Tree
+  ---@param status string The neotest status
+  ---@param errors neotest.Error[]? The errors in case of failure
+  local function set_test_statuses(node, status, errors)
+    local data = node:data()
+    if data then
+      results[data.id] = {
+        status = status,
+        errors = errors,
+      }
+      local parent = node:parent()
+      if parent and context.type == 'file' then
+        set_test_statuses(parent, status)
+      end
     end
   end
-  return init_result
-end
 
----@async
----@param context table: Spec context with the following fields:
---- - file: Absolute path to the test file
---- - pos_id: Postition ID of the test that was discovered - '<file>::"<test.name>"' [@see base.parse_positions]
---- - pos_path: Absolute path to the file containing the test (== file)
----@param out_path string: Path to an hspec test results output file
-function hspec.parse_results(context, out_path)
+  ---Set the status of the test and maybe its parents.
+  ---@param test_name string The name of the test
+  ---@param status string The neotest status
+  ---@param errors neotest.Error[]? The errors in case of failure
+  local function set_test_status(test_name, status, errors)
+    test_name = '"' .. test_name .. '"'
+    local start = tree:parent() and tree:parent() or tree
+    for _, node in start:iter_nodes() do
+      local data = node:data()
+      if data and data.name == test_name and data.type == 'test' then
+        set_test_statuses(node, status, errors)
+      end
+    end
+  end
+
   local pos_id = context.pos_id
-  local pos_path = context.pos_path
   local success, data = pcall(lib.files.read, out_path)
   if not success then
-    vim.notify('Failed to read hspec output.', vim.log.levels.ERROR)
-    return { [pos_id] = {
-      status = 'failed',
-    } }
+    return {}
   end
   local lines = vim.split(data, '\n')
   local failure_positions = {}
@@ -342,23 +237,21 @@ function hspec.parse_results(context, out_path)
       success_positions[#success_positions + 1] = succeeded
     end
   end
-  local result = init_empty_result(context.pos_path)
 
-  result[pos_id] = {
-    status = 'failed',
-  }
-  for _, pos in ipairs(failure_positions) do
-    result[pos_path .. '::"' .. pos .. '"'] = {
-      status = 'failed',
-      errors = get_hspec_errors(lines, pos),
-    }
+  local failed = { status = 'failed' }
+  local file_result = failed
+  file_result.errors = {}
+  results[pos_id] = failed
+  for _, test_name in ipairs(success_positions) do
+    set_test_status(test_name, 'passed')
   end
-  for _, pos in ipairs(success_positions) do
-    result[pos_path .. '::"' .. pos .. '"'] = {
-      status = 'passed',
-    }
+  for _, test_name in ipairs(failure_positions) do
+    local errors = get_hspec_errors(lines, test_name)
+    set_test_status(test_name, 'failed', errors)
+    vim.list_extend(file_result.errors, errors)
   end
-  return result
+  results[context.file] = file_result
+  return results
 end
 
 return hspec

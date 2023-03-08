@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Configuration option `build_tools` which allows selection of one's preferred build tool to run tests
+- Configuration option `build_tools` which allows selection of one's preferred build tool to run tests.
+### Changed
+- Improved and simplified Hspec test/namespace position discovery.
+- Improved parsing of Hspec test results.
+- Do not send a notification with Hspec `--match` expression.
+### Fixed
+- Run all top-level tests in tests of type `file` (#50).
 
 ## [0.3.0] - 2023-02-28
 ### Added
