@@ -39,7 +39,7 @@ end
 ---Select a build tool from the given list of build tools preferring the first that can be used.
 ---@param test_file_path string A test file in a project
 ---@param build_tools build_tool[] List of build tools to choose from
----@return fun(neotest.Position):neotest.RunSpec mk_command A function that builds the runner command for a position in the test file.
+---@return fun(neotest.Tree):neotest.RunSpec mk_command A function that builds the runner command for a test tree
 runner.select_build_tool = function(test_file_path, build_tools)
   -- A package always has a *.cabal file (or in rare cases just a package.yaml file).
   local package_root = lib.files.match_root_pattern('*.cabal', 'package.yaml')(test_file_path)

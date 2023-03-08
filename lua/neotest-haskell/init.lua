@@ -60,22 +60,27 @@ end
 ---@param args neotest.RunArgs
 ---@return neotest.RunSpec|nil
 function HaskellNeotestAdapter.build_spec(args)
-  local supported_types = { 'test', 'file' }
+  local supported_types = { 'test', 'namespace', 'file' }
   local tree = args and args.tree
   if not tree then
-    return nil
+    return
   end
-  local pos = args.tree:data()
-  if not vim.tbl_contains(supported_types, pos.type) then
-    return nil
+  local pos = args.tree
+  local data = pos:data()
+  if data.type == 'dir' then
+    return
   end
-  local mk_command = runner.select_build_tool(pos.path, build_tools)
+  if not vim.tbl_contains(supported_types, data.type) then
+    return
+  end
+  local mk_command = runner.select_build_tool(data.path, build_tools)
   return {
     command = mk_command(pos),
     context = {
-      file = pos.path,
-      pos_id = pos.id,
-      pos_path = pos.path,
+      file = data.path,
+      pos_id = data.id,
+      pos_path = data.path,
+      tree = pos,
     },
   }
 end
