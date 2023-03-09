@@ -193,22 +193,6 @@
         "type": "github"
       }
     },
-    "nvim-treesitter": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1678314742,
-        "narHash": "sha256-zuan44jUoalGzfdvwjfvyNUxlSjObK/odgK0N2pmCc4=",
-        "owner": "nvim-treesitter",
-        "repo": "nvim-treesitter",
-        "rev": "fc1ca10bfbdee17e29374d0d1bac8ea030539dc3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-treesitter",
-        "repo": "nvim-treesitter",
-        "type": "github"
-      }
-    },
     "plenary-nvim": {
       "flake": false,
       "locked": {
@@ -255,7 +239,6 @@
         "neotest": "neotest",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs",
-        "nvim-treesitter": "nvim-treesitter",
         "plenary-nvim": "plenary-nvim",
         "pre-commit-hooks": "pre-commit-hooks"
       }

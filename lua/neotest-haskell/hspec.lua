@@ -1,6 +1,5 @@
 local util = require('neotest-haskell.util')
 local lib = require('neotest.lib')
-local logger = require('neotest.logging')
 
 local hspec = {}
 
@@ -18,8 +17,9 @@ local describe_query = [[
   ) (#eq? @func_name "describe"))) @namespace.definition
 ]]
 
--- @param path: Test file path
--- @type neotest.Tree
+---@async
+---@param path string Test file path
+---@return neotest.Tree
 function hspec.parse_positions(path)
   local tests_query = describe_query
     .. [[

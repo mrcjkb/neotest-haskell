@@ -2,7 +2,8 @@ local lib = require('neotest.lib')
 
 local util = {}
 
--- Convenience wrapper around neotest.lib.treesitter.parse_positions
+---Convenience wrapper around neotest.lib.treesitter.parse_positions
+---@async
 ---@param path string Test file path
 ---@param query string tree-sitter query
 ---@param opts table? parse options

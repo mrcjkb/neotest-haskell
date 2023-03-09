@@ -24,11 +24,6 @@
       flake = false;
     };
 
-    nvim-treesitter = {
-      url = "github:nvim-treesitter/nvim-treesitter";
-      flake = false;
-    };
-
     neotest = {
       url = "github:nvim-neotest/neotest";
       flake = false;
@@ -40,7 +35,6 @@
     nixpkgs,
     neovim-nightly-overlay,
     pre-commit-hooks,
-    nvim-treesitter,
     plenary-nvim,
     neotest,
     ...
@@ -56,7 +50,7 @@
     perSystem = nixpkgs.lib.genAttrs supportedSystems;
     pkgsFor = system: import nixpkgs {inherit system;};
 
-    ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) self plenary-nvim nvim-treesitter neotest;};
+    ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) self plenary-nvim neotest;};
     nvim-plugin-overlay = import ./nix/nvim-plugin-overlay.nix {
       inherit name;
       self = ./.;

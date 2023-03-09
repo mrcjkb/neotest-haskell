@@ -1,6 +1,6 @@
 module Fix2.FixtureSpec (spec) where
 
-import Test.Hspec 
+import Test.Hspec
 import Test.Hspec.QuickCheck
 
 import Lib (twoOf)
@@ -13,5 +13,5 @@ spec = describe "twoOf successful tests" $ do
     length (twoOf (x :: Int)) `shouldBe` 2
 
   describe "twoOf failing tests" $
-    it "retruns one of the thing" $
+    it "returns one of the thing" $
       twoOf (3 :: Integer) `shouldBe` [3]

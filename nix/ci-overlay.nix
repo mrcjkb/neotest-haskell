@@ -2,7 +2,6 @@
 {
   self,
   plenary-nvim,
-  nvim-treesitter,
   neotest,
 }: final: prev:
 with final.lib;
@@ -12,11 +11,6 @@ with final.stdenv; let
   plenary-plugin = final.pkgs.vimUtils.buildVimPluginFrom2Nix {
     name = "plenary.nvim";
     src = plenary-nvim;
-  };
-
-  treesitter-plugin = final.pkgs.vimUtils.buildVimPluginFrom2Nix {
-    name = "treesitter-nvim";
-    src = nvim-treesitter;
   };
 
   neotest-plugin = final.pkgs.vimUtils.buildVimPluginFrom2Nix {
@@ -39,7 +33,7 @@ with final.stdenv; let
           start = [
             final.neotest-haskell-dev
             plenary-plugin
-            treesitter-plugin
+            (final.pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [p.haskell]))
             neotest-plugin
           ];
         };
