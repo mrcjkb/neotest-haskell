@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -14,13 +19,13 @@
       flake = false;
     };
 
-    packer-nvim = {
-      url = "github:wbthomason/packer.nvim";
+    plenary-nvim = {
+      url = "github:nvim-lua/plenary.nvim";
       flake = false;
     };
 
-    plenary-nvim = {
-      url = "github:nvim-lua/plenary.nvim";
+    nvim-treesitter = {
+      url = "github:nvim-treesitter/nvim-treesitter";
       flake = false;
     };
 
@@ -33,8 +38,9 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    neovim-nightly-overlay,
     pre-commit-hooks,
-    packer-nvim,
+    nvim-treesitter,
     plenary-nvim,
     neotest,
     ...
@@ -50,7 +56,7 @@
     perSystem = nixpkgs.lib.genAttrs supportedSystems;
     pkgsFor = system: import nixpkgs {inherit system;};
 
-    ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) packer-nvim plenary-nvim neotest;};
+    ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) self plenary-nvim nvim-treesitter neotest;};
     nvim-plugin-overlay = import ./nix/nvim-plugin-overlay.nix {
       inherit name;
       self = ./.;
@@ -105,7 +111,11 @@
     checks = perSystem (system: let
       checkPkgs = import nixpkgs {
         inherit system;
-        overlays = [ci-overlay];
+        overlays = [
+          ci-overlay
+          neovim-nightly-overlay.overlay
+          nvim-plugin-overlay
+        ];
       };
     in {
       formatting = pre-commit-check-for system;
