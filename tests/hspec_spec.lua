@@ -20,7 +20,8 @@ local function read_file(filename)
   return content
 end
 
--- XXX: Hack to allow testing parse_positions synchronously
+lib.files.read = read_file
+
 lib.treesitter.parse_positions = function(file_path, query, opts)
   opts = opts or {}
   local content = read_file(file_path)
@@ -53,7 +54,7 @@ end
 
 describe('hspec', function()
   describe('parse positions', function()
-    it('simple cabal fixture', function()
+    it('unqualified imports 0', function()
       local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
       local filename = test_file.filename
       local result = parse_positions_sync(filename)
@@ -71,7 +72,7 @@ describe('hspec', function()
       assert_has_position(result, test_2_1_pos_id)
     end)
   end)
-  it('unqualified imports', function()
+  it('unqualified imports 1', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
     local filename = test_file.filename
     local result = parse_positions_sync(filename)
@@ -87,6 +88,29 @@ describe('hspec', function()
     assert_has_position(result, ns_2_pos_id)
     local test_2_1_pos_id = ns_2_pos_id .. '::"returns two of the thing"'
     assert_has_position(result, test_2_1_pos_id)
+  end)
+  it('unqualified imports 2', function()
+    local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+    local filename = test_file.filename
+    local result = parse_positions_sync(filename)
+    local filename_pos_id = filename
+    assert_has_position(result, filename_pos_id)
+    local ns_1_pos_id = filename_pos_id .. '::"Prelude.head"'
+    assert_has_position(result, ns_1_pos_id)
+    local test_1_1_pos_id = ns_1_pos_id .. '::"Returns the first element of a list"'
+    assert_has_position(result, test_1_1_pos_id)
+    local test_1_2_pos_id = ns_1_pos_id .. '::"Returns the first element of an arbitrary list"'
+    assert_has_position(result, test_1_2_pos_id)
+    local ns_2_pos_id = ns_1_pos_id .. '::"Empty list"'
+    assert_has_position(result, ns_2_pos_id)
+    local test_2_1_pos_id = ns_2_pos_id .. '::"Throws on empty list"'
+    assert_has_position(result, test_2_1_pos_id)
+    local ns_3_pos_id = filename_pos_id .. '::"Prelude.tail"'
+    assert_has_position(result, ns_3_pos_id)
+    local ns_4_pos_id = ns_3_pos_id .. '::"Single element list"'
+    assert_has_position(result, ns_4_pos_id)
+    local test_4_1_pos_id = ns_4_pos_id .. '::"Returns the empty list"'
+    assert_has_position(result, test_4_1_pos_id)
   end)
   it('qualified imports', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
@@ -104,5 +128,52 @@ describe('hspec', function()
     assert_has_position(result, ns_2_pos_id)
     local test_2_1_pos_id = ns_2_pos_id .. '::"returns one of the thing"'
     assert_has_position(result, test_2_1_pos_id)
+  end)
+
+  describe('parse results', function()
+    it('test file - failure', function()
+      local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+      local filename = test_file.filename
+      local tree = parse_positions_sync(filename)
+      local test_result_file = Path:new(test_cwd .. '/fixtures/results/test_file_fail.txt')
+      local result_filename = test_result_file.filename
+      local context = {
+        file = filename,
+        pos_id = filename,
+        type = 'file',
+      }
+      local results = hspec.parse_results(context, result_filename, tree)
+      local failure = {
+        status = 'failed',
+        errors = {
+          {
+            message = 'Falsifiable (after 1 test):\n0\n[]\nexpected: 5\nbut got: 0\n',
+          },
+        },
+      }
+      assert.same(failure, results[filename])
+      assert.same({
+        status = 'failed',
+      }, results[filename .. '::"Prelude.head"'])
+      assert.same({
+        status = 'passed',
+      }, results[filename .. '::"Prelude.head"::"Empty list"'])
+      assert.same({
+        status = 'passed',
+      }, results[filename .. '::"Prelude.head"::"Empty list"::"Throws on empty list"'])
+      assert.same({
+        status = 'passed',
+      }, results[filename .. '::"Prelude.head"::"Returns the first element of a list"'])
+      assert.same({
+        status = 'passed',
+      }, results[filename .. '::"Prelude.head"::"Returns the first element of a list"'])
+      assert.same(failure, results[filename .. '::"Prelude.head"::"Returns the first element of an arbitrary list"'])
+      assert.same({
+        status = 'passed',
+      }, results[filename .. '::"Prelude.tail"'])
+      assert.same({
+        status = 'passed',
+      }, results[filename .. '::"Prelude.tail"::"Single element list"::"Returns the empty list"'])
+    end)
   end)
 end)

@@ -179,6 +179,18 @@ local function get_hspec_errors(raw_lines, test_name)
   return {}
 end
 
+---@param tree neotest.Tree
+---@return neotest.Tree file_root
+local function get_file_root(tree)
+  for _, node in tree:iter_parents() do
+    local data = node and node:data()
+    if data and not vim.tbl_contains({ 'test', 'namespace' }, data.type) then
+      return node
+    end
+  end
+  return tree
+end
+
 ---@async
 ---@param context RunContext: Spec context with the following fields:
 ---@param out_path string: Path to an hspec test results output file
@@ -211,8 +223,7 @@ function hspec.parse_results(context, out_path, tree)
   ---@param errors neotest.Error[]? The errors in case of failure
   local function set_test_status(test_name, status, errors)
     test_name = '"' .. test_name .. '"'
-    local start = tree:parent() and tree:parent() or tree
-    for _, node in start:iter_nodes() do
+    for _, node in get_file_root(tree):iter_nodes() do
       local data = node:data()
       if data and data.name == test_name and data.type == 'test' then
         set_test_statuses(node, status, errors)

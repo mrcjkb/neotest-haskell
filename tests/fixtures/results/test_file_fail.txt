@@ -1,0 +1,42 @@
+
+Build profile: -w ghc-9.2.6 -O1
+In order, the following will be built (use -v for more details):
+ - subpackage1-0.1.0.0 (test:subpackage1-spec) (first run)
+Preprocessing test suite 'subpackage1-spec' for subpackage1-0.1.0.0..
+Building test suite 'subpackage1-spec' for subpackage1-0.1.0.0..
+Running 1 test suites...
+Test suite subpackage1-spec: RUNNING...
+
+Prelude.head
+  Returns the first element of a list [✔]
+  Returns the first element of an arbitrary list [✘]
+  Empty list
+    Throws on empty list [✔]
+Prelude.tail
+  Single element list
+    Returns the empty list [✔]
+      +++ OK, passed 100 tests.
+
+Failures:
+
+  test/Fix1/FixtureSpec.hs:18:19:
+  1) Prelude.head Returns the first element of an arbitrary list
+       Falsifiable (after 1 test):
+         0
+         []
+       expected: 5
+        but got: 0
+
+  To rerun use: --match "/Prelude.head/Returns the first element of an arbitrary list/"
+
+Randomized with seed 1251313702
+
+Finished in 0.0007 seconds
+4 examples, 1 failure
+
+Test suite subpackage1-spec: FAIL
+Test suite logged to:
+/home/mrcjk/tmp/multi-package/dist-newstyle/build/x86_64-linux/ghc-9.2.6/subpackage1-0.1.0.0/t/subpackage1-spec/test/subpackage1-0.1.0.0-subpackage1-spec.log
+0 of 1 test suites (0 of 1 test cases) passed.
+Error: cabal: Tests failed for test:subpackage1-spec from subpackage1-0.1.0.0.
+
