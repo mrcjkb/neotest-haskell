@@ -1,34 +1,7 @@
 local Path = require('plenary.path')
 
-local lib = require('neotest.lib')
-local async = require('neotest.async')
-
--- XXX: Hack to allow testing parse_positions synchronously
-async.util.scheduler = function()
-  print('scheduler disabled')
-end
-
----@param filename string
----@return string content
-local function read_file(filename)
-  local content
-  local f = io.open(filename, 'r')
-  assert(f ~= nil)
-  content = f:read('*a')
-  f:close()
-  assert(content ~= nil)
-  return content
-end
-
-lib.files.read = read_file
-
-lib.treesitter.parse_positions = function(file_path, query, opts)
-  opts = opts or {}
-  local content = read_file(file_path)
-  return lib.treesitter.parse_positions_from_string(file_path, content, query, opts)
-end
-
 local hspec = require('neotest-haskell.hspec')
+local async = require('plenary.async.tests')
 
 local test_cwd = os.getenv('TEST_CWD')
 
@@ -54,7 +27,7 @@ end
 
 describe('hspec', function()
   describe('parse positions', function()
-    it('unqualified imports 0', function()
+    async.it('unqualified imports 0', function()
       local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
       local filename = test_file.filename
       local result = parse_positions_sync(filename)
@@ -72,7 +45,7 @@ describe('hspec', function()
       assert_has_position(result, test_2_1_pos_id)
     end)
   end)
-  it('unqualified imports 1', function()
+  async.it('unqualified imports 1', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
     local filename = test_file.filename
     local result = parse_positions_sync(filename)
@@ -89,7 +62,7 @@ describe('hspec', function()
     local test_2_1_pos_id = ns_2_pos_id .. '::"returns two of the thing"'
     assert_has_position(result, test_2_1_pos_id)
   end)
-  it('unqualified imports 2', function()
+  async.it('unqualified imports 2', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
     local filename = test_file.filename
     local result = parse_positions_sync(filename)
@@ -112,7 +85,7 @@ describe('hspec', function()
     local test_4_1_pos_id = ns_4_pos_id .. '::"Returns the empty list"'
     assert_has_position(result, test_4_1_pos_id)
   end)
-  it('qualified imports', function()
+  async.it('qualified imports', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
     local filename = test_file.filename
     local result = parse_positions_sync(filename)
@@ -131,7 +104,7 @@ describe('hspec', function()
   end)
 
   describe('parse results', function()
-    it('test file - failure', function()
+    async.it('test faulure', function()
       local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
       local filename = test_file.filename
       local tree = parse_positions_sync(filename)
