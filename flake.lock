@@ -19,6 +19,22 @@
     "flake-compat_2": {
       "flake": false,
       "locked": {
+        "lastModified": 1673956053,
+        "narHash": "sha256-4gtG9iQuiKITOjNQQeQIpoIB6b16fm+504Ch3sNKLd8=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "35bb57c0c8d8b62bbfd284272c928ceb64ddbde9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "flake-compat_3": {
+      "flake": false,
+      "locked": {
         "lastModified": 1668681692,
         "narHash": "sha256-Ht91NGdewz8IQLtWZ9LCeNXMSXHUss+9COoqu6JLmXU=",
         "owner": "edolstra",
@@ -33,6 +49,21 @@
       }
     },
     "flake-utils": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_2": {
       "locked": {
         "lastModified": 1667395993,
         "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
@@ -84,6 +115,52 @@
         "type": "github"
       }
     },
+    "neovim-flake": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "neovim-nightly-overlay",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "contrib",
+        "lastModified": 1678340821,
+        "narHash": "sha256-08+zYDO+gDbp7IvKfJKNYoKLC8Z1FBYaRQDcrhks+jE=",
+        "owner": "neovim",
+        "repo": "neovim",
+        "rev": "3ad845882413944a8d6ed3bd9da68c6b4cee0afb",
+        "type": "github"
+      },
+      "original": {
+        "dir": "contrib",
+        "owner": "neovim",
+        "repo": "neovim",
+        "type": "github"
+      }
+    },
+    "neovim-nightly-overlay": {
+      "inputs": {
+        "flake-compat": "flake-compat_2",
+        "neovim-flake": "neovim-flake",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1678349739,
+        "narHash": "sha256-+Pt0UMMld9tXVeZVi4VyXwKjG7HhU0T1DKR+eJyY4Ag=",
+        "owner": "nix-community",
+        "repo": "neovim-nightly-overlay",
+        "rev": "833d858f16d41d6aad76d901c4bd208fbed448aa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "neovim-nightly-overlay",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1672997035,
@@ -116,30 +193,14 @@
         "type": "github"
       }
     },
-    "packer-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1671356027,
-        "narHash": "sha256-IIokssVOGFf5/pZQ4gRCPV5ktWPDfCCKJb5Ux1DrKok=",
-        "owner": "wbthomason",
-        "repo": "packer.nvim",
-        "rev": "dac4088c70f4337c6c40d1a2751266a324765797",
-        "type": "github"
-      },
-      "original": {
-        "owner": "wbthomason",
-        "repo": "packer.nvim",
-        "type": "github"
-      }
-    },
     "plenary-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1673030871,
-        "narHash": "sha256-7EsquOLB7gfN2itfGFJZYKwEXBmP0xMKEOdyyjOweHg=",
+        "lastModified": 1676797549,
+        "narHash": "sha256-z5JHuQcF1EvySnRBywl6EOrp8aRO0nd2dnkXJg2ge58=",
         "owner": "nvim-lua",
         "repo": "plenary.nvim",
-        "rev": "9d81624fbcedd3dd43b38d7e13a1e7b3f873d8cd",
+        "rev": "253d34830709d690f013daf2853a9d21ad7accab",
         "type": "github"
       },
       "original": {
@@ -150,8 +211,8 @@
     },
     "pre-commit-hooks": {
       "inputs": {
-        "flake-compat": "flake-compat_2",
-        "flake-utils": "flake-utils",
+        "flake-compat": "flake-compat_3",
+        "flake-utils": "flake-utils_2",
         "gitignore": "gitignore",
         "nixpkgs": [
           "nixpkgs"
@@ -176,8 +237,8 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "neotest": "neotest",
+        "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs",
-        "packer-nvim": "packer-nvim",
         "plenary-nvim": "plenary-nvim",
         "pre-commit-hooks": "pre-commit-hooks"
       }

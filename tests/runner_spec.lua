@@ -10,7 +10,7 @@ local simple_stack_test_file_only_package_yaml =
 local multi_package_stack_test_file =
   Path:new('tests/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
 
-describe('base', function()
+describe('runner', function()
   describe('select_build_tool', function()
     describe('simple project without stack.yaml', function()
       it('uses cabal if it is in the list of build tools', function()

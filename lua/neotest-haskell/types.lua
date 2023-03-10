@@ -1,7 +1,16 @@
 ---@alias build_tool 'cabal' | 'stack'
 
+---@alias test_run_type 'file' | 'test' | 'namespece' | 'dir'
+
+---@class RunContext
+---@field file string
+---@field pos_id string
+---@field type test_run_type
+
 -- XXX: Below: Neotest types (copied from Neotest)
 -- TODO: Use neotest as nix flake input and add it to .luarc.json
+
+---@alias neotest.Tree table
 
 ---@class neotest.Position
 ---@field id string

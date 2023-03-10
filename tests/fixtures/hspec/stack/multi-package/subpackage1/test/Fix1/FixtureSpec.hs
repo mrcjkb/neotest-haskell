@@ -1,20 +1,30 @@
 module Fix1.FixtureSpec
-  ( module Test.Hspec -- Exported to validate that the correct module name is detected
-  , spec
+  ( spec
   ) where
-  
-import           Lib
+
 import           Test.Hspec
-import           Test.Hspec.QuickCheck
+import Test.Hspec.QuickCheck ( prop )
+import           Control.Exception              ( evaluate )
+import Lib ()
 
 spec :: Spec
-spec = describe "oneOf successful tests" $ do
-  it "returns one of the thing" $ oneOf (23 :: Integer) `shouldBe` [23]
+spec = spec1 >> spec2
 
-  prop "always has length 1" $ \x ->
-    length (oneOf (x :: Int)) `shouldBe` 1
+spec1 :: Spec
+spec1 = describe "Prelude.head" $ do
+  it "Returns the first element of a list" $ head [23 ..] `shouldBe` (23 :: Int)
 
-  describe "twoOf failing tests" $
-    it "retruns two of the thing" $
-      oneOf (3 :: Integer) `shouldBe` [3, 3]
+  prop "Returns the first element of an arbitrary list" $ \x xs ->
+    head (x : xs) `shouldBe` (5 :: Int)
+
+  describe "Empty list" $
+    it "Throws on empty list"
+      $             evaluate (head [])
+      `shouldThrow` anyException
+
+spec2 :: Spec
+spec2 = describe "Prelude.tail" $ do
+  describe "Single element list" $
+    prop "Returns the empty list" $ \x ->
+      tail [x :: Int] `shouldBe` []
 

@@ -11,9 +11,7 @@ local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 HaskellNeotestAdapter.root = function(file)
   local multi_package_or_stack_project_root_directory =
     lib.files.match_root_pattern('cabal.project', 'stack.yaml')(file)
-  if not multi_package_or_stack_project_root_directory then
-    return lib.files.match_root_pattern('*.cabal', 'package.yaml')(file)
-  end
+  return multi_package_or_stack_project_root_directory or lib.files.match_root_pattern('*.cabal', 'package.yaml')(file)
 end
 
 ---@type fun(name:string):boolean
@@ -60,39 +58,44 @@ end
 ---@param args neotest.RunArgs
 ---@return neotest.RunSpec|nil
 function HaskellNeotestAdapter.build_spec(args)
-  local supported_types = { 'test', 'file' }
+  local supported_types = { 'test', 'namespace', 'file' }
   local tree = args and args.tree
   if not tree then
-    return nil
+    return
   end
-  local pos = args.tree:data()
-  if not vim.tbl_contains(supported_types, pos.type) then
-    return nil
+  local pos = args.tree
+  local data = pos:data()
+  if data.type == 'dir' then
+    return
   end
-  local mk_command = runner.select_build_tool(pos.path, build_tools)
+  if not vim.tbl_contains(supported_types, data.type) then
+    return
+  end
+  local mk_command = runner.select_build_tool(data.path, build_tools)
   return {
     command = mk_command(pos),
+    ---@type RunContext
     context = {
-      file = pos.path,
-      pos_id = pos.id,
-      pos_path = pos.path,
+      file = data.path,
+      pos_id = data.id,
+      type = data.type,
     },
   }
 end
 
 ---@async
 ---@param spec neotest.RunSpec
----@return neotest.Result[]|nil
-function HaskellNeotestAdapter.results(spec, result)
+---@param strategy_result neotest.StrategyResult
+---@param tree neotest.Tree
+---@return neotest.Result[] results
+function HaskellNeotestAdapter.results(spec, strategy_result, tree)
   local pos_id = spec.context.pos_id
-  if result.code == 0 then
+  if strategy_result.code == 0 then
     return {
-      [pos_id] = {
-        status = 'passed',
-      },
+      [pos_id] = { status = 'passed' },
     }
   end
-  return hspec.parse_results(spec.context, result.output)
+  return hspec.parse_results(spec.context, strategy_result.output, tree)
 end
 
 setmetatable(HaskellNeotestAdapter, {

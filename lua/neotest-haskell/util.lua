@@ -2,10 +2,15 @@ local lib = require('neotest.lib')
 
 local util = {}
 
--- Convenience wrapper around neotest.lib.treesitter.parse_positions
----@return table positions neotest.Tree
-util.parse_positions = function(path, query)
-  return lib.treesitter.parse_positions(path, query, { nested_namespaces = true, nested_tests = true })
+---Convenience wrapper around neotest.lib.treesitter.parse_positions
+---@async
+---@param path string Test file path
+---@param query string tree-sitter query
+---@param opts table? parse options
+---@return neotest.Tree positions
+util.parse_positions = function(path, query, opts)
+  opts = vim.tbl_extend('keep', opts or {}, { nested_namespaces = true, nested_tests = false })
+  return lib.treesitter.parse_positions(path, query, opts)
 end
 
 ---@type table<string,string>
