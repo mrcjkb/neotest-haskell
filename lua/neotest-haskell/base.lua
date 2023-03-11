@@ -1,5 +1,6 @@
 local base = {}
 
+---@async
 ---@param file_path string
 ---@return boolean
 base.is_test_file = function(file_path)
@@ -9,9 +10,11 @@ base.is_test_file = function(file_path)
   return vim.endswith(file_path, 'Spec.hs') or vim.endswith(file_path, 'Test.hs') or vim.endswith(file_path, 'Tests.hs')
 end
 
----@param name string
+---Filter directories when searching for test files
+---@async
+---@param name string Name of directory
 ---@return boolean
-base.filter_dir = function(name)
+base.filter_dir = function(name, _, _)
   return name ~= 'dist-newstile' and name ~= '.stack-work'
 end
 
