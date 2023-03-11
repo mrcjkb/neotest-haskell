@@ -17,6 +17,7 @@ local describe_query = [[
   ) (#eq? @func_name "describe"))) @namespace.definition
 ]]
 
+---Parse the positions in a test file.
 ---@async
 ---@param path string Test file path
 ---@return neotest.Tree
@@ -50,18 +51,19 @@ function hspec.parse_positions(path)
   return util.parse_positions(path, tests_query)
 end
 
--- @param test_name: The test name to format
--- @return the name, formatted for a hspec --match expression
--- @type string
+---Format a test name for an hspec filter expression.
+---@param test_name string The test name to format.
+---@return string formatted_name Formatted for a hspec --match expression.
 local function hspec_format(test_name)
   -- TODO: Escape '/' characters?
-  return test_name:gsub('"', '')
+  local formatted_name = test_name:gsub('"', '')
+  return formatted_name
 end
 
---- Parses the top level hspec node in a file
---- @param mk_match_opts fun(match_exp:string):string[]
---- @param pos neotest.Tree
---- @return string[] match_opts The hspec match options
+---Parses hspec --match filter expressions for the top-level test positions.
+---@param mk_match_opts fun(match_exp:string):string[] Function that constructs hspec --match expression options for a test.
+---@param pos neotest.Tree The position to build the --match filter expression from.
+---@return string[] match_opts The hspec --match expression options.
 local function parse_top_level_hspec_nodes(mk_match_opts, pos)
   local match_opts = {}
   for _, node in pos:iter_nodes() do
@@ -77,9 +79,9 @@ local function parse_top_level_hspec_nodes(mk_match_opts, pos)
   return match_opts
 end
 
---- Recursively parses the hspec tree, starting at a child node, up to its parents.
---- @param pos neotest.Tree The position of the test to get the match for
---- @return string hspec_match_path The hspec match path for the test
+---Parses the hspec --match expression from a position, starting at a child node, up to its parents.
+---@param pos neotest.Tree The position of the test or namespace to get the match for.
+---@return string hspec_match_path The hspec --match expression for the test.
 local function parse_hspec_tree(pos)
   local data = pos:data()
   local result = hspec_format(data.name)
@@ -106,9 +108,9 @@ end
 ---     ...
 ---   ```
 --- - Result: "/Run/My test"
----@param mk_match_opts fun(match_exp:string):string[]
----@param pos neotest.Tree
----@return string[] hspec_match The hspec match for the test (see example).
+---@param mk_match_opts fun(match_exp:string):string[] Function that constructs hspec --match expression options for a test.
+---@param pos neotest.Tree The position to build the --match filter expression from.
+---@return string[] hspec_match The hspec match expression for the test or namespace (see example).
 local function get_hspec_match(mk_match_opts, pos)
   local data = pos:data()
   if data.type == 'file' then
@@ -117,8 +119,8 @@ local function get_hspec_match(mk_match_opts, pos)
   return mk_match_opts('/' .. parse_hspec_tree(pos) .. '/')
 end
 
----@param pos neotest.Tree
----@return table test_opts The cabal test options for matching an hspec filter
+---@param pos neotest.Tree The position.
+---@return table test_opts The Cabal test options for matching an hspec filter.
 function hspec.get_cabal_test_opts(pos)
   local function mk_match_opts(match_exp)
     return {
@@ -137,8 +139,8 @@ function hspec.get_cabal_test_opts(pos)
   })
 end
 
----@param pos neotest.Tree
----@return string[] test_opts The stack test options for matching an hspec filter
+---@param pos neotest.Tree The position.
+---@return string[] test_opts The Stack test options for matching an hspec filter.
 function hspec.get_stack_test_opts(pos)
   local function mk_match_opts(match_exp)
     return {
@@ -153,10 +155,10 @@ function hspec.get_stack_test_opts(pos)
   })
 end
 
----Get the error messages.
----@param raw_lines string[]
----@param test_name string
----@return neotest.Error[] hspec_errors
+---Get the errors from a build output.
+---@param raw_lines string[] The raw build output lines.
+---@param test_name string The name of the test.
+---@return neotest.Error[] hspec_errors The errors.
 local function get_hspec_errors(raw_lines, test_name)
   local failures_found = false
   local pos_found = false
@@ -179,8 +181,9 @@ local function get_hspec_errors(raw_lines, test_name)
   return {}
 end
 
----@param tree neotest.Tree
----@return neotest.Tree file_root
+---Get the file root from a test tree.
+---@param tree neotest.Tree The test tree.
+---@return neotest.Tree file_root The file root position.
 local function get_file_root(tree)
   for _, node in tree:iter_parents() do
     local data = node and node:data()
@@ -192,11 +195,12 @@ local function get_file_root(tree)
 end
 
 ---@async
----@param context RunContext: Spec context with the following fields:
----@param out_path string: Path to an hspec test results output file
----@param tree neotest.Tree
----@return neotest.Result[] results
+---@param context RunContext The run context.
+---@param out_path string Path to an hspec test results output file.
+---@param tree neotest.Tree The test tree at the position that was run.
+---@return table<string, neotest.Result> results
 function hspec.parse_results(context, out_path, tree)
+  ---@type table<string, neotest.Result>
   local results = {}
 
   ---Set the status of the test and maybe its parents.
@@ -218,9 +222,9 @@ function hspec.parse_results(context, out_path, tree)
   end
 
   ---Set the status of the test and maybe its parents.
-  ---@param test_name string The name of the test
-  ---@param status string The neotest status
-  ---@param errors neotest.Error[]? The errors in case of failure
+  ---@param test_name string The name of the test.
+  ---@param status string The neotest status.
+  ---@param errors neotest.Error[]? The errors in case of failure.
   local function set_test_status(test_name, status, errors)
     test_name = '"' .. test_name .. '"'
     for _, node in get_file_root(tree):iter_nodes() do
@@ -249,6 +253,7 @@ function hspec.parse_results(context, out_path, tree)
     end
   end
 
+  ---@type neotest.Result
   local failed = { status = 'failed' }
   local file_result = failed
   file_result.errors = {}

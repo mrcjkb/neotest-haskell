@@ -97,7 +97,7 @@ end
 ---@param spec neotest.RunSpec
 ---@param strategy_result neotest.StrategyResult
 ---@param tree neotest.Tree
----@return neotest.Result[] results
+---@return table<string, neotest.Result> results
 function HaskellNeotestAdapter.results(spec, strategy_result, tree)
   local pos_id = spec.context.pos_id
   if strategy_result.code == 0 then
