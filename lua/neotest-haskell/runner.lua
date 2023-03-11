@@ -33,7 +33,7 @@ local function get_package_name(package_root)
       return package_name
     end
   end
-  -- XXX: Here, we assume the package is named the same as the directory is in.
+  -- XXX: Here, we assume the package is named the same as the directory.
   -- This is usually the case, but doesn't have to be.
   -- A more stable option would be to parse the package.yaml.
   return vim.fn.fnamemodify(package_root, ':t')
