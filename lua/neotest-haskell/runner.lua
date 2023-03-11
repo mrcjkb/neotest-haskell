@@ -27,9 +27,11 @@ end
 ---@return string package_name The assumed package name.
 local function get_package_name(package_root)
   for _, package_file_path in ipairs(async.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
-    local package_file_name = vim.fn.fnamemodify(package_file_path, ':t')
-    local package_name = package_file_name:gsub('.cabal', '')
-    return package_name
+    local package_file_name = package_file_path and vim.fn.fnamemodify(package_file_path, ':t')
+    local package_name = package_file_name and package_file_name:gsub('.cabal', '')
+    if package_name then
+      return package_name
+    end
   end
   -- XXX: Here, we assume the package is named the same as the directory is in.
   -- This is usually the case, but doesn't have to be.

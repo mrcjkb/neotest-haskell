@@ -70,6 +70,53 @@ with final.stdenv; let
         nvim --headless --noplugin -c "PlenaryBustedDirectory tests {nvim_cmd = 'nvim'}"
       '';
     };
+
+  lints = mkDerivation {
+    name = "neotest-haskell-lints";
+
+    src = self;
+
+    phases = [
+      "unpackPhase"
+      "buildPhase"
+      "checkPhase"
+    ];
+
+    doCheck = true;
+
+    buildInputs = with final; [
+      lua51Packages.luacheck
+      sumneko-lua-language-server
+    ];
+
+    buildPhase = ''
+      mkdir -p $out
+      cp -r lua $out/lua
+      cp -r tests $out/tests
+      cp .luacheckrc $out
+      cp .luarc.json $out
+    '';
+
+    checkPhase = ''
+      export HOME=$(realpath .)
+      cd $out
+      luacheck lua
+      luacheck tests
+      lua-language-server --check "$out/lua" \
+        --configpath "$out/.luarc.json" \
+        --logpath "$out" \
+        --checklevel="Warning"
+      if [[ -f $out/check.json ]]; then
+        cat $out/check.json
+        exit 1
+      fi
+    '';
+  };
 in {
-  ci = mkPlenaryTest {name = "ci";};
+  nvim-stable-test = mkPlenaryTest {name = "nvim-stable-test";};
+  nvim-nightly-test = mkPlenaryTest {
+    name = "nvim-nightly-test";
+    nvim = nvim-nightly;
+  };
+  inherit lints;
 }

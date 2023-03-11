@@ -113,7 +113,12 @@
       };
     in {
       formatting = pre-commit-check-for system;
-      inherit (checkPkgs) ci;
+      inherit
+        (checkPkgs)
+        nvim-stable-test
+        nvim-nightly-test
+        lints
+        ;
     });
   };
 }
