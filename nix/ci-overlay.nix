@@ -18,6 +18,8 @@ with final.stdenv; let
     src = neotest;
   };
 
+  nvim-treesitter-plugin = final.pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [p.haskell]);
+
   mkPlenaryTest = {
     nvim ? final.neovim-unwrapped,
     name,
@@ -33,7 +35,7 @@ with final.stdenv; let
           start = [
             final.neotest-haskell-dev
             plenary-plugin
-            (final.pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [p.haskell]))
+            nvim-treesitter-plugin
             neotest-plugin
           ];
         };
@@ -89,12 +91,32 @@ with final.stdenv; let
       sumneko-lua-language-server
     ];
 
-    buildPhase = ''
+    buildPhase = let
+      luarc = final.writeText ".luarc.json" ''
+        {
+          "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+          "Lua.diagnostics.globals": [
+            "vim",
+            "describe",
+            "it",
+            "assert"
+          ],
+          "Lua.diagnostics.libraryFiles": "Disable",
+          "Lua.workspace.library": [
+            "${plenary-plugin}/lua",
+            "${nvim-treesitter-plugin}/lua",
+            "${neotest-plugin}/lua"
+          ],
+          "Lua.runtime.version": "LuaJIT"
+        }
+      '';
+    in ''
       mkdir -p $out
       cp -r lua $out/lua
       cp -r tests $out/tests
       cp .luacheckrc $out
-      cp .luarc.json $out
+      cp ${luarc} $out/.luarc.json
+      cat $out/.luarc.json
     '';
 
     checkPhase = ''
