@@ -89,6 +89,7 @@ with final.stdenv; let
     buildInputs = with final; [
       lua51Packages.luacheck
       sumneko-lua-language-server
+      jq
     ];
 
     buildPhase = let
@@ -102,6 +103,9 @@ with final.stdenv; let
             "assert"
           ],
           "Lua.diagnostics.libraryFiles": "Disable",
+          "Lua.diagnostics.disable": [
+            "duplicate-set-field",
+          ],
           "Lua.workspace.library": [
             "${plenary-plugin}/lua",
             "${nvim-treesitter-plugin}/lua",
@@ -116,7 +120,6 @@ with final.stdenv; let
       cp -r tests $out/tests
       cp .luacheckrc $out
       cp ${luarc} $out/.luarc.json
-      cat $out/.luarc.json
     '';
 
     checkPhase = ''
@@ -132,8 +135,6 @@ with final.stdenv; let
       if [[ -f $out/check.json ]]; then
         echo "+++++++++++++++ lua-language-server diagnostics +++++++++++++++"
         cat $out/check.json
-        echo "+++++++++++++++++++ lua-language-server log +++++++++++++++++++"
-        cat $out/*.log
         exit 1
       fi
     '';
