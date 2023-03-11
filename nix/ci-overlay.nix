@@ -126,10 +126,14 @@ with final.stdenv; let
       luacheck tests
       lua-language-server --check "$out/lua" \
         --configpath "$out/.luarc.json" \
+        --loglevel="trace" \
         --logpath "$out" \
         --checklevel="Warning"
       if [[ -f $out/check.json ]]; then
+        echo "+++++++++++++++ lua-language-server diagnostics +++++++++++++++"
         cat $out/check.json
+        echo "+++++++++++++++++++ lua-language-server log +++++++++++++++++++"
+        cat $out/*.log
         exit 1
       fi
     '';
