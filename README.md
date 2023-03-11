@@ -181,17 +181,8 @@ stack test my_package --ta "--match \"/Prelude.head/\""
 
 ## Troubleshooting
 
-#### Minimal config
+To run a health check, run `:checkhealth neotest-haskell` in Neovim.
 
-To troubleshoot this plugin with a minimal config in a temporary directory, use [minimal.lua](./tests/minimal.lua).
-
-```console
-mkdir -p /tmp/minimal/
-# The first start will install the plugins into the temporary directory
-NVIM_DATA_MINIMAL=/tmp/minimal nvim -u minimal.lua
-# Quit Neovim and start it up again with the plugins loaded
-NVIM_DATA_MINIMAL=/tmp/minimal nvim -u minimal.lua
-```
 
 ## Recommendations
 
@@ -199,6 +190,7 @@ Here are some other plugins I recommend for Haskell development:
 
 * [mrcjkb/haskell-tools.nvim](https://github.com/MrcJkb/haskell-tools.nvim): Toolset to improve the Haskell experience in Neovim
 * [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle): Hoogle search
+
 
 ## Contributors ✨
 
