@@ -2,7 +2,7 @@ local lib = require('neotest.lib')
 
 local util = {}
 
----Convenience wrapper around neotest.lib.treesitter.parse_positions
+---Convenience wrapper around neotest.lib.treesitter.parse_positions.
 ---@async
 ---@param path string Test file path
 ---@param query string tree-sitter query
@@ -13,6 +13,7 @@ util.parse_positions = function(path, query, opts)
   return lib.treesitter.parse_positions(path, query, opts)
 end
 
+---Table mapping special characters in `string.match` to their escaped characters.
 ---@type table<string,string>
 local lua_match_matches = {
   ['^'] = '%^',
@@ -30,7 +31,7 @@ local lua_match_matches = {
   ['\0'] = '%z',
 }
 
----Escape special string.match characters
+---Escape special string.match characters.
 ---@param str string
 ---@return string escaped_string
 util.escape = function(str)
