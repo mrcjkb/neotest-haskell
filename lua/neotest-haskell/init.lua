@@ -7,17 +7,21 @@ local lib = require('neotest.lib')
 ---@type neotest.Adapter
 local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 
----@type fun(file:string):(string|nil)
-HaskellNeotestAdapter.root = function(file)
-  local multi_package_or_stack_project_root_directory =
-    lib.files.match_root_pattern('cabal.project', 'stack.yaml')(file)
-  return multi_package_or_stack_project_root_directory or lib.files.match_root_pattern('*.cabal', 'package.yaml')(file)
+---Find the project root directory given a current directory to work from.
+---Should no root be found, the adapter can still be used in a non-project context if a test file matches.
+---@async
+---@param dir string @Directory to treat as cwd
+---@return string|nil @Absolute root dir of test suite
+---@see neotest.Adapter
+function HaskellNeotestAdapter.root(dir)
+  local multi_package_or_stack_project_root_directory = lib.files.match_root_pattern('cabal.project', 'stack.yaml')(dir)
+  return multi_package_or_stack_project_root_directory or lib.files.match_root_pattern('*.cabal', 'package.yaml')(dir)
 end
 
 ---@type fun(name:string):boolean
 local is_test_file = base.is_test_file
 
----@type fun(name:string):boolean
+---@type fun(name:string, _:string, _:string):boolean
 local filter_dir = base.filter_dir
 
 ---@type build_tool[]
@@ -35,26 +39,32 @@ local function validate_build_tools(bts)
   return true
 end
 
----@type fun(name:string):boolean
+---@async
+---@param file_path string
+---@return boolean
+---@see neotest.Adapter
 function HaskellNeotestAdapter.is_test_file(file_path)
   return is_test_file(file_path)
 end
 
----@type fun(name:string):boolean
+---Filter directories when searching for test files
+---@async
+---@return boolean
+---@see neotest.Adapter
 function HaskellNeotestAdapter.filter_dir(...)
   return filter_dir(...)
 end
 
+---Given a file path, parse all the tests within it.
 ---@async
----@param path string The file path
----@return neotest.Tree|nil pos
-function HaskellNeotestAdapter.discover_positions(path)
-  local pos = hspec.parse_positions(path)
+---@param file_path string Absolute file path
+---@return neotest.Tree | nil
+function HaskellNeotestAdapter.discover_positions(file_path)
+  local pos = hspec.parse_positions(file_path)
   logger.debug('Found positions: ' .. vim.inspect(pos))
   return pos
 end
 
----@async
 ---@param args neotest.RunArgs
 ---@return neotest.RunSpec|nil
 function HaskellNeotestAdapter.build_spec(args)
@@ -87,7 +97,7 @@ end
 ---@param spec neotest.RunSpec
 ---@param strategy_result neotest.StrategyResult
 ---@param tree neotest.Tree
----@return neotest.Result[] results
+---@return table<string, neotest.Result> results
 function HaskellNeotestAdapter.results(spec, strategy_result, tree)
   local pos_id = spec.context.pos_id
   if strategy_result.code == 0 then
