@@ -18,3 +18,9 @@ spec = describe "oneOf successful tests" $ do
     it "returns two of the thing" $
       oneOf (3 :: Integer) `shouldBe` [3, 3]
 
+  xit "skipped it" pending
+
+  xprop "skipped prop" pending
+
+  xdescribe "skipped describe" $
+    it "implicitly skipped it" pending

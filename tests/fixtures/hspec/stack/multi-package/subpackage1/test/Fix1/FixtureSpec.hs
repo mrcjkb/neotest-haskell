@@ -12,7 +12,7 @@ spec = spec1 >> spec2
 
 spec1 :: Spec
 spec1 = describe "Prelude.head" $ do
-  it "Returns the first element of a list" $ head [23 ..] `shouldBe` (23 :: Int)
+  xit "Returns the first element of a list" $ head [23 ..] `shouldBe` (23 :: Int)
 
   prop "Returns the first element of an arbitrary list" $ \x xs ->
     head (x : xs) `shouldBe` (5 :: Int)

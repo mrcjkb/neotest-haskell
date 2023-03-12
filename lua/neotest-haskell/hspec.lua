@@ -8,13 +8,13 @@ local describe_query = [[
   (_ (_ (exp_apply
     (exp_name (variable) @func_name)
     (exp_literal) @namespace.name
-  ) (#eq? @func_name "describe"))) @namespace.definition
+  ) (#any-of? @func_name "describe" "xdescribe"))) @namespace.definition
 
   ;; describe (qualified)
   (_ (_ (exp_apply
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @namespace.name
-  ) (#eq? @func_name "describe"))) @namespace.definition
+  ) (#any-of? @func_name "describe" "xdescribe"))) @namespace.definition
 ]]
 
 ---Parse the positions in a test file.
@@ -24,29 +24,17 @@ local describe_query = [[
 function hspec.parse_positions(path)
   local tests_query = describe_query
     .. [[
-  ;; it (unqualified)
+  ;; unqualified
   ((exp_apply
     (exp_name (variable) @func_name)
     (exp_literal) @test.name
-  ) (#eq? @func_name "it")) @test.definition
+  ) (#any-of? @func_name "it" "xit" "prop" "xprop")) @test.definition
 
-  ;; it (qualified)
+  ;; qualified
   ((exp_apply
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @test.name
-  ) (#eq? @func_name "it")) @test.definition
-
-  ;; prop (unqualified)
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  ) (#eq? @func_name "prop")) @test.definition
-
-  ;; prop (qualified)
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  ) (#eq? @func_name "prop")) @test.definition
+  ) (#any-of? @func_name "it" "xit" "prop" "xprop")) @test.definition
   ]]
   return util.parse_positions(path, tests_query)
 end
@@ -243,13 +231,17 @@ function hspec.parse_results(context, out_path, tree)
   local lines = vim.split(data, '\n')
   local failure_positions = {}
   local success_positions = {}
+  local skipped_positions = {}
   for _, line in ipairs(lines) do
     local failed = line:match('%s*(.*)%s.✘')
     local succeeded = line:match('%s*(.*)%s.✔')
+    local skipped = line:match('%s*(.*)%s%[‐%]')
     if failed then
       failure_positions[#failure_positions + 1] = failed
     elseif succeeded then
       success_positions[#success_positions + 1] = succeeded
+    elseif skipped then
+      skipped_positions[#skipped_positions + 1] = skipped
     end
   end
 
@@ -260,6 +252,9 @@ function hspec.parse_results(context, out_path, tree)
   results[pos_id] = failed
   for _, test_name in ipairs(success_positions) do
     set_test_status(test_name, 'passed')
+  end
+  for _, test_name in ipairs(skipped_positions) do
+    set_test_status(test_name, 'skipped')
   end
   for _, test_name in ipairs(failure_positions) do
     local errors = get_hspec_errors(lines, test_name)
