@@ -8,7 +8,8 @@ Running 1 test suites...
 Test suite subpackage1-spec: RUNNING...
 
 Prelude.head
-  Returns the first element of a list [✔]
+  Returns the first element of a list [‐]
+    # PENDING: No reason given
   Returns the first element of an arbitrary list [✘]
   Empty list
     Throws on empty list [✔]

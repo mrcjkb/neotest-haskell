@@ -15,3 +15,10 @@ spec = H.describe "twoOf successful tests" $ do
   H.describe "twoOf failing tests" $
     H.it "returns one of the thing" $
       twoOf (3 :: Integer) `H.shouldBe` [3]
+
+  H.xit "skipped it" H.pending
+
+  Q.xprop "skipped prop" H.pending
+
+  H.xdescribe "skipped describe" $
+    H.it "implicitly skipped it" H.pending
