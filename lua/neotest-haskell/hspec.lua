@@ -3,7 +3,12 @@ local lib = require('neotest.lib')
 
 local hspec = {}
 
-local describe_query = [[
+---Parse the positions in a test file.
+---@async
+---@param path string Test file path
+---@return neotest.Tree
+function hspec.parse_positions(path)
+  local tests_query = [[
   ;; describe (unqualified)
   (_ (_ (exp_apply
     (exp_name (variable) @func_name)
@@ -15,15 +20,6 @@ local describe_query = [[
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @namespace.name
   ) (#any-of? @func_name "describe" "xdescribe"))) @namespace.definition
-]]
-
----Parse the positions in a test file.
----@async
----@param path string Test file path
----@return neotest.Tree
-function hspec.parse_positions(path)
-  local tests_query = describe_query
-    .. [[
   ;; unqualified
   ((exp_apply
     (exp_name (variable) @func_name)
