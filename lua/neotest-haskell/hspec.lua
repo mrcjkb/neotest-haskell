@@ -20,13 +20,14 @@ function hspec.parse_positions(path)
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @namespace.name
   ) (#any-of? @func_name "describe" "xdescribe"))) @namespace.definition
-  ;; unqualified
+
+  ;; test (unqualified)
   ((exp_apply
     (exp_name (variable) @func_name)
     (exp_literal) @test.name
   ) (#any-of? @func_name "it" "xit" "prop" "xprop")) @test.definition
 
-  ;; qualified
+  ;; test (qualified)
   ((exp_apply
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @test.name
