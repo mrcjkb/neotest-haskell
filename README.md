@@ -28,7 +28,8 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 * Supports [Cabal](https://www.haskell.org/cabal/) (single/multi-package) projects.
 * Supports [Stack](https://docs.haskellstack.org/en/stable/) (single/multi-package) projects.
 * Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using tree-sitter.
-* Parses Hspec test results and displays error messages as virtual text.
+* Parses [Tasty](https://hackage.haskell.org/package/tasty) `--pattern` filters for the cursor's position using tree-sitter.
+* Parses test results and displays error messages as diagnostics.
 
 https://user-images.githubusercontent.com/12857160/224197351-8ca64bd5-8d89-4689-8c40-18d1d018896e.mp4
 
@@ -170,10 +171,9 @@ stack test my_package --ta "--match \"/Prelude.head/\""
 ### Testing frameworks
 
 - [x] [hspec](https://hackage.haskell.org/package/hspec)
-- [ ] [tasty](https://hackage.haskell.org/package/tasty)
+- [x] [tasty](https://hackage.haskell.org/package/tasty)
 - [ ] [sydtest](https://github.com/NorfairKing/sydtest)
 - [ ] [yesod-test](https://hackage.haskell.org/package/yesod-test)
-- [ ] Extract interface so that users can add their own adapters
 
 ### Other
 - [ ] Provide `nvim-dap` configuration

@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for the [`tasty`](https://hackage.haskell.org/package/tasty) test framework.
+- Tested with:
+  * `tasty-hspec`
+  * `tasty-hunit`
+  * `tasty-quickcheck`
+  * `tasty-smallcheck`
+  * `tasty-hedgehog`
+  * `tasty-leancheck`
+  * `tasty-expected-failure`
+  * `tasty-program`
+  * `tasty-wai`
+
 ## [0.5.0] - 2023-03-12
 ### Added
 - Health checks (`:help checkhealth`).
