@@ -1,6 +1,5 @@
 local base = require('neotest-haskell.base')
 local runner = require('neotest-haskell.runner')
-local hspec = require('neotest-haskell.hspec')
 local logger = require('neotest.logging')
 local lib = require('neotest.lib')
 
