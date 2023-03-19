@@ -1,4 +1,3 @@
-local hspec = require('neotest-haskell.hspec')
 local async = require('neotest.async')
 local lib = require('neotest.lib')
 local Path = require('plenary.path')
@@ -39,11 +38,27 @@ local function get_package_name(package_root)
   return vim.fn.fnamemodify(package_root, ':t')
 end
 
----Select a build tool from the given list of build tools preferring the first that can be used.
+---Select a test framework from the given list of test frameworks, preferring the first that can be used.
+---@param test_file_path string A test file in a project.
+---@param frameworks test_framework[] List of build tools to choose from.
+---@return TestFrameworkHandler handler
+function runner.select_framework(test_file_path, frameworks)
+  for _, framework in pairs(frameworks) do
+    ---@type TestFrameworkHandler
+    local handler = require('neotest-haskell.' .. framework)
+    if handler.can_handle(test_file_path) then
+      return handler
+    end
+  end
+  error('Could not find a test framework handler for ' .. test_file_path)
+end
+
+---Select a build tool from the given list of build tools, preferring the first that can be used.
+---@param handler TestFrameworkHandler
 ---@param test_file_path string A test file in a project.
 ---@param build_tools build_tool[] List of build tools to choose from.
 ---@return fun(neotest.Tree):neotest.RunSpec mk_command A function that builds the runner command using the selected build tool for a test tree.
-function runner.select_build_tool(test_file_path, build_tools)
+function runner.select_build_tool(handler, test_file_path, build_tools)
   -- A package always has a *.cabal file (or in rare cases just a package.yaml file).
   local package_root = lib.files.match_root_pattern('*.cabal', 'package.yaml')(test_file_path)
   if not package_root then
@@ -63,10 +78,10 @@ function runner.select_build_tool(test_file_path, build_tools)
   for _, build_tool in pairs(build_tools) do
     selected_build_tool = build_tool
     if build_tool == 'cabal' and directory_contains_file_matching(package_root, { '*.cabal' }) then
-      get_test_opts = hspec.get_cabal_test_opts
+      get_test_opts = handler.get_cabal_test_opts
       break
     elseif build_tool == 'stack' and project_dir_with_stack_yaml then
-      get_test_opts = hspec.get_stack_test_opts
+      get_test_opts = handler.get_stack_test_opts
       break
     end
   end

@@ -1,0 +1,124 @@
+Build profile: -w ghc-9.2.7 -O1
+In order, the following will be built (use -v for more details):
+ - tasty-pkg-0.1.0.0 (test:tasty-pkg-spec) (first run)
+Preprocessing test suite 'tasty-pkg-spec' for tasty-pkg-0.1.0.0..
+Building test suite 'tasty-pkg-spec' for tasty-pkg-0.1.0.0..
+Running 1 test suites...
+Test suite tasty-pkg-spec: RUNNING...
+Tests
+  Properties
+    (checked by SmallCheck)
+      sort == sort . reverse:              OK (0.04s)
+        1333 tests completed
+      Fermat's little theorem:             OK
+        11 tests completed
+      Fermat's last theorem:               FAIL
+        there exist 0 0 0 3 such that
+          condition is false
+        Use -p '(((((($0~/(checked by SmallCheck)/||/(checked by QuickCheck)/)||/Unit tests/)||/Hspec specs/)||/Hedgehog tests/)||/LeanCheck tests/)||/Compilation with GHC/)&&/(checked by SmallCheck).Fermat'\''s last theorem/' to rerun this test only.
+    (checked by QuickCheck)
+      sort == sort . reverse:              OK
+        +++ OK, passed 100 tests.
+      Fermat's little theorem:             OK
+        +++ OK, passed 100 tests.
+      Fermat's last theorem:               OK
+        +++ OK, passed 100 tests; 188 discarded.
+    Hedgehog tests
+      reverse involutive:                  OK
+          ✓ <interactive> passed 100 tests.
+            empty  3% ▌···················
+            small 30% ██████··············
+            large 70% ██████████████······
+      badReverse involutive fails:         FAIL (expected)
+          ✗ <interactive> failed at test/Spec.hs:114:11
+            after 4 tests and 2 shrinks.
+            shrink path: 4:b2
+          
+                ┏━━ test/Spec.hs ━━━
+            112 ┃ test_involutive :: (H.MonadTest m, Eq a, Show a) => (a -> a) -> a -> m ()
+            113 ┃ test_involutive f x =
+            114 ┃   f (f x) H.=== x
+                ┃   ^^^^^^^^^^^^^^^
+                ┃   │ ━━━ Failed (- lhs) (+ rhs) ━━━
+                ┃   │ - ""
+                ┃   │ + "a"
+            
+                ┏━━ test/Spec.hs ━━━
+            130 ┃ prop_badReverse_involutive :: H.Property
+            131 ┃ prop_badReverse_involutive =
+            132 ┃   H.property $ do
+            133 ┃     xs <- H.forAll genAlphaList
+                ┃     │ "a"
+            134 ┃     test_involutive badReverse xs
+          
+            This failure can be reproduced by running:
+            > recheckAt (Seed 4837801145650675177 10645240303553193207) "4:b2" <property>
+          
+        Use '--pattern "$NF ~ /badReverse involutive fails/" --hedgehog-replay "4:b2 Seed 4837801145650675177 10645240303553193207"' to reproduce from the command-line.
+         (expected failure)
+      reverse involutive:                  OK
+          ✓ prop_reverse_involutive passed 100 tests.
+            empty  6% █▏··················
+            small 29% █████▊··············
+            large 71% ██████████████▏·····
+      badReverse involutive fails:         FAIL (expected)
+          ✗ prop_badReverse_involutive failed at test/Spec.hs:114:11
+            after 2 tests and 1 shrink.
+            shrink path: 2:b
+          
+                ┏━━ test/Spec.hs ━━━
+            112 ┃ test_involutive :: (H.MonadTest m, Eq a, Show a) => (a -> a) -> a -> m ()
+            113 ┃ test_involutive f x =
+            114 ┃   f (f x) H.=== x
+                ┃   ^^^^^^^^^^^^^^^
+                ┃   │ ━━━ Failed (- lhs) (+ rhs) ━━━
+                ┃   │ - ""
+                ┃   │ + "a"
+            
+                ┏━━ test/Spec.hs ━━━
+            130 ┃ prop_badReverse_involutive :: H.Property
+            131 ┃ prop_badReverse_involutive =
+            132 ┃   H.property $ do
+            133 ┃     xs <- H.forAll genAlphaList
+                ┃     │ "a"
+            134 ┃     test_involutive badReverse xs
+          
+            This failure can be reproduced by running:
+            > recheckAt (Seed 12553811219522284594 13351885368767996551) "2:b" prop_badReverse_involutive
+          
+        Use '--pattern "$NF ~ /badReverse involutive fails/" --hedgehog-replay "2:b Seed 12553811219522284594 13351885368767996551"' to reproduce from the command-line.
+         (expected failure)
+    LeanCheck tests
+      sort == sort . reverse:              OK
+        +++ OK, passed 200 tests.
+      Fermat's little theorem:             OK
+        +++ OK, passed 200 tests.
+      Fermat's last theorem:               FAIL
+        *** Failed! Falsifiable (after 71 tests):
+        0 0 0 3
+        Use -p '(((((($0~/(checked by SmallCheck)/||/(checked by QuickCheck)/)||/Unit tests/)||/Hspec specs/)||/Hedgehog tests/)||/LeanCheck tests/)||/Compilation with GHC/)&&/LeanCheck tests.Fermat'\''s last theorem/' to rerun this test only.
+  Unit tests
+    List comparison (different length):    OK
+    List comparison (same length):         FAIL
+      test/Spec.hs:66:
+      expected: LT
+       but got: GT
+      Use -p '(((((($0~/(checked by SmallCheck)/||/(checked by QuickCheck)/)||/Unit tests/)||/Hspec specs/)||/Hedgehog tests/)||/LeanCheck tests/)||/Compilation with GHC/)&&/List comparison (same length)/' to rerun this test only.
+  Hspec specs
+    Prelude.head
+      returns the first element of a list: FAIL
+        # PENDING: No reason given
+        Use -p '(((((($0~/(checked by SmallCheck)/||/(checked by QuickCheck)/)||/Unit tests/)||/Hspec specs/)||/Hedgehog tests/)||/LeanCheck tests/)||/Compilation with GHC/)&&/returns the first element of a list/' to rerun this test only.
+  Compilation with GHC
+    Foo:                                   FAIL
+      Program /run/current-system/sw/bin/ghc failed with code 1
+      Use -p '(((((($0~/(checked by SmallCheck)/||/(checked by QuickCheck)/)||/Unit tests/)||/Hspec specs/)||/Hedgehog tests/)||/LeanCheck tests/)||/Compilation with GHC/)&&/Foo/' to rerun this test only.
+
+5 out of 17 tests failed (0.11s)
+
+Test suite tasty-pkg-spec: FAIL
+Test suite logged to:
+/home/mrcjk/tmp/multi-package/dist-newstyle/build/x86_64-linux/ghc-9.2.7/tasty-pkg-0.1.0.0/t/tasty-pkg-spec/test/tasty-pkg-0.1.0.0-tasty-pkg-spec.log
+0 of 1 test suites (0 of 1 test cases) passed.
+Error: cabal: Tests failed for test:tasty-pkg-spec from tasty-pkg-0.1.0.0.
+

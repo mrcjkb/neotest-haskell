@@ -1,0 +1,42 @@
+cabal-version: 1.12
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           tasty-pkg
+version:        0.1.0.0
+build-type:     Simple
+
+library
+  exposed-modules:
+      Lib
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+test-suite tasty-pkg-spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  ghc-options: -main-is Spec
+  build-depends:
+      base >=4.7 && <5
+    , tasty
+    , tasty-smallcheck
+    , tasty-quickcheck
+    , tasty-hedgehog
+    , tasty-leancheck
+    , tasty-hunit
+    , tasty-pkg
+    , tasty-hspec
+    , tasty-expected-failure
+    , tasty-program
+    , tasty-wai
+    , hspec
+    , hedgehog
+    , http-types
+    , wai
+  default-language: Haskell2010

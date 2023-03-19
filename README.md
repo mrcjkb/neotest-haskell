@@ -25,10 +25,11 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 ## Features
 
-* Supports [Cabal](https://www.haskell.org/cabal/) (single/multi-package) projects.
-* Supports [Stack](https://docs.haskellstack.org/en/stable/) (single/multi-package) projects.
-* Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using tree-sitter.
-* Parses Hspec test results and displays error messages as virtual text.
+- [x] Supports [Cabal](https://www.haskell.org/cabal/) (single/multi-package) projects.
+- [x] Supports [Stack](https://docs.haskellstack.org/en/stable/) (single/multi-package) projects.
+- [x] Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using tree-sitter.
+- [x] Parses [Tasty](https://hackage.haskell.org/package/tasty) `--pattern` filters for the cursor's position using tree-sitter.
+- [x] Parses test results and displays error messages as diagnostics.
 
 https://user-images.githubusercontent.com/12857160/224197351-8ca64bd5-8d89-4689-8c40-18d1d018896e.mp4
 
@@ -74,13 +75,26 @@ require('neotest').setup {
   -- ...,
   adapters = {
     -- ...,
+    require('neotest-haskell')
+  }
+}
+```
+
+You can also pass a config to the setup. The following are the defaults:
+
+```lua
+require('neotest').setup {
+  adapters = {
     require('neotest-haskell') {
       -- Default: Use stack if possible and then try cabal
       build_tools = { 'stack', 'cabal' },
+      -- Default: Check for tasty first and then try hspec
+      frameworks = { 'tasty', 'hspec' },
     },
   }
 }
 ```
+
 > **Note**
 >
 > If you were to use `build_tools = { 'cabal', 'stack' }`, then cabal will almost
@@ -88,8 +102,6 @@ require('neotest').setup {
 
 
 ## Examples
-
-### Hspec
 
 ```haskell
 module FixtureSpec ( spec ) where
@@ -170,10 +182,9 @@ stack test my_package --ta "--match \"/Prelude.head/\""
 ### Testing frameworks
 
 - [x] [hspec](https://hackage.haskell.org/package/hspec)
-- [ ] [tasty](https://hackage.haskell.org/package/tasty)
+- [x] [tasty](https://hackage.haskell.org/package/tasty)
 - [ ] [sydtest](https://github.com/NorfairKing/sydtest)
 - [ ] [yesod-test](https://hackage.haskell.org/package/yesod-test)
-- [ ] Extract interface so that users can add their own adapters
 
 ### Other
 - [ ] Provide `nvim-dap` configuration

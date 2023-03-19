@@ -21,23 +21,21 @@ local function assert_has_position(tree, pos_id)
   assert(has_position(tree, pos_id), 'Position ' .. pos_id .. ' not found in tree ' .. vim.inspect(tree))
 end
 
-local function parse_positions_sync(filename)
-  return hspec.parse_positions(filename)
-end
+local parse_positions = hspec.parse_positions
 
 describe('hspec', function()
   describe('parse positions', function()
     async.it('unqualified imports 0', function()
       local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
       local filename = test_file.filename
-      local result = parse_positions_sync(filename)
-      local filename_pos_id = filename
-      assert_has_position(result, filename_pos_id)
-      local ns_1_pos_id = filename_pos_id .. '::"section 1"'
+      local result = parse_positions(filename)
+      local file_pos_id = filename
+      assert_has_position(result, file_pos_id)
+      local ns_1_pos_id = file_pos_id .. '::"section 1"'
       assert_has_position(result, ns_1_pos_id)
       assert_has_position(result, ns_1_pos_id .. '::"is a tautology"')
       assert_has_position(result, ns_1_pos_id .. '::"assumes that 2 is 1"')
-      local ns_2_pos_id = filename_pos_id .. '::"section 2"'
+      local ns_2_pos_id = file_pos_id .. '::"section 2"'
       assert_has_position(result, ns_2_pos_id)
       assert_has_position(result, ns_2_pos_id .. '::"only contains one test"')
     end)
@@ -45,7 +43,7 @@ describe('hspec', function()
   async.it('unqualified imports 1', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
     local filename = test_file.filename
-    local result = parse_positions_sync(filename)
+    local result = parse_positions(filename)
     local filename_pos_id = filename
     assert_has_position(result, filename_pos_id)
     local ns_1_pos_id = filename_pos_id .. '::"oneOf successful tests"'
@@ -63,7 +61,7 @@ describe('hspec', function()
   async.it('unqualified imports 2', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
     local filename = test_file.filename
-    local result = parse_positions_sync(filename)
+    local result = parse_positions(filename)
     local filename_pos_id = filename
     assert_has_position(result, filename_pos_id)
     local ns_1_pos_id = filename_pos_id .. '::"Prelude.head"'
@@ -82,7 +80,7 @@ describe('hspec', function()
   async.it('qualified imports', function()
     local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
     local filename = test_file.filename
-    local result = parse_positions_sync(filename)
+    local result = parse_positions(filename)
     local filename_pos_id = filename
     assert_has_position(result, filename_pos_id)
     local ns_1_pos_id = filename_pos_id .. '::"twoOf successful tests"'
@@ -102,8 +100,8 @@ describe('hspec', function()
     async.it('test faulure', function()
       local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
       local filename = test_file.filename
-      local tree = parse_positions_sync(filename)
-      local test_result_file = Path:new(test_cwd .. '/fixtures/results/test_file_fail.txt')
+      local tree = parse_positions(filename)
+      local test_result_file = Path:new(test_cwd .. '/fixtures/results/hspec_test_file_fail.txt')
       local result_filename = test_result_file.filename
       local context = {
         file = filename,
