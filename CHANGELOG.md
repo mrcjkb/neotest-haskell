@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2023-03-19
 ### Added
 - Support for the [`tasty`](https://hackage.haskell.org/package/tasty) test framework.
 - Tested with:
