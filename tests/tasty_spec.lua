@@ -1,144 +1,107 @@
 local Path = require('plenary.path')
 
-local hspec = require('neotest-haskell.hspec')
+local tasty = require('neotest-haskell.tasty')
+local has_position = require('neotest-haskell.position').has_position
 local async = require('plenary.async.tests')
 
 local test_cwd = os.getenv('TEST_CWD')
-
----@param tree neotest.Tree
----@param pos_id string
-local function has_position(tree, pos_id)
-  for _, node in tree:iter_nodes() do
-    local data = node:data()
-    if data.id == pos_id then
-      return true
-    end
-  end
-  return false
-end
 
 local function assert_has_position(tree, pos_id)
   assert(has_position(tree, pos_id), 'Position ' .. pos_id .. ' not found in tree ' .. vim.inspect(tree))
 end
 
-local function parse_positions_sync(filename)
-  return hspec.parse_positions(filename)
-end
+local parse_positions = tasty.parse_positions
 
-describe('hspec', function()
-  describe('parse positions', function()
-    async.it('unqualified imports 0', function()
-      local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
-      local filename = test_file.filename
-      local result = parse_positions_sync(filename)
-      local filename_pos_id = filename
-      assert_has_position(result, filename_pos_id)
-      local ns_1_pos_id = filename_pos_id .. '::"section 1"'
-      assert_has_position(result, ns_1_pos_id)
-      assert_has_position(result, ns_1_pos_id .. '::"is a tautology"')
-      assert_has_position(result, ns_1_pos_id .. '::"assumes that 2 is 1"')
-      local ns_2_pos_id = filename_pos_id .. '::"section 2"'
-      assert_has_position(result, ns_2_pos_id)
-      assert_has_position(result, ns_2_pos_id .. '::"only contains one test"')
-    end)
-  end)
-  async.it('unqualified imports 1', function()
-    local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
-    local filename = test_file.filename
-    local result = parse_positions_sync(filename)
-    local filename_pos_id = filename
-    assert_has_position(result, filename_pos_id)
-    local ns_1_pos_id = filename_pos_id .. '::"oneOf successful tests"'
-    assert_has_position(result, ns_1_pos_id)
-    assert_has_position(result, ns_1_pos_id .. '::"returns one of the thing"')
-    assert_has_position(result, ns_1_pos_id .. '::"always has length 1"')
-    local ns_2_pos_id = ns_1_pos_id .. '::"oneOf failing tests"'
-    assert_has_position(result, ns_2_pos_id)
-    assert_has_position(result, ns_2_pos_id .. '::"returns two of the thing"')
-    assert_has_position(result, ns_1_pos_id .. '::"skipped it"')
-    assert_has_position(result, ns_1_pos_id .. '::"skipped prop"')
-    local ns_3_pos_id = ns_1_pos_id .. '::"skipped describe"'
-    assert_has_position(result, ns_3_pos_id .. '::"implicitly skipped it"')
-  end)
-  async.it('unqualified imports 2', function()
-    local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
-    local filename = test_file.filename
-    local result = parse_positions_sync(filename)
-    local filename_pos_id = filename
-    assert_has_position(result, filename_pos_id)
-    local ns_1_pos_id = filename_pos_id .. '::"Prelude.head"'
-    assert_has_position(result, ns_1_pos_id)
-    assert_has_position(result, ns_1_pos_id .. '::"Returns the first element of a list"')
-    assert_has_position(result, ns_1_pos_id .. '::"Returns the first element of an arbitrary list"')
-    local ns_2_pos_id = ns_1_pos_id .. '::"Empty list"'
-    assert_has_position(result, ns_2_pos_id)
-    assert_has_position(result, ns_2_pos_id .. '::"Throws on empty list"')
-    local ns_3_pos_id = filename_pos_id .. '::"Prelude.tail"'
-    assert_has_position(result, ns_3_pos_id)
-    local ns_4_pos_id = ns_3_pos_id .. '::"Single element list"'
-    assert_has_position(result, ns_4_pos_id)
-    assert_has_position(result, ns_4_pos_id .. '::"Returns the empty list"')
-  end)
-  async.it('qualified imports', function()
-    local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
-    local filename = test_file.filename
-    local result = parse_positions_sync(filename)
-    local filename_pos_id = filename
-    assert_has_position(result, filename_pos_id)
-    local ns_1_pos_id = filename_pos_id .. '::"twoOf successful tests"'
-    assert_has_position(result, ns_1_pos_id)
-    assert_has_position(result, ns_1_pos_id .. '::"returns two of the thing"')
-    assert_has_position(result, ns_1_pos_id .. '::"always has length 2"')
-    local ns_2_pos_id = ns_1_pos_id .. '::"twoOf failing tests"'
-    assert_has_position(result, ns_2_pos_id)
-    assert_has_position(result, ns_2_pos_id .. '::"returns one of the thing"')
-    assert_has_position(result, ns_1_pos_id .. '::"skipped it"')
-    assert_has_position(result, ns_1_pos_id .. '::"skipped prop"')
-    local ns_3_pos_id = ns_1_pos_id .. '::"skipped describe"'
-    assert_has_position(result, ns_3_pos_id .. '::"implicitly skipped it"')
+local test_file = Path:new(test_cwd .. '/fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
+local test_filename = test_file.filename
+
+describe('tasty', function()
+  async.it('parse positions', function()
+    local result = parse_positions(test_filename)
+    local file_pos_id = test_filename
+    assert_has_position(result, file_pos_id)
+    local smallcheck_ns = test_filename .. '::"(checked by SmallCheck)"'
+    assert_has_position(result, smallcheck_ns)
+    assert_has_position(result, smallcheck_ns .. '::"sort == sort . reverse"')
+    assert_has_position(result, smallcheck_ns .. '::"Fermat\'s little theorem"')
+    assert_has_position(result, smallcheck_ns .. '::"Fermat\'s last theorem"')
+    local quickcheck_ns = test_filename .. '::"(checked by QuickCheck)"'
+    assert_has_position(result, quickcheck_ns)
+    assert_has_position(result, quickcheck_ns .. '::"sort == sort . reverse"')
+    assert_has_position(result, quickcheck_ns .. '::"Fermat\'s little theorem"')
+    assert_has_position(result, quickcheck_ns .. '::"Fermat\'s last theorem"')
+    local unit_ns = test_filename .. '::"Unit tests"'
+    assert_has_position(result, unit_ns)
+    assert_has_position(result, unit_ns .. '::"List comparison (different length)"')
+    assert_has_position(result, unit_ns .. '::"List comparison (same length)"')
+    local hspec_ns = test_filename .. '::"Hspec specs"'
+    assert_has_position(result, hspec_ns)
+    assert_has_position(result, hspec_ns .. '::"Prelude.head"')
+    assert_has_position(result, hspec_ns .. '::"Prelude.head"::"returns the first element of a list"')
+    local hedgehog_ns = test_filename .. '::"Hedgehog tests"'
+    assert_has_position(result, hedgehog_ns)
+    assert_has_position(result, hedgehog_ns .. '::"reverse involutive"')
+    assert_has_position(result, hedgehog_ns .. '::"badReverse involutive fails"')
+    local leancheck_ns = test_filename .. '::"LeanCheck tests"'
+    assert_has_position(result, leancheck_ns)
+    assert_has_position(result, leancheck_ns .. '::"sort == sort . reverse"')
+    assert_has_position(result, leancheck_ns .. '::"Fermat\'s little theorem"')
+    assert_has_position(result, leancheck_ns .. '::"Fermat\'s last theorem"')
+    local program_ns = test_filename .. '::"Compilation with GHC"'
+    assert_has_position(result, program_ns)
+    assert_has_position(result, program_ns .. '::"Foo"')
+    local wai_ns = test_filename .. '::"Tasty-Wai Tests"'
+    assert_has_position(result, wai_ns)
+    assert_has_position(result, wai_ns .. '::"Hello to World"')
+    assert_has_position(result, wai_ns .. '::"Echo to thee"')
+    assert_has_position(result, wai_ns .. '::"Echo to thee (json)"')
+    assert_has_position(result, wai_ns .. '::"Will die!"')
   end)
 
   describe('parse results', function()
     async.it('test faulure', function()
-      local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
-      local filename = test_file.filename
-      local tree = parse_positions_sync(filename)
-      local test_result_file = Path:new(test_cwd .. '/fixtures/results/test_file_fail.txt')
+      local tree = parse_positions(test_filename)
+      local test_result_file = Path:new(test_cwd .. '/fixtures/results/tasty_test_file_fail.txt')
       local result_filename = test_result_file.filename
       local context = {
-        file = filename,
-        pos_id = filename,
+        file = test_filename,
+        pos_id = test_filename,
         type = 'file',
       }
-      local results = hspec.parse_results(context, result_filename, tree)
-      local failure = {
+      local results = tasty.parse_results(context, result_filename, tree)
+      assert.same('failed', results[test_filename].status)
+      assert.same({
+        status = 'passed',
+      }, results[test_filename .. '::"(checked by SmallCheck)"::"sort == sort . reverse"'])
+      assert.same({
+        status = 'passed',
+      }, results[test_filename .. '::"(checked by SmallCheck)"::"Fermat\'s little theorem"'])
+      assert.same({
         status = 'failed',
         errors = {
           {
-            message = 'Falsifiable (after 1 test):\n0\n[]\nexpected: 5\nbut got: 0\n',
+            message = 'there exist 0 0 0 3 such that\ncondition is false',
           },
         },
-      }
-      assert.same(failure, results[filename])
-      assert.same({
-        status = 'failed',
-      }, results[filename .. '::"Prelude.head"'])
+      }, results[test_filename .. '::"(checked by SmallCheck)"::"Fermat\'s last theorem"'])
       assert.same({
         status = 'passed',
-      }, results[filename .. '::"Prelude.head"::"Empty list"'])
+      }, results[test_filename .. '::"(checked by QuickCheck)"::"Fermat\'s little theorem"'])
+      assert.same('failed', results[test_filename .. '::"Hedgehog tests"::"badReverse involutive fails"'].status)
       assert.same({
         status = 'passed',
-      }, results[filename .. '::"Prelude.head"::"Empty list"::"Throws on empty list"'])
+      }, results[test_filename .. '::"Hedgehog tests"::"reverse involutive"'])
       assert.same({
         status = 'skipped',
-      }, results[filename .. '::"Prelude.head"::"Returns the first element of a list"'])
-      assert.same(failure, results[filename .. '::"Prelude.head"::"Returns the first element of an arbitrary list"'])
+      }, results[test_filename .. '::"Hspec specs"::"Prelude.head"::"returns the first element of a list"'])
       assert.same({
-        status = 'passed',
-      }, results[filename .. '::"Prelude.tail"'])
-      assert.same({
-        status = 'passed',
-      }, results[filename .. '::"Prelude.tail"::"Single element list"::"Returns the empty list"'])
+        status = 'failed',
+        errors = {
+          {
+            message = 'Program /run/current-system/sw/bin/ghc failed with code 1',
+          },
+        },
+      }, results[test_filename .. '::"Compilation with GHC"::"Foo"'])
     end)
   end)
 end)

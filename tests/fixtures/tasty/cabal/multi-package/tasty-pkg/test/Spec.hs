@@ -10,7 +10,7 @@ import Test.Tasty.LeanCheck as LC
 import Test.Tasty.Program
 import Test.Tasty.HUnit
 import Test.Tasty.Hspec
-import Test.Tasty.Wai
+import Test.Tasty.Wai hiding (head)
 import Test.Hspec
 import Test.Tasty.ExpectedFailure
 import Test.Hspec.QuickCheck
@@ -21,6 +21,7 @@ import qualified Hedgehog.Range as Range
 import Data.List
 import Data.Ord
 import Network.Wai (Application)
+import qualified Network.HTTP.Types as HTTP
 import qualified Network.Wai        as W
 
 main = do
@@ -116,25 +117,20 @@ waiTests = testGroup "Tasty-Wai Tests"
 
   , testWai testApp "Echo to thee" $ do
       res <- post "echo" "thus"
-      assertStatus' H.status200 res -- Use functions from Network.HTTP.Types
-      assertStatus 200 res          -- Use raw ints
+      assertStatus' HTTP.status200 res
+      assertStatus 200 res
       assertBody "thus" res
 
-  , testWai testApp "Echo to thee" $ do
+  , testWai testApp "Echo to thee (json)" $ do
       res <- postWithHeaders "echo" "thus" [("content-type", "application/json")]
-      assertStatus' H.status200 res -- Use functions from Network.HTTP.Types
-      assertStatus 200 res          -- Use raw ints
+      assertStatus' HTTP.status200 res
+      assertStatus 200 res
       assertBody "{'field':'thus'}" res
 
   , testWai testApp "Will die!" $ do
       res <- get "not-a-thing"
-      assertStatus' H.status404 res
+      assertStatus' HTTP.status404 res
       assertBody "no route" res
-
-  , testWai testApp "Hello to World" $ do
-      res <- head "hello"
-      assertStatus' H.status204 res
-      assertBody "" res
   ]
 
 genAlphaList :: H.Gen String
@@ -169,9 +165,9 @@ testApp :: Application
 testApp rq cb = do
   let
     mkresp s = W.responseLBS s []
-    resp404 = mkresp H.status404
-    resp200 = mkresp H.status200
-    resp204 = mkresp H.status204
+    resp404 = mkresp HTTP.status404
+    resp200 = mkresp HTTP.status200
+    resp204 = mkresp HTTP.status204
 
   resp <- case (W.requestMethod rq, W.pathInfo rq, W.requestHeaders rq) of
 

@@ -37,5 +37,6 @@ test-suite tasty-pkg-spec
     , tasty-wai
     , hspec
     , hedgehog
+    , http-types
     , wai
   default-language: Haskell2010

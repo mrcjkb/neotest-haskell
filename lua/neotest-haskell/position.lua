@@ -2,6 +2,19 @@ local lib = require('neotest.lib')
 
 local position = {}
 
+---@param tree neotest.Tree
+---@param pos_id string
+---@return boolean
+function position.has_position(tree, pos_id)
+  for _, node in tree:iter_nodes() do
+    local data = node:data()
+    if data.id == pos_id then
+      return true
+    end
+  end
+  return false
+end
+
 ---Convenience wrapper around neotest.lib.treesitter.parse_positions.
 ---@async
 ---@param path string Test file path
