@@ -107,6 +107,7 @@ with final.stdenv; let
             "duplicate-set-field",
           ],
           "Lua.workspace.library": [
+            "${final.neovim-unwrapped}/share/nvim/runtime/lua",
             "${plenary-plugin}/lua",
             "${nvim-treesitter-plugin}/lua",
             "${neotest-plugin}/lua"
