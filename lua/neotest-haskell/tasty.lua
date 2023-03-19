@@ -100,6 +100,39 @@ tasty.tests_query = hspec.tests_query
       (exp_literal) @test.name
     ) @test.definition
   )
+
+  ;; tasty-golden goldenVsFile (qualified or unqualified)
+  (_
+    (exp_apply
+      (exp_name) @func_name
+      (#lua-match? @func_name "^.*goldenVsFile")
+      (exp_literal) @test.name
+    ) @test.definition
+  )
+  ;; tasty-golden goldenVsFileDiff (qualified or unqualified)
+  (_
+    (exp_apply
+      (exp_name) @func_name
+      (#lua-match? @func_name "^.*goldenVsFileDiff")
+      (exp_literal) @test.name
+    ) @test.definition
+  )
+  ;; tasty-golden goldenVsStringDiff (qualified or unqualified)
+  (_
+    (exp_apply
+      (exp_name) @func_name
+      (#lua-match? @func_name "^.*goldenVsStringDiff")
+      (exp_literal) @test.name
+    ) @test.definition
+  )
+  ;; tasty-golden postCleanup (qualified or unqualified)
+  (_
+    (exp_apply
+      (exp_name) @func_name
+      (#lua-match? @func_name "^.*postCleanup")
+      (exp_literal) @test.name
+    ) @test.definition
+  )
 ]]
 
 ---Parse the positions in a test file.
