@@ -1,6 +1,7 @@
 local async = require('neotest.async')
 local lib = require('neotest.lib')
 local Path = require('plenary.path')
+local treesitter_hs = require('neotest-haskell.treesitter')
 
 local runner = {}
 
@@ -38,16 +39,86 @@ local function get_package_name(package_root)
   return vim.fn.fnamemodify(package_root, ':t')
 end
 
+---@param modules string[]
+---@return string treesitter_query The query to match the modules
+local function mk_module_query(modules)
+  local filters = {}
+  for i, module_name in ipairs(modules) do
+    local filter = ([[
+    ;;query
+    (module) @mod%d
+    (#eq? @mod%d "%s")
+    ]]):format(i, i, module_name)
+    table.insert(filters, filter)
+  end
+  return [[
+  ;;query
+  (qualified_module
+  ]] .. table.concat(filters, '\n') .. [[
+  ;;query
+  )
+  ]]
+end
+
+---Check if the test file has any of the specified imports
+---@param test_file_content string The test file content
+---@param qualified_modules string[] Qualified modules to check for, e.g. { 'Test.Tasty', 'MyTestRunner' }
+---@return boolean
+---@async
+local function has_module(test_file_content, qualified_modules)
+  for _, qualified_module in pairs(qualified_modules) do
+    local modules = {}
+    for module in qualified_module:gmatch('([^%.]+)') do
+      table.insert(modules, module)
+    end
+    local query = mk_module_query(modules)
+    if treesitter_hs.has_matches(query, { content = test_file_content }) then
+      return true
+    end
+  end
+  return false
+end
+
+---@type build_tool[]
+runner.supported_build_tools = { 'stack', 'cabal' }
+
+---@type test_framework[]
+runner.supported_frameworks = { 'tasty', 'hspec' }
+
+---@param framework test_framework
+---@return TestFrameworkHandler
+local function get_handler(framework)
+  return require('neotest-haskell.' .. framework)
+end
+
 ---Select a test framework from the given list of test frameworks, preferring the first that can be used.
+---If there is only one framework, it will
 ---@param test_file_path string A test file in a project.
----@param frameworks test_framework[] List of build tools to choose from.
+---@param frameworks framework_opt[]
 ---@return TestFrameworkHandler handler
+---@async
 function runner.select_framework(test_file_path, frameworks)
+  local content = lib.files.read(test_file_path)
+  ---@type FrameworkSpec[]
+  local framework_specs = {}
   for _, framework in pairs(frameworks) do
-    ---@type TestFrameworkHandler
-    local handler = require('neotest-haskell.' .. framework)
-    if handler.can_handle(test_file_path) then
-      return handler
+    if type(framework) == 'string' then
+      ---@cast framework test_framework
+      local handler = get_handler(framework)
+      framework_specs[#framework_specs + 1] = {
+        framework = framework,
+        modules = handler.default_modules,
+      }
+    elseif type(framework) == 'table' then
+      ---@cast framework FrameworkSpec
+      framework_specs[#framework_specs + 1] = framework
+    else
+      error('Unexpected framework type: ' .. type(framework))
+    end
+  end
+  for _, spec in pairs(framework_specs) do
+    if has_module(content, spec.modules) then
+      return get_handler(spec.framework)
     end
   end
   error('Could not find a test framework handler for ' .. test_file_path)
