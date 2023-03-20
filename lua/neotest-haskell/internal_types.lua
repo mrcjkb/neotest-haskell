@@ -1,8 +1,5 @@
----@alias build_tool 'cabal' | 'stack'
-
----@alias test_framework 'tasty' | 'hspec'
-
 ---@alias test_run_type "dir"|"file"|"namespace"|"test"
+
 ---@class RunContext
 ---@field file string
 ---@field pos_id string
@@ -10,7 +7,7 @@
 ---@field handler TestFrameworkHandler
 
 ---@class TestFrameworkHandler
----@field can_handle fun(file_path:string):boolean Function to check if the handler can handle the framework used in the test file.
+---@field default_modules string[] Default list of qualified modules used to determine if this handler can be used.
 ---@field namespace_query string Tree-sitter query for namespace positions.
 ---@field test_query string Tree-sitter query for test positions.
 ---@field parse_positions fun(file_path:string):neotest.Tree Function that parses the positions in a test file.

@@ -97,9 +97,13 @@
       devShell = shellFor system;
     });
 
-    packages = perSystem (system: rec {
-      default = nvim-plugin;
+    packages = perSystem (system: let
+      pkgs = pkgsFor system;
       nvim-plugin = nvim-plugin-for system;
+      docgen = pkgs.callPackage ./nix/docgen.nix {};
+    in rec {
+      default = nvim-plugin;
+      inherit docgen nvim-plugin;
     });
 
     checks = perSystem (system: let

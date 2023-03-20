@@ -1,0 +1,97 @@
+==============================================================================
+Table of Contents                                     *neotest-haskell.contents*
+
+Setup ·················································· |neotest-haskell.setup|
+Options ·············································· |neotest-haskell.options|
+
+==============================================================================
+Setup                                                    *neotest-haskell.setup*
+
+Make sure the Haskell parser for tree-sitter is installed:
+>lua
+ require('nvim-treesitter.configs').setup {
+   ensure_installed = {
+     'haskell',
+     --...,
+   },
+ }
+<
+Add `neotest-haskell` to your `neotest` adapters:
+>lua
+ require('neotest').setup {
+   -- ...,
+   adapters = {
+     -- ...,
+     require('neotest-haskell')
+   },
+ }
+<
+You can also pass a config to the setup. The following are the defaults:
+>lua
+ require('neotest').setup {
+   adapters = {
+     require('neotest-haskell') {
+       -- Default: Use stack if possible and then try cabal
+       build_tools = { 'stack', 'cabal' },
+       -- Default: Check for tasty first and then try hspec
+       frameworks = { 'tasty', 'hspec' },
+     },
+   },
+ }
+<
+Alternately, you can pair each test framework with a list of modules,
+used to identify the respective framework in a test file:
+>lua
+ require('neotest').setup {
+   adapters = {
+     require('neotest-haskell') {
+       frameworks = {
+         { framework = 'tasty', modules = { 'Test.Tasty', 'MyTestModule' }, },
+         'hspec',
+       },
+     },
+   },
+ }
+<
+
+==============================================================================
+Options                                                *neotest-haskell.options*
+
+NeotestHaskellOpts                                          *NeotestHaskellOpts*
+
+    Fields: ~
+        {build_tools}   (build_tool[]|nil)                                          The build tools, ordered by priority. Default: `{ 'stack', 'cabal' }`.
+        {frameworks}    (framework_opt[]|nil)                                       List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec' }`.
+        {is_test_file}  (fun(name:string):boolean|nil)                              Used to detect if a file is a test file.
+        {filter_dir}    (fun(name:string,rel_path:string,root:string):boolean|nil)  Filter directories when searching for test files
+
+    See: ~
+        |neotest|
+
+
+build_tool                                                          *build_tool*
+
+    Type: ~
+        "stack"|"cabal"
+
+
+framework_opt                                                    *framework_opt*
+
+    Type: ~
+        test_framework|FrameworkSpec
+
+
+test_framework                                                  *test_framework*
+
+    Type: ~
+        "tasty"|"hspec"
+
+
+FrameworkSpec                                                    *FrameworkSpec*
+
+    Fields: ~
+        {framework}  (test_framework)
+        {modules}    (string[])        The modules to query for in test files, to determine if this framework can be used.
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:

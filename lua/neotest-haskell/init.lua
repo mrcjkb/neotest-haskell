@@ -1,6 +1,79 @@
+---@toc neotest-haskell.contents
+
+---@mod neotest-haskell.setup Setup
+
+---@brief [[
+---Make sure the Haskell parser for tree-sitter is installed:
+--->lua
+--- require('nvim-treesitter.configs').setup {
+---   ensure_installed = {
+---     'haskell',
+---     --...,
+---   },
+--- }
+---<
+---Add `neotest-haskell` to your `neotest` adapters:
+--->lua
+--- require('neotest').setup {
+---   -- ...,
+---   adapters = {
+---     -- ...,
+---     require('neotest-haskell')
+---   },
+--- }
+---<
+---You can also pass a config to the setup. The following are the defaults:
+--->lua
+--- require('neotest').setup {
+---   adapters = {
+---     require('neotest-haskell') {
+---       -- Default: Use stack if possible and then try cabal
+---       build_tools = { 'stack', 'cabal' },
+---       -- Default: Check for tasty first and then try hspec
+---       frameworks = { 'tasty', 'hspec' },
+---     },
+---   },
+--- }
+---<
+---Alternately, you can pair each test framework with a list of modules,
+---used to identify the respective framework in a test file:
+--->lua
+--- require('neotest').setup {
+---   adapters = {
+---     require('neotest-haskell') {
+---       frameworks = {
+---         { framework = 'tasty', modules = { 'Test.Tasty', 'MyTestModule' }, },
+---         'hspec',
+---       },
+---     },
+---   },
+--- }
+---<
+---@brief ]]
+
+---@mod neotest-haskell.options Options
+
+---@class NeotestHaskellOpts
+---@field build_tools build_tool[] | nil The build tools, ordered by priority. Default: `{ 'stack', 'cabal' }`.
+---@field frameworks framework_opt[] | nil List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec' }`.
+---@field is_test_file (fun(name:string):boolean) | nil Used to detect if a file is a test file.
+---@field filter_dir (fun(name:string, rel_path:string, root:string):boolean) | nil Filter directories when searching for test files
+---@see neotest
+
+---@alias build_tool 'stack' | 'cabal'
+
+---@alias framework_opt test_framework | FrameworkSpec
+
+---@alias test_framework 'tasty' | 'hspec'
+
+---@class FrameworkSpec
+---@field framework test_framework
+---@field modules string[] The modules to query for in test files, to determine if this framework can be used.
+
 local base = require('neotest-haskell.base')
 local runner = require('neotest-haskell.runner')
 local logger = require('neotest.logging')
+local validate = require('neotest-haskell.validate')
 local lib = require('neotest.lib')
 
 ---@type neotest.Adapter
@@ -12,49 +85,29 @@ local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 ---@param dir string @Directory to treat as cwd
 ---@return string|nil @Absolute root dir of test suite
 ---@see neotest.Adapter
+---@private
 function HaskellNeotestAdapter.root(dir)
   local multi_package_or_stack_project_root_directory = lib.files.match_root_pattern('cabal.project', 'stack.yaml')(dir)
   return multi_package_or_stack_project_root_directory or lib.files.match_root_pattern('*.cabal', 'package.yaml')(dir)
 end
 
 ---@type fun(name:string):boolean
+---@private
 local is_test_file = base.is_test_file
 
 ---@type fun(name:string, _:string, _:string):boolean
+---@private
 local filter_dir = base.filter_dir
 
----@param supported_elems any[]
----@param list any[]
-local function validate_is_supported(supported_elems, list)
-  if #list == 0 then
-    return false
-  end
-  for _, elem in ipairs(list) do
-    if not vim.tbl_contains(supported_elems, elem) then
-      return false
-    end
-  end
-  return true
-end
+local build_tools = runner.supported_build_tools
 
----@type build_tool[]
-local supported_build_tools = { 'stack', 'cabal' }
-local build_tools = supported_build_tools
-local function validate_build_tools(bts)
-  return validate_is_supported(supported_build_tools, bts)
-end
-
----@type test_framework[]
-local supported_frameworks = { 'tasty', 'hspec' }
-local frameworks = supported_frameworks
-local function validate_frameworks(fws)
-  return validate_is_supported(supported_frameworks, fws)
-end
+local frameworks = runner.supported_frameworks
 
 ---@async
 ---@param file_path string
 ---@return boolean
 ---@see neotest.Adapter
+---@private
 function HaskellNeotestAdapter.is_test_file(file_path)
   return is_test_file(file_path)
 end
@@ -63,6 +116,7 @@ end
 ---@async
 ---@return boolean
 ---@see neotest.Adapter
+---@private
 function HaskellNeotestAdapter.filter_dir(...)
   return filter_dir(...)
 end
@@ -71,6 +125,7 @@ end
 ---@async
 ---@param file_path string Absolute file path
 ---@return neotest.Tree | nil
+---@private
 function HaskellNeotestAdapter.discover_positions(file_path)
   local handler = runner.select_framework(file_path, frameworks)
   local pos = handler.parse_positions(file_path)
@@ -80,6 +135,7 @@ end
 
 ---@param args neotest.RunArgs
 ---@return neotest.RunSpec|nil
+---@private
 function HaskellNeotestAdapter.build_spec(args)
   local supported_types = { 'test', 'namespace', 'file' }
   local tree = args and args.tree
@@ -113,6 +169,7 @@ end
 ---@param strategy_result neotest.StrategyResult
 ---@param tree neotest.Tree
 ---@return table<string, neotest.Result> results
+---@private
 function HaskellNeotestAdapter.results(spec, strategy_result, tree)
   ---@type RunContext
   local context = spec.context
@@ -132,19 +189,9 @@ function HaskellNeotestAdapter.results(spec, strategy_result, tree)
 end
 
 setmetatable(HaskellNeotestAdapter, {
+  ---@param opts NeotestHaskellOpts
   __call = function(_, opts)
-    vim.validate {
-      build_tools = {
-        opts.build_tools or build_tools,
-        validate_build_tools,
-        'at least one of ' .. table.concat(supported_build_tools, ', '),
-      },
-      frameworks = {
-        opts.frameworks or frameworks,
-        validate_frameworks,
-        'at least one of ' .. table.concat(supported_frameworks, ', '),
-      },
-    }
+    validate.validate(opts)
     if opts.build_tools then
       build_tools = opts.build_tools
     end

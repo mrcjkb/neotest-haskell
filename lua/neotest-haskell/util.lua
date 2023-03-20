@@ -21,7 +21,7 @@ local lua_match_matches = {
 ---Escape special string.match characters.
 ---@param str string
 ---@return string escaped_string
-util.escape = function(str)
+function util.escape(str)
   local escaped_string = str:gsub('.', lua_match_matches)
   return escaped_string
 end
@@ -29,7 +29,7 @@ end
 ---Trim leading and trailing whitespace.
 ---@param str string
 ---@return string trimmed
-util.trim = function(str)
+function util.trim(str)
   return (str:match('^%s*(.*)') or str):gsub('%s*$', '')
 end
 

@@ -1,28 +1,11 @@
 local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
-local treesitter_hs = require('neotest-haskell.treesitter')
 
 ---@type TestFrameworkHandler
 local hspec = {}
 
----Does the test file use the hspec framework?
----@async
----@param path string Test file path
----@return boolean tf
-function hspec.can_handle(path)
-  local import_query = [[
-  ;; query
-  ;; Test.Hspec
-  (qualified_module
-    (module) @mod1
-    (#eq? @mod1 "Test")
-    (module) @mod2
-    (#eq? @mod2 "Hspec")
-  )
-  ]]
-  return treesitter_hs.has_matches(import_query, { file = path })
-end
+hspec.default_modules = { 'Test.Hspec' }
 
 ---Tree-sitter query to find namespaces
 hspec.namespace_query = [[

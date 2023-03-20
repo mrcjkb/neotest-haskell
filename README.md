@@ -76,7 +76,7 @@ require('neotest').setup {
   adapters = {
     -- ...,
     require('neotest-haskell')
-  }
+  },
 }
 ```
 
@@ -91,7 +91,7 @@ require('neotest').setup {
       -- Default: Check for tasty first and then try hspec
       frameworks = { 'tasty', 'hspec' },
     },
-  }
+  },
 }
 ```
 
@@ -99,6 +99,28 @@ require('neotest').setup {
 >
 > If you were to use `build_tools = { 'cabal', 'stack' }`, then cabal will almost
 > always be chosen, because almost all stack projects can be built with cabal.
+
+Alternately, you can pair each test framework with a list of modules,
+used to identify the respective framework in a test file:
+
+```lua
+require('neotest').setup {
+  adapters = {
+    require('neotest-haskell') {
+      frameworks = {
+        { framework = 'tasty', modules = { 'Test.Tasty', 'MyTestModule' }, },
+        'hspec',
+      },
+    },
+  },
+}
+```
+
+This can be useful if you have test files that do not import one of the default modules
+used for framework identification:
+
+* `tasty`: `modules = { 'Test.Tasty' }`
+* `hspec`: `modules = { 'Test.Hspec' }`
 
 
 ## Examples
@@ -199,7 +221,7 @@ To run a health check, run `:checkhealth neotest-haskell` in Neovim.
 
 Here are some other plugins I recommend for Haskell development:
 
-* [mrcjkb/haskell-tools.nvim](https://github.com/MrcJkb/haskell-tools.nvim): Toolset to improve the Haskell experience in Neovim
+* [mrcjkb/haskell-tools.nvim](https://github.com/mrcjkb/haskell-tools.nvim): Toolset to improve the Haskell experience in Neovim
 * [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle): Hoogle search
 
 

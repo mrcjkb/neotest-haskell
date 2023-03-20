@@ -117,7 +117,7 @@ local function check_external_dependency(dep)
   local installed, mb_version = check_installed(dep)
   if installed then
     local version = mb_version and mb_version:sub(0, mb_version:find('\n') - 1) or '(unknown version)'
-    h.report_ok(('%s: found %s'):format(dep.name, version))
+    h.report_ok(('%s: found %s.'):format(dep.name, version))
     if dep.extra_checks then
       dep.extra_checks()
     end
@@ -147,6 +147,15 @@ function health.check()
   h.report_start('Checking external dependencies')
   for _, dep in ipairs(external_dependencies) do
     check_external_dependency(dep)
+  end
+
+  h.report_start('Checking tree-sitter parsers')
+  local parsers = require('nvim-treesitter.parsers')
+  local available_parsers = parsers and parsers.available_parsers()
+  if parsers and not vim.tbl_contains(available_parsers, 'haskell') then
+    h.report_error('The tree-sitter parser for Haskell is not installed.')
+  else
+    h.report_ok('The tree-sitter parser for Haskell is installed.')
   end
 end
 
