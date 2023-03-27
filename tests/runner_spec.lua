@@ -11,17 +11,31 @@ local simple_stack_hspec_test_file_only_package_yaml =
 local multi_package_stack_hspec_test_file =
   Path:new('tests/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
 local multi_package_cabal_tasty_test_file = Path:new('tests/fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
+local simple_cabal_sydtest_test_file = Path:new('tests/fixtures/sydtest/cabal/simple/test/SydtestFixtureSpec.hs')
 
 local hspec = require('neotest-haskell.hspec')
 local tasty = require('neotest-haskell.tasty')
+local sydtest = require('neotest-haskell.sydtest')
 
 describe('runner', function()
   describe('select_framework', function()
     async.it('selects hspec for hspec file', function()
-      assert.equals(hspec, runner.select_framework(multi_package_cabal_hspec_test_file.filename, { 'tasty', 'hspec' }))
+      assert.equals(
+        hspec,
+        runner.select_framework(multi_package_cabal_hspec_test_file.filename, { 'sydtest', 'tasty', 'hspec' })
+      )
     end)
-    async.it('selects tasty for tasty file if tasty is specified first', function()
-      assert.equals(tasty, runner.select_framework(multi_package_cabal_tasty_test_file.filename, { 'tasty', 'hspec' }))
+    async.it('selects tasty for tasty file if tasty is specified before hspec', function()
+      assert.equals(
+        tasty,
+        runner.select_framework(multi_package_cabal_tasty_test_file.filename, { 'sydtest', 'tasty', 'hspec' })
+      )
+    end)
+    async.it('selects sydtest for sydtest file if sydtest is specified before hspec', function()
+      assert.equals(
+        sydtest,
+        runner.select_framework(simple_cabal_sydtest_test_file.filename, { 'sydtest', 'tasty', 'hspec' })
+      )
     end)
     async.it('errors for hspec file if hspec is not specified', function()
       assert.errors(function()

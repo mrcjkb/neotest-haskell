@@ -97,7 +97,7 @@ describe('hspec', function()
   end)
 
   describe('parse results', function()
-    async.it('test faulure', function()
+    async.it('test failure', function()
       local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
       local filename = test_file.filename
       local tree = parse_positions(filename)

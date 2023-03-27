@@ -1,6 +1,7 @@
 local async = require('neotest.async')
 local lib = require('neotest.lib')
 local Path = require('plenary.path')
+local logger = require('neotest.logging')
 local treesitter_hs = require('neotest-haskell.treesitter')
 
 local runner = {}
@@ -83,7 +84,7 @@ end
 runner.supported_build_tools = { 'stack', 'cabal' }
 
 ---@type test_framework[]
-runner.supported_frameworks = { 'tasty', 'hspec' }
+runner.supported_frameworks = { 'tasty', 'hspec', 'sydtest' }
 
 ---@param framework test_framework
 ---@return TestFrameworkHandler
@@ -118,6 +119,7 @@ function runner.select_framework(test_file_path, frameworks)
   end
   for _, spec in pairs(framework_specs) do
     if has_module(content, spec.modules) then
+      logger.debug('Selected Haskell framework: ' .. spec.framework)
       return get_handler(spec.framework)
     end
   end
@@ -159,6 +161,8 @@ function runner.select_build_tool(handler, test_file_path, build_tools)
   if not selected_build_tool or not get_test_opts then
     error('Cannot run tests for configured build tools: ' .. vim.inspect(build_tools))
   end
+
+  logger.debug('Selected Haskell build tool: ' .. selected_build_tool)
 
   local command = { selected_build_tool, 'test' }
   if is_multi_package_project then

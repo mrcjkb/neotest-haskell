@@ -1,0 +1,61 @@
+Build profile: -w ghc-9.2.7 -O1
+In order, the following will be built (use -v for more details):
+ - sydtest-pkg-0.1.0.0 (lib) (configuration changed)
+ - sydtest-pkg-0.1.0.0 (test:sydtest-pkg-spec) (configuration changed)
+Configuring library for sydtest-pkg-0.1.0.0..
+Preprocessing library for sydtest-pkg-0.1.0.0..
+Building library for sydtest-pkg-0.1.0.0..
+[1 of 1] Compiling Lib              ( src/Lib.hs, /home/mrcjk/playground/sydtest-pkg/dist-newstyle/build/x86_64-linux/gh
+c-9.2.7/sydtest-pkg-0.1.0.0/build/Lib.o, /home/mrcjk/playground/sydtest-pkg/dist-newstyle/build/x86_64-linux/ghc-9.2.7/s
+ydtest-pkg-0.1.0.0/build/Lib.dyn_o ) [flags changed]
+Configuring test suite 'sydtest-pkg-spec' for sydtest-pkg-0.1.0.0..
+Preprocessing test suite 'sydtest-pkg-spec' for sydtest-pkg-0.1.0.0..
+Building test suite 'sydtest-pkg-spec' for sydtest-pkg-0.1.0.0..
+[1 of 2] Compiling SydtestFixtureSpec ( test/SydtestFixtureSpec.hs, /home/mrcjk/playground/sydtest-pkg/dist-newstyle/bui
+ld/x86_64-linux/ghc-9.2.7/sydtest-pkg-0.1.0.0/t/sydtest-pkg-spec/build/sydtest-pkg-spec/sydtest-pkg-spec-tmp/SydtestFixt
+ureSpec.o ) [flags changed]
+[2 of 2] Compiling Main             ( test/Main.hs, /home/mrcjk/playground/sydtest-pkg/dist-newstyle/build/x86_64-linux/
+ghc-9.2.7/sydtest-pkg-0.1.0.0/t/sydtest-pkg-spec/build/sydtest-pkg-spec/sydtest-pkg-spec-tmp/Main.o ) [flags changed]
+Linking /home/mrcjk/playground/sydtest-pkg/dist-newstyle/build/x86_64-linux/ghc-9.2.7/sydtest-pkg-0.1.0.0/t/sydtest-pkg-
+spec/build/sydtest-pkg-spec/sydtest-pkg-spec ...
+Running 1 test suites...
+Test suite sydtest-pkg-spec: RUNNING...
+Tests:
+
+SydtestFixtureSpec
+  Prelude.head
+    Returns the first element of a list
+    Empty list
+      ✓ Throws on empty list                                               0.01 ms
+    ✗ Returns the first element of an arbitrary list                       0.19 ms
+      Retries: 3 (does not look flaky)
+
+Failures:
+
+    test/SydtestFixtureSpec.hs:15
+  ✗ 1 SydtestFixtureSpec.Prelude.head.Returns the first element of an arbitrary list
+      Retries: 3 (does not look flaky)
+      Failed after 1 tests
+      Generated: 0
+      Generated: []
+      Expected these values to be equal:
+      Actual:   0
+      Expected: 5
+
+
+  Examples:                     4
+  Passed:                       1
+  Failed:                       1
+  Pending:                      1
+  Longest test:                 Prelude.head.SydtestFixtureSpec.Returns th
+  Longest test took:            0.00 seconds, which is 96% of total runtim
+  Sum of test runtimes:         0.00 seconds
+  Test suite took:              0.00 seconds
+
+
+Test suite sydtest-pkg-spec: FAIL
+Test suite logged to:
+/home/mrcjk/playground/sydtest-pkg/dist-newstyle/build/x86_64-linux/ghc-9.
+t/sydtest-pkg-0.1.0.0-sydtest-pkg-spec.log
+0 of 1 test suites (0 of 1 test cases) passed.
+Error: cabal: Tests failed for test:sydtest-pkg-spec from sydtest-pkg-0.1.
