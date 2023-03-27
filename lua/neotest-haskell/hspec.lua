@@ -1,3 +1,4 @@
+local treesitter = require('neotest-haskell.treesitter')
 local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
@@ -7,53 +8,14 @@ local hspec = {}
 
 hspec.default_modules = { 'Test.Hspec' }
 
----Tree-sitter query to find namespaces
-hspec.namespace_query = [[
-  ;; query
-  ;; describe (unqualified)
-  (_ (_ (exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @namespace.name
-  )
-  (#any-of? @func_name "describe" "xdescribe" "context" "xcontext")
-  )) @namespace.definition
-
-  ;; describe (qualified)
-  (_ (_ (exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @namespace.name
-  )
-  (#any-of? @func_name "describe" "xdescribe" "context" "xcontext")
-  )) @namespace.definition
-]]
-
----Tree-sitter query to find tests
-hspec.tests_query = [[
-  ;; query
-  ;; test (unqualified)
-  ((exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @test.name
-  )
-  (#any-of? @func_name "it" "xit" "prop" "xprop" "specify" "xspecify")
-  ) @test.definition
-
-  ;; test (qualified)
-  ((exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @test.name
-  )
-  (#any-of? @func_name "it" "xit" "prop" "xprop" "specify" "xspecify")
-  ) @test.definition
-]]
+hspec.position_query = treesitter.get_position_query('hspec')
 
 ---Parse the positions in a test file.
 ---@async
 ---@param path string Test file path
 ---@return neotest.Tree
 function hspec.parse_positions(path)
-  local query = hspec.namespace_query .. hspec.tests_query
-  return position.parse_positions(path, query)
+  return position.parse_positions(path, hspec.position_query)
 end
 
 ---Parses hspec --match filter expressions for the top-level test positions.

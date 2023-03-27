@@ -1,3 +1,4 @@
+local treesitter = require('neotest-haskell.treesitter')
 local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
@@ -8,123 +9,14 @@ local tasty = {}
 
 tasty.default_modules = { 'Test.Tasty' }
 
-tasty.namespace_query = [[
-  ;; query
-  ;; testGroup (qualified or unqualified)
-  (_
-    (exp_name) @func_name
-    (#lua-match? @func_name "^.*testGroup")
-    (exp_literal (string) @namespace.name)
-    (exp_list (_))
-  ) @namespace.definition
-
-  ;; describe (unqualified)
-  (_ (_ (exp_apply
-    (exp_name (variable) @func_name)
-    (exp_literal) @namespace.name
-  )
-  (#any-of? @func_name "describe" "xdescribe" "testSpec")
-  )) @namespace.definition
-
-  ;; describe (qualified)
-  (_ (_ (exp_apply
-    (exp_name (qualified_variable (variable) @func_name))
-    (exp_literal) @namespace.name
-  )
-  (#any-of? @func_name "describe" "xdescribe" "testSpec")
-  )) @namespace.definition
-]]
-
-tasty.tests_query = hspec.tests_query
-  .. [[
-  ;; query
-  ;; smallcheck/quickcheck/hedgehog (qualified or unqualified)
-  (
-  (exp_apply
-    (exp_name) @func_name
-    (exp_literal) @test.name
-  ) @test.definition
-  (#lua-match? @func_name "^.*testProperty.*")
-  )
-
-  ;; expectFail (qualified or unqualified)
-  (
-  (exp_name) @func_name
-  (exp_apply
-    (exp_name)
-    (exp_literal) @test.name
-  ) @test.definition
-  (#lua-match? @func_name "^.*expectFail")
-  )
-
-  ;; HUnit (qualified or unqualified)
-  (_
-    (exp_apply
-      (exp_name) @func_name
-      (#lua-match? @func_name "^.*testCase")
-      (exp_literal) @test.name
-    ) @test.definition
-  )
-
-  ;; Program (qualified or unqualified)
-  (_
-    (exp_apply
-      (exp_name) @func_name
-      (#lua-match? @func_name "^.*testProgram")
-      (exp_literal) @test.name
-    ) @test.definition
-  )
-
-  ;; Wai (qualified or unqualified)
-  (_
-    (exp_apply
-      (exp_name) @func_name
-      (#lua-match? @func_name "^.*testWai")
-      (exp_literal) @test.name
-    ) @test.definition
-  )
-
-  ;; tasty-golden goldenVsFile (qualified or unqualified)
-  (_
-    (exp_apply
-      (exp_name) @func_name
-      (#lua-match? @func_name "^.*goldenVsFile")
-      (exp_literal) @test.name
-    ) @test.definition
-  )
-  ;; tasty-golden goldenVsFileDiff (qualified or unqualified)
-  (_
-    (exp_apply
-      (exp_name) @func_name
-      (#lua-match? @func_name "^.*goldenVsFileDiff")
-      (exp_literal) @test.name
-    ) @test.definition
-  )
-  ;; tasty-golden goldenVsStringDiff (qualified or unqualified)
-  (_
-    (exp_apply
-      (exp_name) @func_name
-      (#lua-match? @func_name "^.*goldenVsStringDiff")
-      (exp_literal) @test.name
-    ) @test.definition
-  )
-  ;; tasty-golden postCleanup (qualified or unqualified)
-  (_
-    (exp_apply
-      (exp_name) @func_name
-      (#lua-match? @func_name "^.*postCleanup")
-      (exp_literal) @test.name
-    ) @test.definition
-  )
-]]
+tasty.position_query = hspec.position_query .. treesitter.get_position_query('tasty')
 
 ---Parse the positions in a test file.
 ---@async
 ---@param path string Test file path
 ---@return neotest.Tree
 function tasty.parse_positions(path)
-  local query = tasty.namespace_query .. tasty.tests_query
-  return position.parse_positions(path, query)
+  return position.parse_positions(path, tasty.position_query)
 end
 
 ---Format a test name for use in a filter expression.
@@ -206,8 +98,15 @@ function hspec.get_stack_test_opts(pos)
   }
 end
 
-local function get_failed_name(line, _, _)
-  return line:match('%s*(.*):%s*FAIL')
+local function get_failed_name(line, lines, idx)
+  local test_name = line:match('%s*(.*):%s*FAIL')
+  if not lines or #lines == idx then
+    return test_name
+  end
+  local next_line = lines[idx + 1]
+  if not next_line:match('# PENDING') then
+    return test_name
+  end
 end
 
 local function get_succeeded_name(line, _, _)
@@ -216,9 +115,11 @@ end
 
 local function get_skipped_name(line, lines, idx)
   local test_name = line:match('%s*(.*):%s*FAIL')
-  local next_line = lines[idx + 1]
-  if next_line and next_line:match('# PENDING') then
-    return test_name
+  if lines and #lines > idx then
+    local next_line = lines[idx + 1]
+    if next_line:match('# PENDING') then
+      return test_name
+    end
   end
 end
 

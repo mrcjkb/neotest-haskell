@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Support for the [`sydtest`](https://hackage.haskell.org/package/sydtest) test framework.
+- Move position queries to `queries/haskell/<framework>-positions.scm`
+  and `queries/haskell/<framework>-test`. This allows the addition of extra
+  queries to `$XDG_CONFIG_HOME/nvim/after/queries/haskell/<framework>-positions.scm`
 ### Fixed
 - Hspec: support `context`, `xcontext`, `specify` and `xspecify`
 

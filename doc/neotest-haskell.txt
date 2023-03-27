@@ -33,8 +33,8 @@ You can also pass a config to the setup. The following are the defaults:
      require('neotest-haskell') {
        -- Default: Use stack if possible and then try cabal
        build_tools = { 'stack', 'cabal' },
-       -- Default: Check for tasty first and then try hspec
-       frameworks = { 'tasty', 'hspec' },
+       -- Default: Check for tasty first, then try hspec, and finally 'sydtest'
+       frameworks = { 'tasty', 'hspec', 'sydtest' },
      },
    },
  }
@@ -48,6 +48,7 @@ used to identify the respective framework in a test file:
        frameworks = {
          { framework = 'tasty', modules = { 'Test.Tasty', 'MyTestModule' }, },
          'hspec',
+         'sydtest',
        },
      },
    },
@@ -61,7 +62,7 @@ NeotestHaskellOpts                                          *NeotestHaskellOpts*
 
     Fields: ~
         {build_tools}   (build_tool[]|nil)                                          The build tools, ordered by priority. Default: `{ 'stack', 'cabal' }`.
-        {frameworks}    (framework_opt[]|nil)                                       List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec' }`.
+        {frameworks}    (framework_opt[]|nil)                                       List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec', 'sydtest' }`.
         {is_test_file}  (fun(name:string):boolean|nil)                              Used to detect if a file is a test file.
         {filter_dir}    (fun(name:string,rel_path:string,root:string):boolean|nil)  Filter directories when searching for test files
 
@@ -84,7 +85,7 @@ framework_opt                                                    *framework_opt*
 test_framework                                                  *test_framework*
 
     Type: ~
-        "tasty"|"hspec"
+        "tasty"|"hspec"|"sydtest"
 
 
 FrameworkSpec                                                    *FrameworkSpec*

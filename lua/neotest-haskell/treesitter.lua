@@ -48,4 +48,41 @@ function treesitter.has_matches(query, source)
   return false
 end
 
+---@param filename string
+---@param read_quantifier string
+local function safe_read(filename, read_quantifier)
+  local file, err = io.open(filename, 'r')
+  if not file then
+    error(err)
+  end
+  local content = file:read(read_quantifier)
+  file:close()
+  return content
+end
+
+---@param filenames string[]
+---@return string
+local function read_query_files(filenames)
+  local contents = {}
+  for _, filename in ipairs(filenames) do
+    table.insert(contents, safe_read(filename, '*a'))
+  end
+  return table.concat(contents, '')
+end
+
+---Get a tree-sitter query from the queries runtime path
+---@param query_name string
+---@return string query
+local function get_query_string(query_name)
+  local get_query_files = vim.treesitter.query.get_files or vim.treesitter.query.get_query_files
+  local query_files = get_query_files('haskell', query_name)
+  return read_query_files(query_files)
+end
+
+---@param framework test_framework
+---@return string query
+function treesitter.get_position_query(framework)
+  return get_query_string(framework .. '-positions')
+end
+
 return treesitter

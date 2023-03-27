@@ -27,7 +27,7 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 - [x] Supports [Cabal](https://www.haskell.org/cabal/) (single/multi-package) projects.
 - [x] Supports [Stack](https://docs.haskellstack.org/en/stable/) (single/multi-package) projects.
-- [x] Parses [Hspec](https://hackage.haskell.org/package/hspec) `--match` filters for the cursor's position using tree-sitter.
+- [x] Parses [Hspec](https://hackage.haskell.org/package/hspec) and [Sydtest](https://hackage.haskell.org/package/sydtest) `--match` filters for the cursor's position using tree-sitter.
 - [x] Parses [Tasty](https://hackage.haskell.org/package/tasty) `--pattern` filters for the cursor's position using tree-sitter.
 - [x] Parses test results and displays error messages as diagnostics.
 
@@ -89,7 +89,7 @@ require('neotest').setup {
       -- Default: Use stack if possible and then try cabal
       build_tools = { 'stack', 'cabal' },
       -- Default: Check for tasty first and then try hspec
-      frameworks = { 'tasty', 'hspec' },
+      frameworks = { 'tasty', 'hspec', 'sydtest' },
     },
   },
 }
@@ -110,6 +110,7 @@ require('neotest').setup {
       frameworks = {
         { framework = 'tasty', modules = { 'Test.Tasty', 'MyTestModule' }, },
         'hspec',
+        'sydtest',
       },
     },
   },
@@ -121,6 +122,22 @@ used for framework identification:
 
 * `tasty`: `modules = { 'Test.Tasty' }`
 * `hspec`: `modules = { 'Test.Hspec' }`
+* `sydtest`: `modules = { 'Test.Syd' }`
+
+
+## Advanced configuration
+
+This plugin uses tree-sitter queries in files that match
+`<runtimepath>/queries/haskell/<framework>-positions.scm`
+
+For example, to add position queries for this plugin for `tasty`, without
+having to fork this plugin, you can add them to
+`$XDG_CONFIG_HOME/nvim/after/queries/haskell/tasty-positions.scm`.
+
+> **Note**
+>
+> * `:h runtimepath`
+> * See examples in [`queries/haskell/`](./queries/haskell/).
 
 
 ## Examples
@@ -185,44 +202,24 @@ stack test my_package --ta "--match \"/Prelude.head/\""
 
 ## TODO
 
-### Cabal support
-
-- [x] Run cabal v2 tests with Hspec
-- [x] Support both single + multi-package cabal v2 projects
-- [x] Support cabal v2 projects with more than one test suite per package
-- [x] Parse cabal v2 Hspec test results
-
-
-### Stack support
-
-- [x] Run stack tests with Hspec
-- [x] Support both single + multi-package stack projects
-- [x] Support stack projects with more than one test suite per package
-- [x] Parse stack Hspec test results
-
-
-### Testing frameworks
-
-- [x] [hspec](https://hackage.haskell.org/package/hspec)
-- [x] [tasty](https://hackage.haskell.org/package/tasty)
-- [ ] [sydtest](https://github.com/NorfairKing/sydtest)
-- [ ] [yesod-test](https://hackage.haskell.org/package/yesod-test)
-
-### Other
-- [ ] Provide `nvim-dap` configuration
+See [issues](https://github.com/mrcjkb/neotest-haskell/issues).
 
 
 ## Troubleshooting
 
 To run a health check, run `:checkhealth neotest-haskell` in Neovim.
 
+## Limitations
+
+* To run `sydtest` tests of type `'file'`, `sydtest >= 0.13.0.4` is required,
+if the file has more than one top-level namespace (`describe`, `context`, ..).
 
 ## Recommendations
 
 Here are some other plugins I recommend for Haskell development:
 
-* [mrcjkb/haskell-tools.nvim](https://github.com/mrcjkb/haskell-tools.nvim): Toolset to improve the Haskell experience in Neovim
-* [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle): Hoogle search
+* [mrcjkb/haskell-tools.nvim](https://github.com/mrcjkb/haskell-tools.nvim): Toolset to improve the Haskell experience in Neovim.
+* [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle): Hoogle search.
 
 
 ## Contributors ✨

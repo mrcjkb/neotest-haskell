@@ -29,8 +29,8 @@
 ---     require('neotest-haskell') {
 ---       -- Default: Use stack if possible and then try cabal
 ---       build_tools = { 'stack', 'cabal' },
----       -- Default: Check for tasty first and then try hspec
----       frameworks = { 'tasty', 'hspec' },
+---       -- Default: Check for tasty first, then try hspec, and finally 'sydtest'
+---       frameworks = { 'tasty', 'hspec', 'sydtest' },
 ---     },
 ---   },
 --- }
@@ -44,6 +44,7 @@
 ---       frameworks = {
 ---         { framework = 'tasty', modules = { 'Test.Tasty', 'MyTestModule' }, },
 ---         'hspec',
+---         'sydtest',
 ---       },
 ---     },
 ---   },
@@ -55,7 +56,7 @@
 
 ---@class NeotestHaskellOpts
 ---@field build_tools build_tool[] | nil The build tools, ordered by priority. Default: `{ 'stack', 'cabal' }`.
----@field frameworks framework_opt[] | nil List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec' }`.
+---@field frameworks framework_opt[] | nil List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec', 'sydtest' }`.
 ---@field is_test_file (fun(name:string):boolean) | nil Used to detect if a file is a test file.
 ---@field filter_dir (fun(name:string, rel_path:string, root:string):boolean) | nil Filter directories when searching for test files
 ---@see neotest
@@ -64,7 +65,7 @@
 
 ---@alias framework_opt test_framework | FrameworkSpec
 
----@alias test_framework 'tasty' | 'hspec'
+---@alias test_framework 'tasty' | 'hspec' | 'sydtest'
 
 ---@class FrameworkSpec
 ---@field framework test_framework

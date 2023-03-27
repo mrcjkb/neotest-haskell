@@ -15,6 +15,8 @@ local function get_file_root(tree)
   return tree
 end
 
+---NOTE: The order of the `get_*_name` params is the order in which they are checked.
+---
 ---@async
 ---@param parse_errors fun(raw_lines:string[], test_name:string):neotest.Error[]
 ---@param get_failed_name fun(line:string, lines:string[], idx:integer):string? Function to extract a failed test name
@@ -67,20 +69,20 @@ function results.mk_result_parser(parse_errors, get_failed_name, get_succeeded_n
     if not success then
       return {}
     end
-    local lines = vim.split(data, '\n')
+    local lines = vim.split(data, '\n') or {}
     local failure_positions = {}
     local success_positions = {}
     local skipped_positions = {}
     for idx, line in ipairs(lines) do
-      local skipped = get_skipped_name(line, lines, idx)
       local failed = get_failed_name(line, lines, idx)
       local succeeded = get_succeeded_name(line, lines, idx)
-      if skipped then
-        skipped_positions[#skipped_positions + 1] = skipped
-      elseif failed then
+      local skipped = get_skipped_name(line, lines, idx)
+      if failed then
         failure_positions[#failure_positions + 1] = failed
       elseif succeeded then
         success_positions[#success_positions + 1] = succeeded
+      elseif skipped then
+        skipped_positions[#skipped_positions + 1] = skipped
       end
     end
 

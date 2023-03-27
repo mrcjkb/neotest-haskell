@@ -59,7 +59,7 @@ describe('tasty', function()
   end)
 
   describe('parse results', function()
-    async.it('test faulure', function()
+    async.it('test failure', function()
       local tree = parse_positions(test_filename)
       local test_result_file = Path:new(test_cwd .. '/fixtures/results/tasty_test_file_fail.txt')
       local result_filename = test_result_file.filename
