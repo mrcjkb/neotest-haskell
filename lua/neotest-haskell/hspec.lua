@@ -15,7 +15,7 @@ hspec.namespace_query = [[
     (exp_name (variable) @func_name)
     (exp_literal) @namespace.name
   )
-  (#any-of? @func_name "describe" "xdescribe")
+  (#any-of? @func_name "describe" "xdescribe" "context" "xcontext")
   )) @namespace.definition
 
   ;; describe (qualified)
@@ -23,7 +23,7 @@ hspec.namespace_query = [[
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @namespace.name
   )
-  (#any-of? @func_name "describe" "xdescribe")
+  (#any-of? @func_name "describe" "xdescribe" "context" "xcontext")
   )) @namespace.definition
 ]]
 
@@ -35,7 +35,7 @@ hspec.tests_query = [[
     (exp_name (variable) @func_name)
     (exp_literal) @test.name
   )
-  (#any-of? @func_name "it" "xit" "prop" "xprop")
+  (#any-of? @func_name "it" "xit" "prop" "xprop" "specify" "xspecify")
   ) @test.definition
 
   ;; test (qualified)
@@ -43,7 +43,7 @@ hspec.tests_query = [[
     (exp_name (qualified_variable (variable) @func_name))
     (exp_literal) @test.name
   )
-  (#any-of? @func_name "it" "xit" "prop" "xprop")
+  (#any-of? @func_name "it" "xit" "prop" "xprop" "specify" "xspecify")
   ) @test.definition
 ]]
 
@@ -134,7 +134,7 @@ function hspec.get_stack_test_opts(pos)
   local function mk_match_opts(match_exp)
     return {
       '--ta',
-      '--match "' .. match_exp .. '"',
+      ('--match "%s"'):format(match_exp),
     }
   end
   local match_opts = mk_hspec_match_opts(mk_match_opts, pos)
