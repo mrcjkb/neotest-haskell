@@ -34,6 +34,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "NorfairKing",
+      "name": "Tom Sydney Kerckhove",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3521180?v=4",
+      "profile": "http://cs-syd.eu",
+      "contributions": [
+        "mentoring"
+      ]
     }
   ],
   "contributorsPerLine": 7,
