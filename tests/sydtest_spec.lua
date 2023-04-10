@@ -1,7 +1,7 @@
 local Path = require('plenary.path')
 
 local sydtest = require('neotest-haskell.sydtest')
-local async = require('plenary.async.tests')
+local async = require('nio').tests
 
 local test_cwd = os.getenv('TEST_CWD')
 

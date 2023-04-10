@@ -102,15 +102,16 @@
     "neotest": {
       "flake": false,
       "locked": {
-        "lastModified": 1681121710,
-        "narHash": "sha256-xsQPnst5xkrkQBaozieToLZB9XtzgXTKts3OFMs4j1g=",
+        "lastModified": 1681236342,
+        "narHash": "sha256-mQsCdyZkv196Asl1Ddt0bVdIQJVrLKPkt4z538qk6bA=",
         "owner": "nvim-neotest",
         "repo": "neotest",
-        "rev": "28724010861dbf294f09b9ee1948d2da2823604b",
+        "rev": "500732c56e36a7b2fb8bcfb113cf21707b32bf31",
         "type": "github"
       },
       "original": {
         "owner": "nvim-neotest",
+        "ref": "feat/nio-async-library",
         "repo": "neotest",
         "type": "github"
       }
