@@ -1,5 +1,9 @@
 local lib = require('neotest.lib')
-local nio = pcall(require, 'nio') or require('neotest.async')
+
+local ok, nio = pcall(require, 'nio')
+if not ok then
+  nio = require('neotest.async').util
+end
 
 local treesitter = {}
 
