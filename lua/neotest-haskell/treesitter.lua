@@ -1,5 +1,5 @@
 local lib = require('neotest.lib')
-local async = require('neotest.async')
+local nio = pcall(require, 'nio') or require('neotest.async')
 
 local treesitter = {}
 
@@ -21,7 +21,7 @@ function treesitter.iter_ts_matches(query, source)
     source.content = lib.files.read(source.file)
   end
   local lang = require('nvim-treesitter.parsers').ft_to_lang('haskell')
-  async.util.scheduler()
+  nio.scheduler()
   local lang_tree = vim.treesitter.get_string_parser(
     source.content,
     lang,
