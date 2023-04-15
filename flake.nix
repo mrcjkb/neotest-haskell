@@ -25,7 +25,6 @@
     };
 
     neotest = {
-      # TODO: Switch back to main branch when neotest/#228 has been merged
       url = "github:nvim-neotest/neotest/feat/nio-async-library";
       flake = false;
     };
