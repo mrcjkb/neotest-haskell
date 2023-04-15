@@ -25,7 +25,7 @@
     };
 
     neotest = {
-      url = "github:nvim-neotest/neotest/feat/nio-async-library";
+      url = "github:nvim-neotest/neotest";
       flake = false;
     };
   };
