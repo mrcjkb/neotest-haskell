@@ -1,6 +1,6 @@
 local runner = require('neotest-haskell.runner')
 local Path = require('plenary.path')
-local async = require('plenary.async.tests')
+local async = require('nio').tests
 
 local simple_cabal_hspec_test_file = Path:new('tests/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
 local multi_package_cabal_hspec_test_file =

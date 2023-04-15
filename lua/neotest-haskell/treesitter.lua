@@ -2,6 +2,7 @@ local lib = require('neotest.lib')
 
 local ok, nio = pcall(require, 'nio')
 if not ok then
+  ---@diagnostic disable-next-line: undefined-field
   nio = require('neotest.async').util
 end
 
