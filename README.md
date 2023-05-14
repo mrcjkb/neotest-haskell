@@ -289,5 +289,6 @@ specification. Contributions of any kind welcome!
 [license-url]: https://github.com/mrcjkb/neotest-haskell/blob/master/LICENSE
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/mrcjkb/neotest-haskell/nix-build.yml?style=for-the-badge
 [ci-url]: https://github.com/mrcjkb/neotest-haskell/actions/workflows/nix-build.yml
-[luarocks-shield]: https://img.shields.io/luarocks/v/MrcJkb/neotest-haskell?logo=lua&color=purple&style=for-the-badge
-[luarocks-url]: https://luarocks.org/modules/MrcJkb/neotest-haskell
+<!-- markdownlint-disable -->
+<!-- [luarocks-shield]: https://img.shields.io/luarocks/v/MrcJkb/neotest-haskell?logo=lua&color=purple&style=for-the-badge -->
+<!-- [luarocks-url]: https://luarocks.org/modules/MrcJkb/neotest-haskell -->
