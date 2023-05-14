@@ -1,4 +1,20 @@
-# neotest-haskell
+<!-- markdownlint-disable -->
+<br />
+<div align="center">
+  <a href="https://github.com/mrcjkb/neotest-haskell">
+    <img src="./logo.svg" alt="neotest-haskell">
+  </a>
+  <p align="center">
+    <a href="https://github.com/mrcjkb/neotest-haskell/issues">Report Bug</a>
+  </p>
+  <p>
+    <strong>
+      A <a href="https://github.com/nvim-neotest/neotest">neotest</a> adapter for Haskell.
+    </strong>
+  </p>
+  <h2>🦥</h>
+</div>
+<!-- markdownlint-restore -->
 
 [![Neovim][neovim-shield]][neovim-url]
 [![Lua][lua-shield]][lua-url]
@@ -12,8 +28,6 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=for-the-badge)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
 ## Quick links
 
