@@ -12,9 +12,9 @@
 
 A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 
-
 ## Quick links
-- [Features](#featues)
+
+- [Features](#features)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Examples](#examples)
@@ -22,23 +22,28 @@ A [Neotest](https://github.com/nvim-neotest/neotest) adapter for Haskell.
 - [Troubleshooting](#troubleshooting)
 - [Recommendations](#recommendations)
 
-
 ## Features
 
 - [x] Supports [Cabal](https://www.haskell.org/cabal/) (single/multi-package) projects.
-- [x] Supports [Stack](https://docs.haskellstack.org/en/stable/) (single/multi-package) projects.
-- [x] Parses [Hspec](https://hackage.haskell.org/package/hspec) and [Sydtest](https://hackage.haskell.org/package/sydtest) `--match` filters for the cursor's position using tree-sitter.
-- [x] Parses [Tasty](https://hackage.haskell.org/package/tasty) `--pattern` filters for the cursor's position using tree-sitter.
+- [x] Supports [Stack](https://docs.haskellstack.org/en/stable/)
+      (single/multi-package) projects.
+- [x] Parses [Hspec](https://hackage.haskell.org/package/hspec)
+      and [Sydtest](https://hackage.haskell.org/package/sydtest)
+      `--match` filters for the cursor's position using tree-sitter.
+- [x] Parses [Tasty](https://hackage.haskell.org/package/tasty)
+      `--pattern` filters for the cursor's position using tree-sitter.
 - [x] Parses test results and displays error messages as diagnostics.
 
+<!-- markdownlint-disable -->
 https://user-images.githubusercontent.com/12857160/224197351-8ca64bd5-8d89-4689-8c40-18d1d018896e.mp4
-
+<!-- markdownlint-restore -->
 
 ## Installation
 
 See also: [neotest installation instructions](https://github.com/nvim-neotest/neotest#installation).
 
-* Requires [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter) and the parser for haskell.
+- Requires [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
+  and the parser for haskell.
 
 The following example uses [`packer.nvim`](https://github.com/wbthomason/packer.nvim):
 
@@ -53,7 +58,6 @@ use({
   }
 })
 ```
-
 
 ## Configuration
 
@@ -120,10 +124,9 @@ require('neotest').setup {
 This can be useful if you have test files that do not import one of the default modules
 used for framework identification:
 
-* `tasty`: `modules = { 'Test.Tasty' }`
-* `hspec`: `modules = { 'Test.Hspec' }`
-* `sydtest`: `modules = { 'Test.Syd' }`
-
+- `tasty`: `modules = { 'Test.Tasty' }`
+- `hspec`: `modules = { 'Test.Hspec' }`
+- `sydtest`: `modules = { 'Test.Syd' }`
 
 ## Advanced configuration
 
@@ -136,9 +139,8 @@ having to fork this plugin, you can add them to
 
 > **Note**
 >
-> * `:h runtimepath`
-> * See examples in [`queries/haskell/`](./queries/haskell/).
-
+> - `:h runtimepath`
+> - See examples in [`queries/haskell/`](./queries/haskell/).
 
 ## Examples
 
@@ -163,47 +165,53 @@ spec = describe "Prelude.head" $ do
 
 In the above listing, calling `:lua require('neotest').run.run()`
 with the cursor on the line...
+
 ```haskell
   describe "Empty list" $
 ```
+
 ...will run the tests with the following Cabal command:
 
 ```console
 # Assuming a Cabal package called "my_package"
 cabal test my_package --test-option -m --test-option "/Prelude.head/Empty list/"
 ```
+
 ...or with the following Stack command:
 
 ```console
 # Assuming a Stack package called "my_package"
 stack test my_package --ta "--match \"/Prelude.head/Empty list/\""
 ```
+
 ...which will run the `"throws an exception if used with an empty list"` test.
 
 Calling `:lua require('neotest').run.run()`
 with the cursor on the line...
+
 ```haskell
 spec = describe "Prelude.head" $ do
 ```
+
 ...will run the tests with the following Cabal command:
 
 ```console
 # Assuming a Cabal package called "my_package"
 cabal test my_package --test-option -m --test-option "/Prelude.head/"
 ```
+
 ...or with the following Stack command:
 
 ```console
 # Assuming a Stack package called "my_package"
 stack test my_package --ta "--match \"/Prelude.head/\""
 ```
-...which will run all tests in the module.
 
+...which will run all tests in the module.
 
 ## TODO
 
 See [issues](https://github.com/mrcjkb/neotest-haskell/issues).
-
 
 ## Troubleshooting
 
@@ -211,16 +219,17 @@ To run a health check, run `:checkhealth neotest-haskell` in Neovim.
 
 ## Limitations
 
-* To run `sydtest` tests of type `'file'`, `sydtest >= 0.13.0.4` is required,
-if the file has more than one top-level namespace (`describe`, `context`, ..).
+- To run `sydtest` tests of type `'file'`, `sydtest >= 0.13.0.4` is required,
+  if the file has more than one top-level namespace (`describe`, `context`, ..).
 
 ## Recommendations
 
 Here are some other plugins I recommend for Haskell development:
 
-* [mrcjkb/haskell-tools.nvim](https://github.com/mrcjkb/haskell-tools.nvim): Toolset to improve the Haskell experience in Neovim.
-* [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle): Hoogle search.
-
+- [mrcjkb/haskell-tools.nvim](https://github.com/mrcjkb/haskell-tools.nvim):
+  Toolset to improve the Haskell experience in Neovim.
+- [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle):
+  Hoogle search.
 
 ## Contributors ✨
 
@@ -245,4 +254,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors)
+specification. Contributions of any kind welcome!

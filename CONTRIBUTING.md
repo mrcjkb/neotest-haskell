@@ -2,7 +2,8 @@
 
 Contributions are more than welcome!
 
-Please don't forget to add your changes to the "Unreleased" section of [the changelog](./CHANGELOG.md) (if applicable).
+Please don't forget to add your changes to the "Unreleased" section of [the changelog](./CHANGELOG.md)
+(if applicable).
 
 ## Commit messages
 
@@ -32,8 +33,8 @@ To apply formatting, while in a devShell, run
 pre-commit run --all
 ```
 
-If you use [`direnv`](https://direnv.net/), just run `direnv allow` and you will be dropped in this devShell.
-
+If you use [`direnv`](https://direnv.net/),
+just run `direnv allow` and you will be dropped in this devShell.
 
 ## Tests
 

@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 # Sydtest License
 
 Copyright (c) 2020-2022 Tom Sydney Kerckhove
