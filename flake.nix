@@ -13,6 +13,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    flake-utils.url = "github:numtide/flake-utils";
+
     flake-compat = {
       url = "github:edolstra/flake-compat";
       flake = false;
@@ -32,6 +34,7 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    flake-utils,
     neovim-nightly-overlay,
     pre-commit-hooks,
     plenary-nvim,
@@ -46,82 +49,77 @@
       "x86_64-darwin"
       "x86_64-linux"
     ];
-    perSystem = nixpkgs.lib.genAttrs supportedSystems;
-    pkgsFor = system: import nixpkgs {inherit system;};
 
     ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) self plenary-nvim neotest;};
+
     nvim-plugin-overlay = import ./nix/nvim-plugin-overlay.nix {
       inherit name;
-      self = ./.;
+      inherit self;
     };
-
-    nvim-plugin-for = system: let
-      pkgs = pkgsFor system;
-    in
-      pkgs.vimUtils.buildVimPluginFrom2Nix {
-        inherit name;
-        src = ./.;
-      };
-
-    pre-commit-check-for = system:
-      pre-commit-hooks.lib.${system}.run {
-        src = ./.;
-        hooks = {
-          alejandra.enable = true;
-          stylua.enable = true;
-        };
-      };
-
-    shellFor = system: let
-      pkgs = pkgsFor system;
-      pre-commit-check = pre-commit-check-for system;
-    in
-      pkgs.mkShell {
-        name = "neotest-haskell devShell";
-        inherit (pre-commit-check) shellHook;
-        buildInputs = with pkgs; [
-          zlib
-          stylua
-          alejandra
-        ];
-      };
-  in {
-    overlays = {
-      inherit ci-overlay nvim-plugin-overlay;
-      default = nvim-plugin-overlay;
-    };
-
-    devShells = perSystem (system: rec {
-      default = devShell;
-      devShell = shellFor system;
-    });
-
-    packages = perSystem (system: let
-      pkgs = pkgsFor system;
-      nvim-plugin = nvim-plugin-for system;
-      docgen = pkgs.callPackage ./nix/docgen.nix {};
-    in rec {
-      default = nvim-plugin;
-      inherit docgen nvim-plugin;
-    });
-
-    checks = perSystem (system: let
-      checkPkgs = import nixpkgs {
+  in
+    flake-utils.lib.eachSystem supportedSystems (system: let
+      pkgs = import nixpkgs {
         inherit system;
         overlays = [
           ci-overlay
-          neovim-nightly-overlay.overlay
           nvim-plugin-overlay
+          neovim-nightly-overlay.overlay
         ];
       };
+
+      pre-commit-check = pre-commit-hooks.lib.${system}.run {
+        src = self;
+        hooks = {
+          alejandra.enable = true;
+          stylua.enable = true;
+          editorconfig-checker.enable = true;
+          markdownlint.enable = true;
+        };
+      };
+
+      devShell = pkgs.mkShell {
+        name = "neotest-haskell devShell";
+        inherit (pre-commit-check) shellHook;
+        buildInputs =
+          (with pkgs; [
+            zlib
+            sumneko-lua-language-server
+          ])
+          ++ (with pre-commit-hooks.packages.${system}; [
+            alejandra
+            stylua
+            editorconfig-checker
+            markdownlint-cli
+          ]);
+      };
+
+      docgen = pkgs.callPackage ./nix/docgen.nix {};
     in {
-      formatting = pre-commit-check-for system;
-      inherit
-        (checkPkgs)
-        nvim-stable-test
-        nvim-nightly-test
-        lints
-        ;
-    });
-  };
+      devShells = {
+        default = devShell;
+        inherit devShell;
+      };
+
+      packages = rec {
+        default = nvim-plugin;
+        nvim-plugin = pkgs.neotest-haskell-dev;
+        inherit docgen;
+      };
+
+      checks = {
+        inherit pre-commit-check;
+        inherit
+          (pkgs)
+          nvim-stable-test
+          nvim-nightly-test
+          lints
+          ;
+      };
+    })
+    // {
+      overlays = {
+        inherit nvim-plugin-overlay;
+        default = nvim-plugin-overlay;
+      };
+    };
 }
