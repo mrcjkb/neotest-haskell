@@ -1,6 +1,10 @@
 local health = {}
 
 local h = vim.health or require('health')
+local start = h.start or h.report_start
+local ok = h.ok or h.report_ok
+local error = h.error or h.report_error
+local warn = h.warn or h.report_warn
 
 ---@class LuaDependency
 ---@field module string The name of a module
@@ -80,13 +84,13 @@ end
 ---@param dep LuaDependency
 local function check_lua_dependency(dep)
   if has_module(dep.module) then
-    h.report_ok(dep.url .. ' installed.')
+    ok(dep.url .. ' installed.')
     return
   end
   if dep.optional() then
-    h.report_warn(('%s not installed. %s %s'):format(dep.module, dep.info, dep.url))
+    error(('%s not installed. %s %s'):format(dep.module, dep.info, dep.url))
   else
-    h.report_error(('Lua dependency %s not found: %s'):format(dep.module, dep.url))
+    error(('Lua dependency %s not found: %s'):format(dep.module, dep.url))
   end
 end
 
@@ -117,20 +121,20 @@ local function check_external_dependency(dep)
   local installed, mb_version = check_installed(dep)
   if installed then
     local version = mb_version and mb_version:sub(0, mb_version:find('\n') - 1) or '(unknown version)'
-    h.report_ok(('%s: found %s.'):format(dep.name, version))
+    ok(('%s: found %s.'):format(dep.name, version))
     if dep.extra_checks then
       dep.extra_checks()
     end
     return
   end
   if dep.optional() then
-    h.report_warn(([[
+    warn(([[
       %s: not found.
       Install %s for extended capabilities.
       %s
       ]]):format(dep.name, dep.url, dep.info))
   else
-    h.report_error(([[
+    error(([[
       %s: not found.
       haskell-tools.nvim requires %s.
       %s
@@ -139,23 +143,23 @@ local function check_external_dependency(dep)
 end
 
 function health.check()
-  h.report_start('Checking for Lua dependencies')
+  start('Checking for Lua dependencies')
   for _, dep in ipairs(lua_dependencies) do
     check_lua_dependency(dep)
   end
 
-  h.report_start('Checking external dependencies')
+  start('Checking external dependencies')
   for _, dep in ipairs(external_dependencies) do
     check_external_dependency(dep)
   end
 
-  h.report_start('Checking tree-sitter parsers')
+  start('Checking tree-sitter parsers')
   local parsers = require('nvim-treesitter.parsers')
   local available_parsers = parsers and parsers.available_parsers()
   if parsers and not vim.tbl_contains(available_parsers, 'haskell') then
-    h.report_error('The tree-sitter parser for Haskell is not installed.')
+    error('The tree-sitter parser for Haskell is not installed.')
   else
-    h.report_ok('The tree-sitter parser for Haskell is installed.')
+    ok('The tree-sitter parser for Haskell is installed.')
   end
 end
 
