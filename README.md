@@ -245,6 +245,8 @@ Here are some other plugins I recommend for Haskell development:
 
 - [mrcjkb/haskell-tools.nvim](https://github.com/mrcjkb/haskell-tools.nvim):
   Toolset to improve the Haskell experience in Neovim.
+- [haskell-snippets.nvim](https://github.com/mrcjkb/haskell-snippets.nvim)
+  Collection of Haskell snippets for [LuaSnip](https://github.com/L3MON4D3/LuaSnip).
 - [luc-tielen/telescope_hoogle](https://github.com/luc-tielen/telescope_hoogle):
   Hoogle search.
 
