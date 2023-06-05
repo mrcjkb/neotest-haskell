@@ -72,8 +72,34 @@
         hooks = {
           alejandra.enable = true;
           stylua.enable = true;
+          lua-ls.enable = true;
           editorconfig-checker.enable = true;
           markdownlint.enable = true;
+        };
+        settings = {
+          lua-ls.config = {
+            Lua = {
+              diagnostics = {
+                globals = [
+                  "vim"
+                  "describe"
+                  "it"
+                  "assert"
+                ];
+                libraryFiles = "Disable";
+                disable = [
+                  "duplicate-set-field"
+                ];
+              };
+              workspace.library = with pkgs; [
+                "${neovim-nightly}/share/nvim/runtime/lua"
+                "${plenary-plugin}/lua"
+                "${nvim-treesitter-plugin}/lua"
+                "${neotest-plugin}/lua"
+              ];
+              runtime.version = "LuaJIT";
+            };
+          };
         };
       };
 
@@ -112,7 +138,6 @@
           (pkgs)
           nvim-stable-test
           nvim-nightly-test
-          lints
           ;
       };
     })
