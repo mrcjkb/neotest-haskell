@@ -72,79 +72,15 @@ with final.stdenv; let
         nvim --headless --noplugin -c "PlenaryBustedDirectory tests {nvim_cmd = 'nvim'}"
       '';
     };
-
-  lints = mkDerivation {
-    name = "neotest-haskell-lints";
-
-    src = self;
-
-    phases = [
-      "unpackPhase"
-      "buildPhase"
-      "checkPhase"
-    ];
-
-    doCheck = true;
-
-    buildInputs = with final; [
-      lua51Packages.luacheck
-      sumneko-lua-language-server
-      jq
-    ];
-
-    buildPhase = let
-      luarc = final.writeText ".luarc.json" ''
-        {
-          "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
-          "Lua.diagnostics.globals": [
-            "vim",
-            "describe",
-            "it",
-            "assert"
-          ],
-          "Lua.diagnostics.libraryFiles": "Disable",
-          "Lua.diagnostics.disable": [
-            "duplicate-set-field",
-          ],
-          "Lua.workspace.library": [
-            "${final.neovim-unwrapped}/share/nvim/runtime/lua",
-            "${plenary-plugin}/lua",
-            "${nvim-treesitter-plugin}/lua",
-            "${neotest-plugin}/lua"
-          ],
-          "Lua.runtime.version": "LuaJIT"
-        }
-      '';
-    in ''
-      mkdir -p $out
-      cp -r lua $out/lua
-      cp -r tests $out/tests
-      cp .luacheckrc $out
-      cp ${luarc} $out/.luarc.json
-    '';
-
-    checkPhase = ''
-      export HOME=$(realpath .)
-      cd $out
-      luacheck lua
-      luacheck tests
-      lua-language-server --check "$out/lua" \
-        --configpath "$out/.luarc.json" \
-        --loglevel="trace" \
-        --logpath "$out" \
-        --checklevel="Warning"
-      if [[ -f $out/check.json ]]; then
-        echo "+++++++++++++++ lua-language-server diagnostics +++++++++++++++"
-        cat $out/check.json
-        exit 1
-      fi
-    '';
-  };
 in {
   nvim-stable-test = mkPlenaryTest {name = "nvim-stable-test";};
   nvim-nightly-test = mkPlenaryTest {
     name = "nvim-nightly-test";
     nvim = nvim-nightly;
   };
-  inherit lints;
+  inherit
+    plenary-plugin
+    neotest-plugin
+    nvim-treesitter-plugin
+    ;
 }
