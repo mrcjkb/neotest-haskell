@@ -89,6 +89,14 @@
     (exp_literal) @test.name
   ) @test.definition
 )
+;; tasty-golden goldenVsString (qualified or unqualified)
+(_
+  (exp_apply
+    (exp_name) @func_name
+    (#lua-match? @func_name "^.*goldenVsString")
+    (exp_literal) @test.name
+  ) @test.definition
+)
 ;; tasty-golden goldenVsStringDiff (qualified or unqualified)
 (_
   (exp_apply

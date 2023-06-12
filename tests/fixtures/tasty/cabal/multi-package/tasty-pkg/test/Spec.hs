@@ -11,6 +11,7 @@ import Test.Tasty.Program
 import Test.Tasty.HUnit
 import Test.Tasty.Hspec
 import Test.Tasty.Wai hiding (head)
+import Test.Tasty.Golden as TG
 import Test.Hspec
 import Test.Tasty.ExpectedFailure
 import Test.Hspec.QuickCheck
@@ -32,6 +33,7 @@ main = do
     , hspecTests
     , programTests
     , waiTests
+    , goldenTests
     ]
 
 properties :: TestTree
@@ -131,6 +133,22 @@ waiTests = testGroup "Tasty-Wai Tests"
       res <- get "not-a-thing"
       assertStatus' HTTP.status404 res
       assertBody "no route" res
+  ]
+
+goldenTests = testGroup "Golden tests"
+  [ goldenVsFile "goldenVsFile" "/some/golden/file.txt" "/some/output/file.txt" (pure ())
+  , goldenVsString "goldenVsString" "/some/golden/file.txt" (pure "")
+  , goldenVsFileDiff
+      "goldenVsFileDiff"
+      (\ref new -> ["diff", "-u", ref, new])
+      "/some/golden/file.txt"
+      "/some/output/file.txt"
+      (pure ())
+  , goldenVsStringDiff
+      "goldenVsStringDiff"
+      (\ref new -> ["diff", "-u", ref, new])
+      "/some/golden/file.txt"
+      (pure "")
   ]
 
 genAlphaList :: H.Gen String

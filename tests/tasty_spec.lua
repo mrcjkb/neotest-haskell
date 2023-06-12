@@ -56,6 +56,12 @@ describe('tasty', function()
     assert_has_position(result, wai_ns .. '::"Echo to thee"')
     assert_has_position(result, wai_ns .. '::"Echo to thee (json)"')
     assert_has_position(result, wai_ns .. '::"Will die!"')
+    local golden_ns = test_filename .. '::"Golden tests"'
+    assert_has_position(result, golden_ns)
+    assert_has_position(result, golden_ns .. '::"goldenVsFile"')
+    assert_has_position(result, golden_ns .. '::"goldenVsString"')
+    assert_has_position(result, golden_ns .. '::"goldenVsFileDiff"')
+    assert_has_position(result, golden_ns .. '::"goldenVsStringDiff"')
   end)
 
   describe('parse results', function()
