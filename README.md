@@ -26,7 +26,7 @@
 [![Build Status][ci-shield]][ci-url]
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=for-the-badge)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## Quick links
@@ -264,6 +264,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/saep"><img src="https://avatars.githubusercontent.com/u/1560366?v=4?s=100" width="100px;" alt="Sebastian Witte"/><br /><sub><b>Sebastian Witte</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/commits?author=saep" title="Code">💻</a> <a href="#infra-saep" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/mrcjkb/neotest-haskell/commits?author=saep" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/andy-bell101"><img src="https://avatars.githubusercontent.com/u/13719403?v=4?s=100" width="100px;" alt="Andy Bell"/><br /><sub><b>Andy Bell</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/commits?author=andy-bell101" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://cs-syd.eu"><img src="https://avatars.githubusercontent.com/u/3521180?v=4?s=100" width="100px;" alt="Tom Sydney Kerckhove"/><br /><sub><b>Tom Sydney Kerckhove</b></sub></a><br /><a href="#mentoring-NorfairKing" title="Mentoring">🧑‍🏫</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/shinzui"><img src="https://avatars.githubusercontent.com/u/519?v=4?s=100" width="100px;" alt="Nadeem Bitar"/><br /><sub><b>Nadeem Bitar</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/issues?q=author%3Ashinzui" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
