@@ -43,6 +43,15 @@
       "contributions": [
         "mentoring"
       ]
+    },
+    {
+      "login": "shinzui",
+      "name": "Nadeem Bitar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/519?v=4",
+      "profile": "https://github.com/shinzui",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -50,5 +59,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "projectName": "neotest-haskell",
-  "projectOwner": "mrcjkb"
+  "projectOwner": "mrcjkb",
+  "commitType": "docs"
 }
