@@ -7,7 +7,14 @@ base.is_test_file = function(file_path)
   if not vim.endswith(file_path, '.hs') then
     return false
   end
-  return vim.endswith(file_path, 'Spec.hs') or vim.endswith(file_path, 'Test.hs') or vim.endswith(file_path, 'Tests.hs')
+  if
+    vim.endswith(file_path, 'Spec.hs')
+    or vim.endswith(file_path, 'Test.hs')
+    or vim.endswith(file_path, 'Tests.hs')
+  then
+    return true
+  end
+  return file_path:match('test') ~= nil or file_path:match('spec') ~= nil
 end
 
 ---Filter directories when searching for test files
