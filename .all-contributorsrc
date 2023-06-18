@@ -61,6 +61,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Kleidukos",
+      "name": "Hécate Moonlight",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29253044?v=4",
+      "profile": "https://glitchbra.in",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
