@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Fixed
 - Don't pass `-p` option to `tasty` if no paths to filter on are detected.
+- Tree-sitter root node detection in test files for which namespaces
+  cannot be detected: Allow `test` nodes to be root nodes, too.
 ### Changed
 - Treat all files with `spec` or `test` in the path as test files.
 
