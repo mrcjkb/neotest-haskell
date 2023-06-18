@@ -47,15 +47,13 @@ function position.mk_top_level_node_parser(prepend_result, concat_results)
     local prepended = {}
     for _, node in pos:iter_nodes() do
       local data = node:data()
-      if data.type == 'namespace' then
-        local parent = node:parent()
-        local parent_data = parent and parent:data()
-        local is_top_level = not parent_data or parent_data.type ~= 'namespace'
-        local is_new = not vim.tbl_contains(prepended, data.name)
-        if is_top_level and is_new then
-          table.insert(prepended, data.name)
-          results = prepend_result(results, data.name)
-        end
+      local parent = node:parent()
+      local parent_data = parent and parent:data()
+      local is_top_level = not parent_data or parent_data.type == 'file'
+      local is_new = not vim.tbl_contains(prepended, data.name)
+      if is_top_level and is_new then
+        table.insert(prepended, data.name)
+        results = prepend_result(results, data.name)
       end
     end
     return concat_results(results)
