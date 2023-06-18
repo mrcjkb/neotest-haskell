@@ -3,6 +3,7 @@ local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
 local hspec = require('neotest-haskell.hspec')
+local logger = require('neotest.logging')
 
 ---@type TestFrameworkHandler
 local tasty = {}
@@ -28,13 +29,17 @@ end
 
 ---Parses tasty --pattern filter expressions for the top-level test positions.
 ---@param pos neotest.Tree The position to build the --pattern filter expression from.
----@return string pattern The tasty --pattern expression.
+---@return string|nil pattern The tasty --pattern expression.
 local function parse_top_level_tasty_nodes(pos)
   local function prepend_subpatterns(subpatterns, pos_name)
     table.insert(subpatterns, format_position_name(pos_name))
     return subpatterns
   end
   local function concat_subpatterns(subpatterns)
+    if not subpatterns or #subpatterns == 0 then
+      logger.error('Could not detect tasty top level nodes.')
+      return nil
+    end
     return '$0~' .. table.concat(subpatterns, '||')
   end
   local parse = position.mk_top_level_node_parser(prepend_subpatterns, concat_subpatterns)
@@ -43,9 +48,13 @@ end
 
 ---Parses the tasty --filter expression from a position, starting at a child node, up to its parents.
 ---@param pos neotest.Tree The position of the test or namespace to get the pattern for.
----@return string pattern The tasty --pattern expression for the test.
+---@return string|nil pattern The tasty --pattern expression for the test.
 local function parse_tasty_tree(pos)
   local function format_result(result)
+    if not result or result == '' then
+      logger.error('Could not detect any tasty patterns.')
+      return nil
+    end
     return '$0~' .. result
   end
   local function prepend_position(result, pos_name)
@@ -67,7 +76,7 @@ end
 ---   ```
 --- - Result: "$0 ~ /Run.My test/"
 ---@param pos neotest.Tree The position to build the --pattern filter expression from.
----@return string pattern The tasty pattern expression for the test or namespace (see example).
+---@return string|nil pattern The tasty pattern expression for the test or namespace (see example).
 local function mk_tasty_pattern(pos)
   local data = pos:data()
   if data.type == 'file' then
@@ -80,22 +89,22 @@ end
 ---@return string[] test_opts The Cabal test options for matching a tasty filter.
 function tasty.get_cabal_test_opts(pos)
   local pattern = mk_tasty_pattern(pos)
-  return {
+  return pattern and {
     '--test-option',
     '-p',
     '--test-option',
     pattern,
-  }
+  } or {}
 end
 
 ---@param pos neotest.Tree The position.
 ---@return string[] test_opts The Stack test options for matching a tasty filter.
 function hspec.get_stack_test_opts(pos)
   local pattern = mk_tasty_pattern(pos)
-  return {
+  return pattern and {
     '--ta',
     '-p "' .. pattern .. '"',
-  }
+  } or {}
 end
 
 local function get_failed_name(line, lines, idx)
