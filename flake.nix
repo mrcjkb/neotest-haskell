@@ -91,12 +91,23 @@
                   "duplicate-set-field"
                 ];
               };
-              workspace.library = with pkgs; [
-                "${neovim-nightly}/share/nvim/runtime/lua"
-                "${plenary-plugin}/lua"
-                "${nvim-treesitter-plugin}/lua"
-                "${neotest-plugin}/lua"
-              ];
+              workspace = {
+                library = with pkgs; [
+                  "${neovim-nightly}/share/nvim/runtime/lua"
+                  "${plenary-plugin}/lua"
+                  "${nvim-treesitter-plugin}/lua"
+                  "${neotest-plugin}/lua"
+                ];
+                checkThirdParty = false;
+                ignoreDir = [
+                  ".git"
+                  ".github"
+                  ".direnv"
+                  "result"
+                  "nix"
+                  "doc"
+                ];
+              };
               runtime.version = "LuaJIT";
             };
           };
