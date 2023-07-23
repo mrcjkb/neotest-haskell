@@ -5,7 +5,6 @@ local results = require('neotest-haskell.results')
 local hspec = require('neotest-haskell.hspec')
 local logger = require('neotest.logging')
 
----@type TestFrameworkHandler
 local tasty = {}
 
 tasty.default_modules = { 'Test.Tasty' }
@@ -168,4 +167,5 @@ end
 
 tasty.parse_results = results.mk_result_parser(parse_errors, get_failed_name, get_succeeded_name, get_skipped_name)
 
+---@cast tasty TestFrameworkHandler
 return tasty

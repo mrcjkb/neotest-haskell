@@ -3,7 +3,6 @@ local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
 
----@type TestFrameworkHandler
 local hspec = {}
 
 hspec.default_modules = { 'Test.Hspec' }
@@ -146,4 +145,5 @@ end
 
 hspec.parse_results = results.mk_result_parser(parse_errors, get_failed_name, get_succeeded_name, get_skipped_name)
 
+---@cast hspec TestFrameworkHandler
 return hspec

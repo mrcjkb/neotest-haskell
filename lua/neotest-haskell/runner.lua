@@ -1,4 +1,7 @@
-local async = require('neotest.async')
+local ok, nio = pcall(require, 'nio')
+if not ok then
+  nio = require('neotest.async')
+end
 local lib = require('neotest.lib')
 local Path = require('plenary.path')
 local logger = require('neotest.logging')
@@ -27,7 +30,8 @@ end
 ---@param package_root string The package root directory.
 ---@return string package_name The assumed package name.
 local function get_package_name(package_root)
-  for _, package_file_path in ipairs(async.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
+  ---@diagnostic disable-next-line -- nio.fn is private?
+  for _, package_file_path in ipairs(nio.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
     local package_file_name = package_file_path and vim.fn.fnamemodify(package_file_path, ':t')
     local package_name = package_file_name and package_file_name:gsub('.cabal', '')
     if package_name then
@@ -73,7 +77,9 @@ local function has_module(test_file_content, qualified_modules)
       table.insert(modules, module)
     end
     local query = mk_module_query(modules)
-    if treesitter_hs.has_matches(query, { content = test_file_content }) then
+    ---@type FileContentRef
+    local contentRef = { content = test_file_content }
+    if treesitter_hs.has_matches(query, contentRef) then
       return true
     end
   end

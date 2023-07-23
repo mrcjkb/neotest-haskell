@@ -106,6 +106,7 @@
                   "result"
                   "nix"
                   "doc"
+                  "tests" # neotest's types are not well-defined
                 ];
               };
               runtime.version = "LuaJIT";
