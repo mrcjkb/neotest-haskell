@@ -4,7 +4,6 @@ local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
 
----@type TestFrameworkHandler
 local sydtest = {}
 
 sydtest.default_modules = { 'Test.Syd' }
@@ -150,4 +149,5 @@ end
 
 sydtest.parse_results = results.mk_result_parser(parse_errors, get_failed_name, get_succeeded_name, get_skipped_name)
 
+---@cast sydtest TestFrameworkHandler
 return sydtest
