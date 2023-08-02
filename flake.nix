@@ -121,10 +121,10 @@
         buildInputs =
           (with pkgs; [
             zlib
-            sumneko-lua-language-server
           ])
           ++ (with pre-commit-hooks.packages.${system}; [
             alejandra
+            lua-language-server
             stylua
             editorconfig-checker
             markdownlint-cli
