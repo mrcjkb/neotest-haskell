@@ -79,7 +79,9 @@ end
 ---@param query_name string
 ---@return string query
 local function get_query_string(query_name)
-  local get_query_files = vim.treesitter.query.get_files or vim.treesitter.query.get_query_files
+  local get_query_files = vim.treesitter.query.get_files
+    ---@diagnostic disable-next-line: deprecated
+    or vim.treesitter.query.get_query_files
   local query_files = get_query_files('haskell', query_name)
   return read_query_files(query_files)
 end
