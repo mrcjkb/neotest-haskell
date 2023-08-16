@@ -14,7 +14,7 @@ local treesitter = {}
 ---@class FileContentRef
 ---@field content string
 
----@alias HaskellQuery FileRef | FileContentRef
+---@alias HaskellTestFile FileRef | FileContentRef
 
 ---@param file_ref FileRef
 ---@return FileContentRef content_ref
@@ -24,11 +24,10 @@ local function to_file_content_ref(file_ref)
   }
 end
 
----Parse a tree-sitter query from a Haskell file.
 ---@async
----@param query string|table
----@param source HaskellQuery The source
----@return (fun(): integer, table<integer,TSNode>, table): pattern id, match, metadata
+---@param query string|table The tree-sitter query.
+---@param source HaskellTestFile
+---@return (fun(): integer, table<integer,TSNode>, table) pattern id, match, metadata
 function treesitter.iter_ts_matches(query, source)
   if source.file then
     ---@cast source FileRef
@@ -51,7 +50,7 @@ end
 ---Check if a source has any maches for a query.
 ---@async
 ---@param query string|table
----@param source HaskellQuery
+---@param source HaskellTestFile
 ---@return boolean has_matches
 function treesitter.has_matches(query, source)
   for _, match in treesitter.iter_ts_matches(query, source) do
