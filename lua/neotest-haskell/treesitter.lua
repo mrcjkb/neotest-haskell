@@ -16,6 +16,14 @@ local treesitter = {}
 
 ---@alias HaskellQuery FileRef | FileContentRef
 
+---@param file_ref FileRef
+---@return FileContentRef content_ref
+local function to_file_content_ref(file_ref)
+  return {
+    content = lib.files.read(file_ref.file),
+  }
+end
+
 ---Parse a tree-sitter query from a Haskell file.
 ---@async
 ---@param query string|table
@@ -23,7 +31,8 @@ local treesitter = {}
 ---@return (fun(): integer, table<integer,TSNode>, table): pattern id, match, metadata
 function treesitter.iter_ts_matches(query, source)
   if source.file then
-    source.content = lib.files.read(source.file)
+    ---@cast source FileRef
+    source = to_file_content_ref(source)
   end
   local lang = require('nvim-treesitter.parsers').ft_to_lang('haskell')
   nio.scheduler()
