@@ -1,5 +1,4 @@
 local treesitter = require('neotest-haskell.treesitter')
-local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
 
@@ -122,6 +121,7 @@ end
 ---@param test_name string The name of the test.
 ---@return neotest.Error[] hspec_errors The errors.
 local function parse_errors(raw_lines, test_name)
+  local util = require('neotest-haskell.util')
   local failures_found = false
   local pos_found = false
   local error_message = nil

@@ -3,7 +3,6 @@ local util = require('neotest-haskell.util')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
 local hspec = require('neotest-haskell.hspec')
-local logger = require('neotest.logging')
 
 local tasty = {}
 
@@ -36,6 +35,7 @@ local function parse_top_level_tasty_nodes(pos)
   end
   local function concat_subpatterns(subpatterns)
     if not subpatterns or #subpatterns == 0 then
+      local logger = require('neotest.logging')
       logger.error('Could not detect tasty top level nodes.')
       return nil
     end
@@ -51,6 +51,7 @@ end
 local function parse_tasty_tree(pos)
   local function format_result(result)
     if not result or result == '' then
+      local logger = require('neotest.logging')
       logger.error('Could not detect any tasty patterns.')
       return nil
     end

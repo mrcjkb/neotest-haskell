@@ -73,9 +73,6 @@
 
 local base = require('neotest-haskell.base')
 local runner = require('neotest-haskell.runner')
-local logger = require('neotest.logging')
-local validate = require('neotest-haskell.validate')
-local lib = require('neotest.lib')
 
 ---@type neotest.Adapter
 local HaskellNeotestAdapter = { name = 'neotest-haskell' }
@@ -88,6 +85,7 @@ local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 ---@see neotest.Adapter
 ---@private
 function HaskellNeotestAdapter.root(dir)
+  local lib = require('neotest.lib')
   local multi_package_or_stack_project_root_directory = lib.files.match_root_pattern('cabal.project', 'stack.yaml')(dir)
   return multi_package_or_stack_project_root_directory or lib.files.match_root_pattern('*.cabal', 'package.yaml')(dir)
 end
@@ -128,6 +126,7 @@ end
 ---@return neotest.Tree | nil
 ---@private
 function HaskellNeotestAdapter.discover_positions(file_path)
+  local logger = require('neotest.logging')
   local handler = runner.select_framework(file_path, frameworks)
   local pos = handler.parse_positions(file_path)
   logger.debug('Found positions: ' .. vim.inspect(pos))
@@ -192,6 +191,7 @@ end
 setmetatable(HaskellNeotestAdapter, {
   ---@param opts NeotestHaskellOpts
   __call = function(_, opts)
+    local validate = require('neotest-haskell.validate')
     validate.validate(opts)
     if opts.build_tools then
       build_tools = opts.build_tools
