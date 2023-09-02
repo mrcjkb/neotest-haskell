@@ -1,5 +1,3 @@
-local lib = require('neotest.lib')
-
 local results = {}
 
 ---Get the file root from a test tree.
@@ -24,6 +22,8 @@ end
 ---@param get_skipped_name fun(line:string, lines:string[], idx:integer):string? Function to extract a skipped test name
 ---@return fun(context:RunContext, out_path:string, tree:neotest.Tree):table<string,neotest.Result> result_parser
 function results.mk_result_parser(parse_errors, get_failed_name, get_succeeded_name, get_skipped_name)
+  local lib = require('neotest.lib')
+
   ---@param context RunContext The run context.
   ---@param out_path string Path to an hspec test results output file.
   ---@param tree neotest.Tree The test tree at the position that was run.

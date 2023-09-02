@@ -1,11 +1,3 @@
-local lib = require('neotest.lib')
-
-local ok, nio = pcall(require, 'nio')
-if not ok then
-  ---@diagnostic disable-next-line: undefined-field
-  nio = require('neotest.async').util
-end
-
 local treesitter = {}
 
 ---@class FileRef
@@ -19,6 +11,7 @@ local treesitter = {}
 ---@param file_ref FileRef
 ---@return FileContentRef content_ref
 local function to_file_content_ref(file_ref)
+  local lib = require('neotest.lib')
   return {
     content = lib.files.read(file_ref.file),
   }
@@ -34,6 +27,11 @@ function treesitter.iter_ts_matches(query, source)
     source = to_file_content_ref(source)
   end
   local lang = require('nvim-treesitter.parsers').ft_to_lang('haskell')
+  local ok, nio = pcall(require, 'nio')
+  if not ok then
+    ---@diagnostic disable-next-line: undefined-field
+    nio = require('neotest.async').util
+  end
   nio.scheduler()
   local lang_tree = vim.treesitter.get_string_parser(
     source.content,
@@ -41,6 +39,7 @@ function treesitter.iter_ts_matches(query, source)
     -- Prevent neovim from trying to read the query from injection files
     { injections = { [lang] = '' } }
   )
+  local lib = require('neotest.lib')
   ---@type userdata
   local root = lib.treesitter.fast_parse(lang_tree):root()
   local normalised_query = lib.treesitter.normalise_query(lang, query)
