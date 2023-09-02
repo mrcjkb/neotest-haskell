@@ -54,7 +54,7 @@
 
 ---@mod neotest-haskell.options Options
 
----@class NeotestHaskellOpts
+---@class (exact) NeotestHaskellOpts
 ---@field build_tools build_tool[] | nil The build tools, ordered by priority. Default: `{ 'stack', 'cabal' }`.
 ---@field frameworks framework_opt[] | nil List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec', 'sydtest' }`.
 ---@field is_test_file (fun(name:string):boolean) | nil Used to detect if a file is a test file.
@@ -67,7 +67,7 @@
 
 ---@alias test_framework 'tasty' | 'hspec' | 'sydtest'
 
----@class FrameworkSpec
+---@class (exact) FrameworkSpec
 ---@field framework test_framework
 ---@field modules string[] The modules to query for in test files, to determine if this framework can be used.
 

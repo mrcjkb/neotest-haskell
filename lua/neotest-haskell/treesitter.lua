@@ -1,9 +1,9 @@
 local treesitter = {}
 
----@class FileRef
+---@class (exact) FileRef
 ---@field file string
 
----@class FileContentRef
+---@class (exact) FileContentRef
 ---@field content string
 
 ---@alias HaskellTestFile FileRef | FileContentRef
