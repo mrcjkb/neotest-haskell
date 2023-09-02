@@ -28,7 +28,7 @@ end
 ---If a *.cabal is present, this is *.
 ---Otherwise, we assume the package name is the same as the directory name.
 ---@param package_root string The package root directory.
----@return string package_name The assumed package name.
+---@return string | nil package_name The assumed package name.
 local function get_package_name(package_root)
   ---@diagnostic disable-next-line -- nio.fn is private?
   for _, package_file_path in ipairs(nio.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
@@ -173,7 +173,9 @@ function runner.select_build_tool(handler, test_file_path, build_tools)
   local command = { selected_build_tool, 'test' }
   if is_multi_package_project then
     local package_name = get_package_name(package_root)
-    table.insert(command, package_name)
+    if package_name then
+      table.insert(command, package_name)
+    end
   end
   return function(pos)
     local test_opts = pos and get_test_opts(pos)
