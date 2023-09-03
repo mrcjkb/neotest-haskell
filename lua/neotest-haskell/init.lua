@@ -67,7 +67,7 @@
 
 ---@alias test_framework 'tasty' | 'hspec' | 'sydtest'
 
----@class (exact) FrameworkSpec
+---@class FrameworkSpec
 ---@field framework test_framework
 ---@field modules string[] The modules to query for in test files, to determine if this framework can be used.
 
