@@ -8,12 +8,12 @@ with final.lib;
 with final.stdenv; let
   nvim-nightly = final.neovim-nightly;
 
-  plenary-plugin = final.pkgs.vimUtils.buildVimPluginFrom2Nix {
+  plenary-plugin = final.pkgs.vimUtils.buildVimPlugin {
     name = "plenary.nvim";
     src = plenary-nvim;
   };
 
-  neotest-plugin = final.pkgs.vimUtils.buildVimPluginFrom2Nix {
+  neotest-plugin = final.pkgs.vimUtils.buildVimPlugin {
     name = "neotest";
     src = neotest;
   };
