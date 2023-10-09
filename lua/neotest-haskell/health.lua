@@ -30,14 +30,6 @@ local lua_dependencies = {
     url = '[nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim)',
     info = '',
   },
-  {
-    module = 'nvim-treesitter',
-    optional = function()
-      return false
-    end,
-    url = '[nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)',
-    info = '',
-  },
 }
 
 ---@class ExternalDependency
@@ -154,9 +146,8 @@ function health.check()
   end
 
   start('Checking tree-sitter parsers')
-  local parsers = require('nvim-treesitter.parsers')
-  local available_parsers = parsers and parsers.available_parsers()
-  if parsers and not vim.tbl_contains(available_parsers, 'haskell') then
+  local ok = pcall(vim.treesitter.get_string_parser, '', 'haskell')
+  if not ok then
     error('The tree-sitter parser for Haskell is not installed.')
   else
     ok('The tree-sitter parser for Haskell is installed.')
