@@ -76,7 +76,9 @@ use({
 
 ## Configuration
 
-Make sure the Haskell parser for tree-sitter is installed, you can do so via nvim-treesitter like so:
+Make sure the Haskell parser for tree-sitter is installed,
+you can do so via [`nvim-treesitter`](https://github.com/nvim-treesitter/nvim-treesitter)
+like so:
 
 ```lua
 require('nvim-treesitter.configs').setup {
