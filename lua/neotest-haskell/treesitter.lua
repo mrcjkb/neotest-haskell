@@ -26,7 +26,6 @@ function treesitter.iter_ts_matches(query, source)
     ---@cast source FileRef
     source = to_file_content_ref(source)
   end
-  local lang = require('nvim-treesitter.parsers').ft_to_lang('haskell')
   local ok, nio = pcall(require, 'nio')
   if not ok then
     ---@diagnostic disable-next-line: undefined-field
@@ -35,14 +34,14 @@ function treesitter.iter_ts_matches(query, source)
   nio.scheduler()
   local lang_tree = vim.treesitter.get_string_parser(
     source.content,
-    lang,
+    'haskell',
     -- Prevent neovim from trying to read the query from injection files
-    { injections = { [lang] = '' } }
+    { injections = { ['haskell'] = '' } }
   )
   local lib = require('neotest.lib')
   ---@type userdata
   local root = lib.treesitter.fast_parse(lang_tree):root()
-  local normalised_query = lib.treesitter.normalise_query(lang, query)
+  local normalised_query = lib.treesitter.normalise_query('haskell', query)
   return normalised_query:iter_matches(root, source.content)
 end
 
