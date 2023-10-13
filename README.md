@@ -61,17 +61,17 @@ See also: [neotest installation instructions](https://github.com/nvim-neotest/ne
 
 - Requires the tree-sitter parser for haskell to be installed.
 
-The following example uses [`packer.nvim`](https://github.com/wbthomason/packer.nvim):
+The following example uses [`lazy.nvim`](https://github.com/folke/lazy.nvim):
 
 ```lua
-use({
+{
   'nvim-neotest/neotest',
-  requires = {
+  dependencies = {
     -- ...,
     'mrcjkb/neotest-haskell',
     'nvim-lua/plenary.nvim',
   }
-})
+}
 ```
 
 ## Configuration
