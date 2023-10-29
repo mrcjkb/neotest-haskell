@@ -1,5 +1,5 @@
 local treesitter = require('neotest-haskell.treesitter')
-local util = require('neotest-haskell.util')
+local util = require('neotest-haskell.strings')
 local position = require('neotest-haskell.position')
 local results = require('neotest-haskell.results')
 local hspec = require('neotest-haskell.hspec')
