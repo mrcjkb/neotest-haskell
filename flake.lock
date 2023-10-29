@@ -242,6 +242,22 @@
         "type": "github"
       }
     },
+    "neodev-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1698559518,
+        "narHash": "sha256-UEneC6yd+EqlmQ9T00N1XOP4/xyhDhPB0rZ5fV9d8Us=",
+        "owner": "folke",
+        "repo": "neodev.nvim",
+        "rev": "f3f5d756f4043180523bb69072a104f7216b5f42",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "neodev.nvim",
+        "type": "github"
+      }
+    },
     "neotest": {
       "flake": false,
       "locked": {
@@ -430,6 +446,7 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
+        "neodev-nvim": "neodev-nvim",
         "neotest": "neotest",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs_3",

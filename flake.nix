@@ -25,6 +25,12 @@
       flake = false;
     };
 
+    # inputs for tests and lints
+    neodev-nvim = {
+      url = "github:folke/neodev.nvim";
+      flake = false;
+    };
+
     neotest = {
       url = "github:nvim-neotest/neotest";
       flake = false;
@@ -37,6 +43,7 @@
     flake-utils,
     neovim-nightly-overlay,
     pre-commit-hooks,
+    neodev-nvim,
     plenary-nvim,
     neotest,
     ...
@@ -50,7 +57,7 @@
       "x86_64-linux"
     ];
 
-    ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) self plenary-nvim neotest;};
+    ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) self neodev-nvim plenary-nvim neotest;};
 
     nvim-plugin-overlay = import ./nix/nvim-plugin-overlay.nix {
       inherit name;
@@ -67,51 +74,85 @@
         ];
       };
 
+      mkTypeCheck = {
+        nvim-api ? [],
+        disabled-diagnostics ? [],
+      }:
+        pre-commit-hooks.lib.${system}.run {
+          src = self;
+          hooks = {
+            lua-ls.enable = true;
+          };
+          settings = {
+            lua-ls = {
+              config = {
+                runtime.version = "LuaJIT";
+                Lua = {
+                  workspace = {
+                    library =
+                      nvim-api
+                      ++ (with pkgs; [
+                        "${neotest-plugin}/lua"
+                        # FIXME:
+                        # "${pkgs.luajitPackages.busted}"
+                      ]);
+                    checkThirdParty = false;
+                    ignoreDir = [
+                      ".git"
+                      ".github"
+                      ".direnv"
+                      "result"
+                      "nix"
+                      "doc"
+                      "tests" # neotest's types are not well-defined
+                    ];
+                  };
+                  diagnostics = {
+                    globals = [
+                      "vim"
+                      "describe"
+                      "it"
+                      "assert"
+                    ];
+                    libraryFiles = "Disable";
+                    disable = disabled-diagnostics;
+                  };
+                };
+              };
+            };
+          };
+        };
+
+      type-check-stable = mkTypeCheck {
+        nvim-api = [
+          "${pkgs.neovim}/share/nvim/runtime/lua"
+          "${pkgs.neodev-plugin}/types/stable"
+        ];
+        disabled-diagnostics = [
+          "duplicate-set-field" # neotest
+          "undefined-doc-name"
+          "redundant-parameter"
+          "invisible"
+        ];
+      };
+
+      type-check-nightly = mkTypeCheck {
+        nvim-api = [
+          "${pkgs.neovim-nightly}/share/nvim/runtime/lua"
+          "${pkgs.neodev-plugin}/types/nightly"
+        ];
+        disabled-diagnostics = [
+          "duplicate-set-field" # neotest
+        ];
+      };
+
       pre-commit-check = pre-commit-hooks.lib.${system}.run {
         src = self;
         hooks = {
           alejandra.enable = true;
           stylua.enable = true;
-          lua-ls.enable = true;
           editorconfig-checker.enable = true;
           markdownlint.enable = true;
-        };
-        settings = {
-          lua-ls.config = {
-            Lua = {
-              diagnostics = {
-                globals = [
-                  "vim"
-                  "describe"
-                  "it"
-                  "assert"
-                ];
-                libraryFiles = "Disable";
-                disable = [
-                  "duplicate-set-field"
-                ];
-              };
-              workspace = {
-                library = with pkgs; [
-                  "${neovim-nightly}/share/nvim/runtime/lua"
-                  "${plenary-plugin}/lua"
-                  "${nvim-treesitter-plugin}/lua"
-                  "${neotest-plugin}/lua"
-                ];
-                checkThirdParty = false;
-                ignoreDir = [
-                  ".git"
-                  ".github"
-                  ".direnv"
-                  "result"
-                  "nix"
-                  "doc"
-                  "tests" # neotest's types are not well-defined
-                ];
-              };
-              runtime.version = "LuaJIT";
-            };
-          };
         };
       };
 
@@ -145,7 +186,11 @@
       };
 
       checks = {
-        inherit pre-commit-check;
+        inherit
+          pre-commit-check
+          type-check-stable
+          type-check-nightly
+          ;
         inherit
           (pkgs)
           nvim-stable-test
