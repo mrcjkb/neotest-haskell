@@ -1,3 +1,4 @@
+local compat = require('neotest-haskell.compat')
 local runner = {}
 
 ---Check if the given directory contains a file matching a list of patterns.
@@ -5,10 +6,9 @@ local runner = {}
 ---@param patterns string[] The patterns to check for.
 ---@return boolean
 local function directory_contains_file_matching(directory, patterns)
-  local Path = require('plenary.path')
   for _, pattern in ipairs(patterns) do
-    for _, file in ipairs(vim.fn.glob(Path:new(directory, pattern).filename, true, true)) do
-      if Path:new(file):exists() then
+    for _, file in ipairs(vim.fn.glob(compat.joinpath(directory, pattern), true, true)) do
+      if vim.fn.filereadable(file) == 1 then
         return true
       end
     end
@@ -26,9 +26,9 @@ local function get_package_name(package_root)
   if not ok then
     nio = require('neotest.async')
   end
-  local Path = require('plenary.path')
-  ---@diagnostic disable-next-line -- nio.fn is private?
-  for _, package_file_path in ipairs(nio.fn.glob(Path:new(package_root, '*.cabal').filename, true, true)) do
+  ---@diagnostic disable-next-line private -- nio.fn is private?
+  local glob = nio.fn.glob
+  for _, package_file_path in ipairs(glob(compat.joinpath(package_root, '*.cabal'), true, true)) do
     local package_file_name = package_file_path and vim.fn.fnamemodify(package_file_path, ':t')
     local package_name = package_file_name and package_file_name:gsub('.cabal', '')
     if package_name then

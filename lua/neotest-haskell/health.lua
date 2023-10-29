@@ -22,14 +22,6 @@ local lua_dependencies = {
     url = '[nvim-neotest/neotest](https://github.com/nvim-neotest/neotest)',
     info = '',
   },
-  {
-    module = 'plenary',
-    optional = function()
-      return false
-    end,
-    url = '[nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim)',
-    info = '',
-  },
 }
 
 ---@class ExternalDependency

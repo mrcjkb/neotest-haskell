@@ -1,6 +1,5 @@
-local Path = require('plenary.path')
-
 local tasty = require('neotest-haskell.tasty')
+local compat = require('neotest-haskell.compat')
 local has_position = require('neotest-haskell.position').has_position
 local async = require('nio').tests
 
@@ -12,8 +11,8 @@ end
 
 local parse_positions = tasty.parse_positions
 
-local test_file = Path:new(test_cwd .. '/fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
-local test_filename = test_file.filename
+local test_file = compat.joinpath(test_cwd, 'fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
+local test_filename = test_file
 
 describe('tasty', function()
   async.it('parse positions', function()
@@ -67,8 +66,8 @@ describe('tasty', function()
   describe('parse results', function()
     async.it('test failure', function()
       local tree = parse_positions(test_filename)
-      local test_result_file = Path:new(test_cwd .. '/fixtures/results/tasty_test_file_fail.txt')
-      local result_filename = test_result_file.filename
+      local test_result_file = compat.joinpath(test_cwd, 'fixtures/results/tasty_test_file_fail.txt')
+      local result_filename = test_result_file
       local context = {
         file = test_filename,
         pos_id = test_filename,

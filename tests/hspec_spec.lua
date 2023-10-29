@@ -1,5 +1,4 @@
-local Path = require('plenary.path')
-
+local compat = require('neotest-haskell.compat')
 local hspec = require('neotest-haskell.hspec')
 local async = require('nio').tests
 
@@ -26,8 +25,8 @@ local parse_positions = hspec.parse_positions
 describe('hspec', function()
   describe('parse positions', function()
     async.it('unqualified imports 0', function()
-      local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
-      local filename = test_file.filename
+      local test_file = compat.joinpath(test_cwd, 'fixtures/hspec/cabal/simple/test/FirstSpec.hs')
+      local filename = test_file
       local result = parse_positions(filename)
       local file_pos_id = filename
       assert_has_position(result, file_pos_id)
@@ -41,8 +40,9 @@ describe('hspec', function()
     end)
   end)
   async.it('unqualified imports 1', function()
-    local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
-    local filename = test_file.filename
+    local test_file =
+      compat.joinpath(test_cwd, 'fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+    local filename = test_file
     local result = parse_positions(filename)
     local filename_pos_id = filename
     assert_has_position(result, filename_pos_id)
@@ -59,8 +59,9 @@ describe('hspec', function()
     assert_has_position(result, ns_3_pos_id .. '::"implicitly skipped it"')
   end)
   async.it('unqualified imports 2', function()
-    local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
-    local filename = test_file.filename
+    local test_file =
+      compat.joinpath(test_cwd, 'fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+    local filename = test_file
     local result = parse_positions(filename)
     local filename_pos_id = filename
     assert_has_position(result, filename_pos_id)
@@ -78,8 +79,9 @@ describe('hspec', function()
     assert_has_position(result, ns_4_pos_id .. '::"Returns the empty list"')
   end)
   async.it('qualified imports', function()
-    local test_file = Path:new(test_cwd .. '/fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
-    local filename = test_file.filename
+    local test_file =
+      compat.joinpath(test_cwd, 'fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
+    local filename = test_file
     local result = parse_positions(filename)
     local filename_pos_id = filename
     assert_has_position(result, filename_pos_id)
@@ -98,11 +100,12 @@ describe('hspec', function()
 
   describe('parse results', function()
     async.it('test failure', function()
-      local test_file = Path:new(test_cwd .. '/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
-      local filename = test_file.filename
+      local test_file =
+        compat.joinpath(test_cwd, 'fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+      local filename = test_file
       local tree = parse_positions(filename)
-      local test_result_file = Path:new(test_cwd .. '/fixtures/results/hspec_test_file_fail.txt')
-      local result_filename = test_result_file.filename
+      local test_result_file = compat.joinpath(test_cwd, 'fixtures/results/hspec_test_file_fail.txt')
+      local result_filename = test_result_file
       local context = {
         file = filename,
         pos_id = filename,
