@@ -4,8 +4,8 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
+    neorocks = {
+      url = "github:nvim-neorocks/neorocks";
     };
 
     pre-commit-hooks = {
@@ -41,7 +41,7 @@
     self,
     nixpkgs,
     flake-utils,
-    neovim-nightly-overlay,
+    neorocks,
     pre-commit-hooks,
     neodev-nvim,
     plenary-nvim,
@@ -70,7 +70,7 @@
         overlays = [
           ci-overlay
           nvim-plugin-overlay
-          neovim-nightly-overlay.overlay
+          neorocks.overlays.default
         ];
       };
 

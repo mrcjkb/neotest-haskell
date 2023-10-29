@@ -24,70 +24,54 @@ with final.stdenv; let
     src = neotest;
   };
 
+  # NOTE: Only the haskell parser is required
   nvim-treesitter-plugin = final.pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [p.haskell]);
 
-  mkPlenaryTest = {
-    nvim ? final.neovim-unwrapped,
+  mkNeorocksTest = {
     name,
+    nvim ? final.neovim-unwrapped,
+    extraPkgs ? [],
   }: let
     nvim-wrapped = final.pkgs.wrapNeovim nvim {
       configure = {
-        customRC = ''
-          lua << EOF
-          vim.cmd('runtime! plugin/plenary.vim')
-          EOF
-        '';
         packages.myVimPackage = {
           start = [
-            final.neotest-haskell-dev
-            plenary-plugin
-            nvim-treesitter-plugin
+            # Add plugin dependencies that aren't on LuaRocks here
             neotest-plugin
+            plenary-plugin # NOTE: dependency of neotest
+            nvim-treesitter-plugin
           ];
         };
       };
     };
   in
-    mkDerivation {
+    final.pkgs.neorocksTest {
       inherit name;
-
-      phases = [
-        "unpackPhase"
-        "buildPhase"
-        "checkPhase"
-      ];
-
+      pname = "neotest-haskell";
       src = self;
+      neovim = nvim-wrapped;
 
-      doCheck = true;
+      # luaPackages = ps: with ps; [];
 
-      buildInputs = with final; [
-        nvim-wrapped
-        makeWrapper
-      ];
+      preCheck = ''
+        export HOME=$(realpath .)
+        export TEST_CWD=$(realpath ./tests)
+      '';
 
       buildPhase = ''
         mkdir -p $out
         cp -r tests $out
       '';
-
-      checkPhase = ''
-        export HOME=$(realpath .)
-        export TEST_CWD=$(realpath $out/tests)
-        cd $out
-        nvim --headless --noplugin -c "PlenaryBustedDirectory tests {nvim_cmd = 'nvim'}"
-      '';
     };
 in {
-  nvim-stable-test = mkPlenaryTest {name = "nvim-stable-test";};
-  nvim-nightly-test = mkPlenaryTest {
-    name = "nvim-nightly-test";
+  nvim-stable-test = mkNeorocksTest {name = "neovim-stable-tests";};
+  nvim-nightly-test = mkNeorocksTest {
+    name = "neovim-nightly-tests";
     nvim = nvim-nightly;
   };
   inherit
     neodev-plugin
     plenary-plugin
     neotest-plugin
-    nvim-treesitter-plugin
     ;
 }
