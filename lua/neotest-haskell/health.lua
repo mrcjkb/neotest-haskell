@@ -138,8 +138,8 @@ function health.check()
   end
 
   start('Checking tree-sitter parsers')
-  local ok = pcall(vim.treesitter.get_string_parser, '', 'haskell')
-  if not ok then
+  local success = pcall(vim.treesitter.get_string_parser, '', 'haskell')
+  if not success then
     error('The tree-sitter parser for Haskell is not installed.')
   else
     ok('The tree-sitter parser for Haskell is installed.')
