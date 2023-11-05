@@ -1,5 +1,5 @@
 local runner = require('neotest-haskell.runner')
-local async = require('nio').tests
+local compat = require('neotest-haskell.compat')
 
 local simple_cabal_hspec_test_file = 'tests/fixtures/hspec/cabal/simple/test/FirstSpec.hs'
 local multi_package_cabal_hspec_test_file =
@@ -18,35 +18,50 @@ local sydtest = require('neotest-haskell.sydtest')
 
 describe('runner', function()
   describe('select_framework', function()
-    async.it('selects hspec for hspec file', function()
-      assert.equals(
-        hspec,
-        runner.select_framework(multi_package_cabal_hspec_test_file, { 'sydtest', 'tasty', 'hspec' })
-      )
-    end)
-    async.it('selects tasty for tasty file if tasty is specified before hspec', function()
-      assert.equals(
-        tasty,
-        runner.select_framework(multi_package_cabal_tasty_test_file, { 'sydtest', 'tasty', 'hspec' })
-      )
-    end)
-    async.it('selects sydtest for sydtest file if sydtest is specified before hspec', function()
-      assert.equals(sydtest, runner.select_framework(simple_cabal_sydtest_test_file, { 'sydtest', 'tasty', 'hspec' }))
-    end)
-    async.it('errors for hspec file if hspec is not specified', function()
-      assert.errors(function()
-        runner.select_framework(multi_package_cabal_hspec_test_file, { 'tasty' })
-      end)
-    end)
-    async.it('can detect framework by qualified module name', function()
-      assert.equals(
-        hspec,
-        runner.select_framework(
-          multi_package_cabal_hspec_test_file,
-          { { framework = 'hspec', modules = { 'Fix1.FixtureSpec' } } }
+    it(
+      'selects hspec for hspec file',
+      compat.with_timeout(function()
+        assert.equals(
+          hspec,
+          runner.select_framework(multi_package_cabal_hspec_test_file, { 'sydtest', 'tasty', 'hspec' })
         )
-      )
-    end)
+      end)
+    )
+    it(
+      'selects tasty for tasty file if tasty is specified before hspec',
+      compat.with_timeout(function()
+        assert.equals(
+          tasty,
+          runner.select_framework(multi_package_cabal_tasty_test_file, { 'sydtest', 'tasty', 'hspec' })
+        )
+      end)
+    )
+    it(
+      'selects sydtest for sydtest file if sydtest is specified before hspec',
+      compat.with_timeout(function()
+        assert.equals(sydtest, runner.select_framework(simple_cabal_sydtest_test_file, { 'sydtest', 'tasty', 'hspec' }))
+      end)
+    )
+    it(
+      'errors for hspec file if hspec is not specified',
+      compat.with_timeout(function()
+        assert.errors(function()
+          runner.select_framework(multi_package_cabal_hspec_test_file, { 'tasty' })
+        end)
+      end)
+    )
+    it(
+      'can detect framework by qualified module name',
+      compat.with_timeout(function()
+        assert.equals(
+          hspec,
+          runner.select_framework(
+            multi_package_cabal_hspec_test_file,
+            { { framework = 'hspec', modules = { 'Fix1.FixtureSpec' } } }
+          )
+        )
+      end)
+    )
   end)
 
   describe('select_build_tool', function()
