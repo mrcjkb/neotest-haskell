@@ -116,7 +116,7 @@ require('neotest').setup {
 }
 ```
 
-> **Note**
+> [!NOTE]
 >
 > If you were to use `build_tools = { 'cabal', 'stack' }`, then cabal will almost
 > always be chosen, because almost all stack projects can be built with cabal.
@@ -154,7 +154,7 @@ For example, to add position queries for this plugin for `tasty`, without
 having to fork this plugin, you can add them to
 `$XDG_CONFIG_HOME/nvim/after/queries/haskell/tasty-positions.scm`.
 
-> **Note**
+> [!NOTE]
 >
 > - `:h runtimepath`
 > - See examples in [`queries/haskell/`](./queries/haskell/).
