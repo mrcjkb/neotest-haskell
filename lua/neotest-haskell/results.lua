@@ -52,7 +52,7 @@ function results.mk_result_parser(parse_errors, get_failed_name, get_succeeded_n
 
     ---Set the status of the test and maybe its parents.
     ---@param test_name string The name of the test.
-    ---@param status string The neotest status.
+    ---@param status neotest.ResultStatus The neotest status.
     ---@param errors neotest.Error[]? The errors in case of failure.
     local function set_test_status(test_name, status, errors)
       test_name = '"' .. test_name .. '"'
