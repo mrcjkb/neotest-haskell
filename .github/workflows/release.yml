@@ -24,6 +24,7 @@ jobs:
         with:
           dependencies: |
             neotest
+            tree-sitter-haskell
           detailed_description: |
             * Supports Cabal projects.
             * Supports Stack projects.
