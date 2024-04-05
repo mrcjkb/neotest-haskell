@@ -79,6 +79,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "bradsherman",
+      "name": "Brad Sherman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15267511?v=4",
+      "profile": "http://bitsbybrad.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
