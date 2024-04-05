@@ -99,7 +99,7 @@ end
 
 ---@param pos neotest.Tree The position.
 ---@return string[] test_opts The Stack test options for matching a tasty filter.
-function hspec.get_stack_test_opts(pos)
+function tasty.get_stack_test_opts(pos)
   local pattern = mk_tasty_pattern(pos)
   return pattern and {
     '--ta',
