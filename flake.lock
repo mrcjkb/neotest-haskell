@@ -313,6 +313,22 @@
         "type": "github"
       }
     },
+    "nvim-nio": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1712221544,
+        "narHash": "sha256-ZRYclqsgAvlRBwb59XHlqVat7CxUJTH1rD6QLwh1ang=",
+        "owner": "nvim-neotest",
+        "repo": "nvim-nio",
+        "rev": "5800f585def265d52f1d8848133217c800bcb25d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-neotest",
+        "repo": "nvim-nio",
+        "type": "github"
+      }
+    },
     "plenary-nvim": {
       "flake": false,
       "locked": {
@@ -361,6 +377,7 @@
         "neotest": "neotest",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs_2",
+        "nvim-nio": "nvim-nio",
         "plenary-nvim": "plenary-nvim",
         "pre-commit-hooks": "pre-commit-hooks"
       }

@@ -4,6 +4,7 @@
   neodev-nvim,
   plenary-nvim,
   neotest,
+  nvim-nio,
 }: final: prev:
 with final.lib;
 with final.stdenv; let
@@ -22,6 +23,11 @@ with final.stdenv; let
   neotest-plugin = final.pkgs.vimUtils.buildVimPlugin {
     name = "neotest";
     src = neotest;
+  };
+
+  nio-plugin = final.pkgs.vimUtils.buildVimPlugin {
+    name = "nvim-nio";
+    src = nvim-nio;
   };
 
   nvim-treesitter-plugin = final.pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [p.haskell]);
@@ -43,6 +49,7 @@ with final.stdenv; let
             plenary-plugin
             nvim-treesitter-plugin
             neotest-plugin
+            nio-plugin
           ];
         };
       };
