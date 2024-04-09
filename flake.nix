@@ -35,6 +35,11 @@
       url = "github:nvim-neotest/neotest";
       flake = false;
     };
+
+    nvim-nio = {
+      url = "github:nvim-neotest/nvim-nio";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -46,6 +51,7 @@
     neodev-nvim,
     plenary-nvim,
     neotest,
+    nvim-nio,
     ...
   }: let
     name = "neotest-haskell";
@@ -57,7 +63,16 @@
       "x86_64-linux"
     ];
 
-    ci-overlay = import ./nix/ci-overlay.nix {inherit (inputs) self neodev-nvim plenary-nvim neotest;};
+    ci-overlay = import ./nix/ci-overlay.nix {
+      inherit
+        (inputs)
+        self
+        neodev-nvim
+        plenary-nvim
+        neotest
+        nvim-nio
+        ;
+    };
 
     nvim-plugin-overlay = import ./nix/nvim-plugin-overlay.nix {
       inherit name;
