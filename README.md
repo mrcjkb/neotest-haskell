@@ -13,7 +13,7 @@
     </strong>
   </p>
   <p>🦥</p>
-  
+
 [![Neovim][neovim-shield]][neovim-url]
 [![Lua][lua-shield]][lua-url]
 [![Haskell][haskell-shield]][haskell-url]
