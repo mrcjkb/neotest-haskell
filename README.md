@@ -12,7 +12,7 @@
       A <a href="https://github.com/nvim-neotest/neotest">neotest</a> adapter for Haskell.
     </strong>
   </p>
-  <h2>🦥</h>
+  <p>🦥</p>
   
 [![Neovim][neovim-shield]][neovim-url]
 [![Lua][lua-shield]][lua-url]
