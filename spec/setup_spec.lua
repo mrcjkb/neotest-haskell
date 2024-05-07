@@ -1,5 +1,6 @@
 describe('Can set up neotest with neotest-haskell adapter', function()
   it('with default config (cabal and stack)', function()
+    ---@diagnostic disable-next-line: missing-fields
     require('neotest').setup {
       adapters = {
         require('neotest-haskell'),
@@ -7,6 +8,7 @@ describe('Can set up neotest with neotest-haskell adapter', function()
     }
   end)
   it('with cabal only', function()
+    ---@diagnostic disable-next-line: missing-fields
     require('neotest').setup {
       adapters = {
         require('neotest-haskell') { build_tools = { 'cabal' } },
@@ -14,6 +16,7 @@ describe('Can set up neotest with neotest-haskell adapter', function()
     }
   end)
   it('with stack only', function()
+    ---@diagnostic disable-next-line: missing-fields
     require('neotest').setup {
       adapters = {
         require('neotest-haskell') { build_tools = { 'stack' } },
@@ -21,6 +24,7 @@ describe('Can set up neotest with neotest-haskell adapter', function()
     }
   end)
   it('with tasty only', function()
+    ---@diagnostic disable-next-line: missing-fields
     require('neotest').setup {
       adapters = {
         require('neotest-haskell') { frameworks = { 'tasty' } },
@@ -28,6 +32,7 @@ describe('Can set up neotest with neotest-haskell adapter', function()
     }
   end)
   it('with hspec only', function()
+    ---@diagnostic disable-next-line: missing-fields
     require('neotest').setup {
       adapters = {
         require('neotest-haskell') { frameworks = { 'hspec' } },
@@ -35,6 +40,7 @@ describe('Can set up neotest with neotest-haskell adapter', function()
     }
   end)
   it('with framework spec', function()
+    ---@diagnostic disable-next-line: missing-fields
     require('neotest').setup {
       adapters = {
         require('neotest-haskell') {
@@ -52,7 +58,8 @@ describe('Can set up neotest with neotest-haskell adapter', function()
 end)
 describe('Fails on invalid config', function()
   it('no build tool is specified', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') { build_tools = {} },
@@ -61,7 +68,8 @@ describe('Fails on invalid config', function()
     end)
   end)
   it('unknown build tool is specified', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') { build_tools = { 'unknown' } },
@@ -70,7 +78,8 @@ describe('Fails on invalid config', function()
     end)
   end)
   it('no framework is specified', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') { frameworks = {} },
@@ -79,7 +88,8 @@ describe('Fails on invalid config', function()
     end)
   end)
   it('unknown framework is specified', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') { frameworks = { 'unknown' } },
@@ -88,7 +98,8 @@ describe('Fails on invalid config', function()
     end)
   end)
   it('framework spec with empty modules list', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') {
@@ -104,7 +115,8 @@ describe('Fails on invalid config', function()
     end)
   end)
   it('framework spec without modules', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') {
@@ -119,7 +131,8 @@ describe('Fails on invalid config', function()
     end)
   end)
   it('framework spec with unknown framework', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') {
@@ -135,7 +148,8 @@ describe('Fails on invalid config', function()
     end)
   end)
   it('framework spec without framework field', function()
-    assert.errors(function()
+    assert.has_error(function()
+      ---@diagnostic disable-next-line: missing-fields
       require('neotest').setup {
         adapters = {
           require('neotest-haskell') {

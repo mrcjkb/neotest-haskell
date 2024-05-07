@@ -4,14 +4,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-    };
+    neorocks.url = "github:nvim-neorocks/neorocks";
 
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    gen-luarc.url = "github:mrcjkb/nix-gen-luarc-json";
+
+    git-hooks.url = "github:cachix/git-hooks.nix";
 
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -20,24 +17,8 @@
       flake = false;
     };
 
-    plenary-nvim = {
-      url = "github:nvim-lua/plenary.nvim";
-      flake = false;
-    };
-
-    # inputs for tests and lints
-    neodev-nvim = {
-      url = "github:folke/neodev.nvim";
-      flake = false;
-    };
-
-    neotest = {
-      url = "github:nvim-neotest/neotest";
-      flake = false;
-    };
-
-    nvim-nio = {
-      url = "github:nvim-neotest/nvim-nio";
+    plenary-nvim-src = {
+      url = "github:nvim-lua/plenary.nvim/";
       flake = false;
     };
   };
@@ -45,13 +26,11 @@
   outputs = inputs @ {
     self,
     nixpkgs,
+    neorocks,
+    gen-luarc,
+    git-hooks,
     flake-utils,
-    neovim-nightly-overlay,
-    pre-commit-hooks,
-    neodev-nvim,
-    plenary-nvim,
-    neotest,
-    nvim-nio,
+    plenary-nvim-src,
     ...
   }: let
     name = "neotest-haskell";
@@ -67,10 +46,7 @@
       inherit
         (inputs)
         self
-        neodev-nvim
-        plenary-nvim
-        neotest
-        nvim-nio
+        plenary-nvim-src
         ;
     };
 
@@ -85,64 +61,26 @@
         overlays = [
           ci-overlay
           nvim-plugin-overlay
-          neovim-nightly-overlay.overlay
+          neorocks.overlays.default
+          gen-luarc.overlays.default
         ];
       };
 
-      mkTypeCheck = {
-        nvim-api ? [],
-        disabled-diagnostics ? [],
-      }:
-        pre-commit-hooks.lib.${system}.run {
-          src = self;
-          hooks = {
-            lua-ls.enable = true;
-          };
-          settings = {
-            lua-ls = {
-              config = {
-                runtime.version = "LuaJIT";
-                Lua = {
-                  workspace = {
-                    library =
-                      nvim-api
-                      ++ (with pkgs; [
-                        "${neotest-plugin}/lua"
-                        # FIXME:
-                        # "${pkgs.luajitPackages.busted}"
-                      ]);
-                    checkThirdParty = false;
-                    ignoreDir = [
-                      ".git"
-                      ".github"
-                      ".direnv"
-                      "result"
-                      "nix"
-                      "doc"
-                      "tests" # neotest's types are not well-defined
-                    ];
-                  };
-                  diagnostics = {
-                    globals = [
-                      "vim"
-                      "describe"
-                      "it"
-                      "assert"
-                    ];
-                    libraryFiles = "Disable";
-                    disable = disabled-diagnostics;
-                  };
-                };
-              };
-            };
-          };
-        };
+      luarc-plugins = with pkgs.lua51Packages; (with pkgs.vimPlugins; [
+        neotest
+        nvim-nio
+      ]);
 
-      type-check-stable = mkTypeCheck {
-        nvim-api = [
-          "${pkgs.neovim}/share/nvim/runtime/lua"
-          "${pkgs.neodev-plugin}/types/stable"
-        ];
+      luarc-nightly = pkgs.mk-luarc {
+        nvim = pkgs.neovim-nightly;
+        neodev-types = "nightly";
+        plugins = luarc-plugins;
+      };
+
+      luarc-stable = pkgs.mk-luarc {
+        nvim = pkgs.neovim-unwrapped;
+        neodev-types = "stable";
+        plugins = luarc-plugins;
         disabled-diagnostics = [
           "duplicate-set-field" # neotest
           "undefined-doc-name"
@@ -151,17 +89,27 @@
         ];
       };
 
-      type-check-nightly = mkTypeCheck {
-        nvim-api = [
-          "${pkgs.neovim-nightly}/share/nvim/runtime/lua"
-          "${pkgs.neodev-plugin}/types/nightly"
-        ];
-        disabled-diagnostics = [
-          "duplicate-set-field" # neotest
-        ];
+      type-check-nightly = git-hooks.lib.${system}.run {
+        src = self;
+        hooks = {
+          lua-ls = {
+            enable = true;
+            settings.configuration = luarc-nightly;
+          };
+        };
       };
 
-      pre-commit-check = pre-commit-hooks.lib.${system}.run {
+      type-check-stable = git-hooks.lib.${system}.run {
+        src = self;
+        hooks = {
+          lua-ls = {
+            enable = true;
+            settings.configuration = luarc-stable;
+          };
+        };
+      };
+
+      pre-commit-check = git-hooks.lib.${system}.run {
         src = self;
         hooks = {
           alejandra.enable = true;
@@ -173,12 +121,15 @@
 
       devShell = pkgs.mkShell {
         name = "neotest-haskell devShell";
-        inherit (pre-commit-check) shellHook;
+        shellHook = ''
+          ${pre-commit-check.shellHook}
+          ln -fs ${pkgs.luarc-to-json luarc-nightly} .luarc.json
+        '';
         buildInputs =
           (with pkgs; [
             zlib
           ])
-          ++ (with pre-commit-hooks.packages.${system}; [
+          ++ (with git-hooks.packages.${system}; [
             alejandra
             lua-language-server
             stylua
