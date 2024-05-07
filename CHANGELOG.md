@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2024-05-12
+### BREAKING CHANGES
+- Updated queries to work with tree-sitter-haskell v0.21.0 rewrite.
+  - If you are using nvim-treesitter to manage parser installations, run `:TSUpdate`
+    to ensure you have the latest tree-sitter-haskell version.
+  - If you are using Nix with an older version of the parser,
+    you can either package tree-sitter-haskell,
+    or pin an older version of this plugin.
+
 ## [1.2.1] - 2024-04-06
 ### Fixed
 - Typo in tasty module.

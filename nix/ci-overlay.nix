@@ -55,6 +55,55 @@
         disabled = luaOlder "5.1";
         propagatedBuildInputs = [lua nvim-nio plenary-nvim];
       }) {};
+
+    luarocks-build-treesitter-parser = luaself.callPackage ({
+      buildLuarocksPackage,
+      luaOlder,
+      luafilesystem,
+      fetchurl,
+      fetchzip,
+      lua,
+      ...
+    }:
+      buildLuarocksPackage {
+        pname = "luarocks-build-treesitter-parser";
+        version = "2.0.0-1";
+        knownRockspec =
+          (fetchurl {
+            url = "mirror://luarocks/luarocks-build-treesitter-parser-2.0.0-1.rockspec";
+            sha256 = "0ylax1r0yl5k742p8n0fq5irs2r632npigqp1qckfx7kwi89gxhb";
+          })
+          .outPath;
+        src = fetchzip {
+          url = "https://github.com/nvim-neorocks/luarocks-build-treesitter-parser/archive/v2.0.0.zip";
+          sha256 = "0gqiwk7dk1xn5n2m0iq5c7xkrgyaxwyd1spb573l289gprvlrbn5";
+        };
+
+        disabled = luaOlder "5.1";
+        propagatedBuildInputs = [lua luafilesystem];
+      }) {};
+
+    tree-sitter-haskell = luaself.callPackage (
+      {
+        buildLuarocksPackage,
+        fetchurl,
+        fetchzip,
+        luarocks-build-treesitter-parser,
+        ...
+      }:
+        buildLuarocksPackage {
+          pname = "tree-sitter-haskell";
+          version = "scm-1";
+          knownRockspec = self + "/spec/fixtures/tree-sitter-haskell-scm-1.rockspec";
+          src = fetchzip {
+            url = "https://github.com/tree-sitter/tree-sitter-haskell/archive/e29c59236283198d93740a796c50d1394bccbef5.zip";
+            sha256 = "03mk4jvlg2l33xfd8p2xk1q0xcansij2sfa98bdnhsh8ac1jm30h";
+          };
+          propagatedBuildInputs = [
+            luarocks-build-treesitter-parser
+          ];
+        }
+    ) {};
   };
 
   lua5_1 = prev.lua5_1.override {
@@ -62,6 +111,12 @@
   };
 
   lua51Packages = prev.lua51Packages // final.lua5_1.pkgs;
+
+  tree-sitter-haskell-plugin = final.neovimUtils.buildNeovimPlugin {
+    pname = "tree-sitter-haskell";
+    version = "scm";
+    src = final.lua51Packages.tree-sitter-haskell.src;
+  };
 
   mkNeorocksTest = {
     name,
@@ -73,7 +128,7 @@
           start = with final.vimPlugins; [
             final.neotest-haskell-dev # Queries need to be on the rtp
             plenary-nvim # XXX: This needs to be on the nvim rtp
-            (nvim-treesitter.withPlugins (p: [p.haskell])) # TODO: replace with tree-sitter-haskell
+            tree-sitter-haskell-plugin
           ];
         };
       };
