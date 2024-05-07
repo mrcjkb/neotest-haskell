@@ -74,7 +74,7 @@
 local base = require('neotest-haskell.base')
 local runner = require('neotest-haskell.runner')
 
----@type neotest.Adapter
+---@class neotest-haskell.Adapter: neotest.Adapter
 local HaskellNeotestAdapter = { name = 'neotest-haskell' }
 
 ---Find the project root directory given a current directory to work from.

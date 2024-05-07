@@ -1,100 +1,108 @@
-# Add flake.nix test inputs as arguments here
 {
   self,
-  neodev-nvim,
-  plenary-nvim,
-  neotest,
-  nvim-nio,
-}: final: prev:
-with final.lib;
-with final.stdenv; let
-  nvim-nightly = final.neovim-nightly;
+  plenary-nvim-src,
+}: final: prev: let
+  luaPackages-override = luaself: luaprev: {
+    nvim-nio = luaself.callPackage (
+      {
+        buildLuarocksPackage,
+        fetchurl,
+        fetchzip,
+        lua,
+        luaOlder,
+      }:
+        buildLuarocksPackage {
+          pname = "nvim-nio";
+          version = "1.9.3-1";
+          knownRockspec =
+            (fetchurl {
+              url = "mirror://luarocks/nvim-nio-1.9.3-1.rockspec";
+              sha256 = "1hfn2kds0mmp10q5v7s6hlvxjcwksjyqcyalrqfxpzvs921klnby";
+            })
+            .outPath;
+          src = fetchzip {
+            url = "https://github.com/nvim-neotest/nvim-nio/archive/8765cbc4d0c629c8158a5341e1b4305fd93c3a90.zip";
+            sha256 = "0drzp2fyancyz57k8nkwc1bd7bksy1f8bpy92njiccpdflwhkyjm";
+          };
 
-  neodev-plugin = final.pkgs.vimUtils.buildVimPlugin {
-    name = "neodev.nvim";
-    src = neodev-nvim;
+          disabled = luaOlder "5.1";
+          propagatedBuildInputs = [lua];
+        }
+    ) {};
+
+    neotest = luaself.callPackage ({
+      buildLuarocksPackage,
+      fetchurl,
+      fetchzip,
+      lua,
+      luaOlder,
+      nvim-nio,
+      plenary-nvim,
+    }:
+      buildLuarocksPackage {
+        pname = "neotest";
+        version = "5.2.3-1";
+        knownRockspec =
+          (fetchurl {
+            url = "mirror://luarocks/neotest-5.2.3-1.rockspec";
+            sha256 = "16pwkwv2dmi9aqhp6bdbgwhksi891iz73rvksqmv136jx6fi7za1";
+          })
+          .outPath;
+        src = fetchzip {
+          url = "https://github.com/nvim-neotest/neotest/archive/5caac5cc235d495a2382bc2980630ef36ac87032.zip";
+          sha256 = "1i1d6m17wf3p76nm75jk4ayd4zyhslmqi2pc7j8qx87391mnz2c4";
+        };
+        disabled = luaOlder "5.1";
+        propagatedBuildInputs = [lua nvim-nio plenary-nvim];
+      }) {};
   };
 
-  plenary-plugin = final.pkgs.vimUtils.buildVimPlugin {
-    name = "plenary.nvim";
-    src = plenary-nvim;
+  lua5_1 = prev.lua5_1.override {
+    packageOverrides = luaPackages-override;
   };
 
-  neotest-plugin = final.pkgs.vimUtils.buildVimPlugin {
-    name = "neotest";
-    src = neotest;
-  };
+  lua51Packages = prev.lua51Packages // final.lua5_1.pkgs;
 
-  nio-plugin = final.pkgs.vimUtils.buildVimPlugin {
-    name = "nvim-nio";
-    src = nvim-nio;
-  };
-
-  nvim-treesitter-plugin = final.pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [p.haskell]);
-
-  mkPlenaryTest = {
-    nvim ? final.neovim-unwrapped,
+  mkNeorocksTest = {
     name,
+    nvim ? final.neovim-unwrapped,
   }: let
-    nvim-wrapped = final.pkgs.wrapNeovim nvim {
+    nvim-wrapped = final.wrapNeovim nvim {
       configure = {
-        customRC = ''
-          lua << EOF
-          vim.cmd('runtime! plugin/plenary.vim')
-          EOF
-        '';
         packages.myVimPackage = {
-          start = [
-            final.neotest-haskell-dev
-            plenary-plugin
-            nvim-treesitter-plugin
-            neotest-plugin
-            nio-plugin
+          start = with final.vimPlugins; [
+            final.neotest-haskell-dev # Queries need to be on the rtp
+            plenary-nvim # XXX: This needs to be on the nvim rtp
+            (nvim-treesitter.withPlugins (p: [p.haskell])) # TODO: replace with tree-sitter-haskell
           ];
         };
       };
     };
   in
-    mkDerivation {
+    final.neorocksTest {
       inherit name;
-
-      phases = [
-        "unpackPhase"
-        "buildPhase"
-        "checkPhase"
-      ];
-
+      pname = "neotest-haskell";
       src = self;
+      neovim = nvim-wrapped;
+      luaPackages = ps:
+        with ps; [
+          neotest
+          nvim-nio
+        ];
 
-      doCheck = true;
-
-      buildInputs = with final; [
-        nvim-wrapped
-        makeWrapper
-      ];
-
-      buildPhase = ''
-        mkdir -p $out
-        cp -r tests $out
-      '';
-
-      checkPhase = ''
+      preCheck = ''
+        # Neovim expects to be able to create log files, etc.
         export HOME=$(realpath .)
-        export TEST_CWD=$(realpath $out/tests)
-        cd $out
-        nvim --headless --noplugin -c "PlenaryBustedDirectory tests {nvim_cmd = 'nvim'}"
       '';
     };
 in {
-  nvim-stable-test = mkPlenaryTest {name = "nvim-stable-test";};
-  nvim-nightly-test = mkPlenaryTest {
-    name = "nvim-nightly-test";
-    nvim = nvim-nightly;
-  };
   inherit
-    neodev-plugin
-    plenary-plugin
-    neotest-plugin
-    nvim-treesitter-plugin
+    lua5_1
+    lua51Packages
     ;
+  nvim-stable-test = mkNeorocksTest {name = "nvim-stable-test";};
+  nvim-nightly-test = mkNeorocksTest {
+    name = "nvim-nightly-test";
+    nvim = final.neovim-nightly;
+  };
 }

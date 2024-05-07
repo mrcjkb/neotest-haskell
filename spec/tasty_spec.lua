@@ -3,7 +3,7 @@ local compat = require('neotest-haskell.compat')
 local has_position = require('neotest-haskell.position').has_position
 local async = require('nio').tests
 
-local test_cwd = os.getenv('TEST_CWD')
+local test_cwd = vim.fn.getcwd()
 
 local function assert_has_position(tree, pos_id)
   assert(has_position(tree, pos_id), 'Position ' .. pos_id .. ' not found in tree ' .. vim.inspect(tree))
@@ -11,7 +11,7 @@ end
 
 local parse_positions = tasty.parse_positions
 
-local test_file = compat.joinpath(test_cwd, 'fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
+local test_file = compat.joinpath(test_cwd, 'spec/fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
 local test_filename = test_file
 
 describe('tasty', function()
@@ -66,7 +66,7 @@ describe('tasty', function()
   describe('parse results', function()
     async.it('test failure', function()
       local tree = parse_positions(test_filename)
-      local test_result_file = compat.joinpath(test_cwd, 'fixtures/results/tasty_test_file_fail.txt')
+      local test_result_file = compat.joinpath(test_cwd, 'spec/fixtures/results/tasty_test_file_fail.txt')
       local result_filename = test_result_file
       local context = {
         file = test_filename,
