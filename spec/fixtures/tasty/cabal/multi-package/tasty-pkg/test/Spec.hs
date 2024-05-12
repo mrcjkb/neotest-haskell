@@ -46,6 +46,7 @@ scProps = testGroup "(checked by SmallCheck)"
   , SC.testProperty "Fermat's little theorem" $
       \x -> ((x :: Integer)^7 - x) `mod` 7 == 0
   -- the following property does not hold
+  -- TODO: Add test case for parens instead of $
   , SC.testProperty "Fermat's last theorem" $
       \x y z n ->
         (n :: Integer) >= 3 SC.==> x^n + y^n /= (z^n :: Integer)
@@ -83,6 +84,7 @@ hedgehogProps = testGroup "Hedgehog tests"
   [ H.testProperty
       "reverse involutive"
       prop_reverse_involutive
+  -- TODO: Add test case for parens instead of $
   , expectFail $ H.testProperty
       "badReverse involutive fails"
       prop_badReverse_involutive
@@ -113,6 +115,7 @@ programTests = testGroup "Compilation with GHC"
   ]
 
 waiTests = testGroup "Tasty-Wai Tests"
+  -- TODO: Add cases without $
   [ testWai testApp "Hello to World" $ do
       res <- get "hello"
       assertBody "world!" res
@@ -135,6 +138,7 @@ waiTests = testGroup "Tasty-Wai Tests"
       assertBody "no route" res
   ]
 
+-- TODO: Add test case for postCleanup
 goldenTests = testGroup "Golden tests"
   [ goldenVsFile "goldenVsFile" "/some/golden/file.txt" "/some/output/file.txt" (pure ())
   , goldenVsString "goldenVsString" "/some/golden/file.txt" (pure "")

@@ -48,14 +48,14 @@ local function mk_module_query(modules)
   for i, module_name in ipairs(modules) do
     local filter = ([[
     ;;query
-    (module) @mod%d
+    (module_id) @mod%d
     (#eq? @mod%d "%s")
     ]]):format(i, i, module_name)
     table.insert(filters, filter)
   end
   return [[
   ;;query
-  (qualified_module
+  (module
   ]] .. table.concat(filters, '\n') .. [[
   ;;query
   )
