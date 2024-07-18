@@ -1,3 +1,6 @@
+vim.opt.runtimepath:append(vim.env.NEOTEST_HASKELL_DEV_DIR)
+vim.opt.runtimepath:append(vim.env.TREE_SITTER_HASKELL_DIR)
+
 local compat = require('neotest-haskell.compat')
 local hspec = require('neotest-haskell.hspec')
 local async = require('nio').tests

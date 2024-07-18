@@ -73,13 +73,11 @@
 
       luarc-nightly = pkgs.mk-luarc {
         nvim = pkgs.neovim-nightly;
-        neodev-types = "nightly";
         plugins = luarc-plugins;
       };
 
       luarc-stable = pkgs.mk-luarc {
         nvim = pkgs.neovim-unwrapped;
-        neodev-types = "stable";
         plugins = luarc-plugins;
         disabled-diagnostics = [
           "duplicate-set-field" # neotest

@@ -19,7 +19,11 @@ Parses test results and displays error messages as virtual text.]],
   license = 'GPL-2.0'
 }
 
-dependencies = { 'lua >= 5.1', 'neotest', }
+dependencies = {
+  'lua >= 5.1',
+  'neotest',
+  'tree-sitter-haskell',
+}
 
 test_dependencies = { 'nvim-nio', 'neotest', }
 
