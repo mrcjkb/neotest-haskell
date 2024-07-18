@@ -30,20 +30,24 @@ jobs:
         run: |
           luarocks --verbose --local --lua-version=5.1 install luarocks-build-treesitter-parser
 
+      - name: Install tree-sitter CLI
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: tree-sitter-cli
+
       - name: LuaRocks Upload
         uses: nvim-neorocks/luarocks-tag-release@v7
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
-          # TODOL Add tree-sitter-haskell when there exists a stable version
           dependencies: |
             neotest
+            tree-sitter-haskell
           detailed_description: |
             * Supports Cabal projects.
             * Supports Stack projects.
             * Parses Sydtest, Hspec and Tasty filters for the cursor's position using TreeSitter.
             * Parses test results and displays error messages as virtual text.
-          test_interpreters: ""
       - name: GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: ncipollo/release-action@v1
