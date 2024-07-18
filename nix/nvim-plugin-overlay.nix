@@ -34,32 +34,6 @@
         propagatedBuildInputs = [luarocks-build-treesitter-parser];
       }) {};
 
-    neotest = luaself.callPackage ({
-      buildLuarocksPackage,
-      fetchurl,
-      fetchzip,
-      lua,
-      luaOlder,
-      nvim-nio,
-      plenary-nvim,
-    }:
-      buildLuarocksPackage {
-        pname = "neotest";
-        version = "5.2.3-1";
-        knownRockspec =
-          (fetchurl {
-            url = "mirror://luarocks/neotest-5.2.3-1.rockspec";
-            sha256 = "16pwkwv2dmi9aqhp6bdbgwhksi891iz73rvksqmv136jx6fi7za1";
-          })
-          .outPath;
-        src = fetchzip {
-          url = "https://github.com/nvim-neotest/neotest/archive/5caac5cc235d495a2382bc2980630ef36ac87032.zip";
-          sha256 = "1i1d6m17wf3p76nm75jk4ayd4zyhslmqi2pc7j8qx87391mnz2c4";
-        };
-        disabled = luaOlder "5.1";
-        propagatedBuildInputs = [lua nvim-nio plenary-nvim];
-      }) {};
-
     neotest-haskell = luaself.callPackage ({
       buildLuarocksPackage,
       fetchurl,
