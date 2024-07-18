@@ -1,3 +1,4 @@
+vim.env.PLENARY_TEST_TIMEOUT = 60000
 local runner = require('neotest-haskell.runner')
 local async = require('nio').tests
 

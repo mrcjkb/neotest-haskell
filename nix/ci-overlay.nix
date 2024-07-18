@@ -29,6 +29,7 @@
         # These have to be on the rtp for queries to work
         export NEOTEST_HASKELL_DEV_DIR=${final.neotest-haskell-dev}
         export TREE_SITTER_HASKELL_DIR=${tree-sitter-haskell-plugin}
+        export PLENARY_DIR=${final.vimPlugins.plenary-nvim}
       '';
     };
 in {
@@ -37,4 +38,5 @@ in {
     name = "nvim-nightly-test";
     nvim = final.neovim-nightly;
   };
+  inherit tree-sitter-haskell-plugin;
 }

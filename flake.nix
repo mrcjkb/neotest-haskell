@@ -117,24 +117,25 @@
         };
       };
 
-      devShell = pkgs.mkShell {
+      devShell = pkgs.nvim-nightly-test.overrideAttrs (oa: {
         name = "neotest-haskell devShell";
         shellHook = ''
           ${pre-commit-check.shellHook}
           ln -fs ${pkgs.luarc-to-json luarc-nightly} .luarc.json
+          export NEOTEST_HASKELL_DEV_DIR=${pkgs.neotest-haskell-dev}
+          export TREE_SITTER_HASKELL_DIR=${pkgs.tree-sitter-haskell-plugin}
+          # FIXME: Needed by neotest
+          export PLENARY_DIR=${pkgs.vimPlugins.plenary-nvim}
         '';
         buildInputs =
-          (with pkgs; [
-            zlib
-          ])
-          ++ (with git-hooks.packages.${system}; [
-            alejandra
+          self.checks.${system}.pre-commit-check.enabledPackages
+          ++ (with pkgs; [
             lua-language-server
-            stylua
-            editorconfig-checker
-            markdownlint-cli
-          ]);
-      };
+          ])
+          ++ oa.buildInputs
+          ++ oa.propagatedBuildInputs;
+        doCheck = false;
+      });
 
       docgen = pkgs.callPackage ./nix/docgen.nix {};
     in {
