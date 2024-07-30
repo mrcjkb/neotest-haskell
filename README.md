@@ -57,6 +57,17 @@ https://user-images.githubusercontent.com/12857160/224197351-8ca64bd5-8d89-4689-
 
 ## Installation
 
+### rocks.nvim
+
+```vim
+:Rocks install neotest-haskell
+```
+
+rocks.nvim will install all dependencies if not
+already installed (including tree-sitter-haskell).
+
+### Other plugin managers
+
 See also: [neotest installation instructions](https://github.com/nvim-neotest/neotest#installation).
 
 - Requires the tree-sitter parser for haskell to be installed.
