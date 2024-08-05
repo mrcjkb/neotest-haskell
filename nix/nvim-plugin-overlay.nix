@@ -67,9 +67,5 @@ in {
 
   luajitPackages = prev.luajitPackages // final.luajit.pkgs;
 
-  neotest-haskell-dev = prev.neovimUtils.buildNeovimPlugin {
-    pname = name;
-    version = "dev";
-    src = self;
-  };
+  neotest-haskell-dev = prev.neovimUtils.buildNeovimPlugin {luaAttr = name;};
 }
