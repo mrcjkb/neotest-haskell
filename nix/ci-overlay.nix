@@ -3,8 +3,7 @@
   plenary-nvim-src,
 }: final: prev: let
   tree-sitter-haskell-plugin = final.neovimUtils.buildNeovimPlugin {
-    pname = "tree-sitter-haskell";
-    src = final.lua51Packages.tree-sitter-haskell.src;
+    luaAttr = final.lua51Packages.tree-sitter-haskell;
   };
 
   mkNeorocksTest = {
