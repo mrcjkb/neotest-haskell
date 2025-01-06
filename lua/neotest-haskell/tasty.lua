@@ -89,12 +89,18 @@ end
 ---@return string[] test_opts The Cabal test options for matching a tasty filter.
 function tasty.get_cabal_test_opts(pos)
   local pattern = mk_tasty_pattern(pos)
-  return pattern and {
-    '--test-option',
-    '-p',
-    '--test-option',
-    pattern,
-  } or {}
+  return pattern
+      and {
+        '--test-option',
+        '--color',
+        '--test-option',
+        'never',
+        '--test-option',
+        '-p',
+        '--test-option',
+        pattern,
+      }
+    or {}
 end
 
 ---@param pos neotest.Tree The position.
