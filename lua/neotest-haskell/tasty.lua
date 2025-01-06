@@ -143,6 +143,7 @@ end
 local function is_error_message_line_candidate(line)
   return not (
     line:match(util.escape('Use -p ')) ~= nil
+    or line:match(util.escape('tests failed (0.00s)')) ~= nil
     or get_failed_name(line) ~= nil
     or get_succeeded_name(line) ~= nil
   )
