@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1](https://github.com/mrcjkb/neotest-haskell/compare/2.1.0...v2.1.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* **tasty:** disable coloured output to fix error message parsing ([053781c](https://github.com/mrcjkb/neotest-haskell/commit/053781c6cd8e2cb5e584a7dcf2a381a0ba2b808c))
+* **tasty:** update error message line parsing logic ([43378c6](https://github.com/mrcjkb/neotest-haskell/commit/43378c6eeca78a1cec36fac392f8e5fb7d1a43be))
+
 ## [2.1.0] - 2024-07-18
 
 ### Added
