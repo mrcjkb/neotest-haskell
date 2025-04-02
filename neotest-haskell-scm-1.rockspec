@@ -22,7 +22,7 @@ Parses test results and displays error messages as virtual text.]],
 dependencies = {
   'lua >= 5.1',
   'neotest',
-  'tree-sitter-haskell',
+  -- 'tree-sitter-haskell', -- Currently using tree-sitter-haskell from nixpkgs in CI
 }
 
 test_dependencies = { 'nvim-nio', 'neotest', }

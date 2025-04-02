@@ -2,10 +2,7 @@
   self,
   plenary-nvim-src,
 }: final: prev: let
-  tree-sitter-haskell-plugin = final.neovimUtils.buildNeovimPlugin {
-    luaAttr = final.lua51Packages.tree-sitter-haskell;
-  };
-
+  tree-sitter-haskell-plugin = final.vimPlugins.nvim-treesitter.grammarPlugins.haskell;
   mkNeorocksTest = {
     name,
     nvim ? final.neovim-unwrapped,
@@ -19,7 +16,6 @@
         with ps; [
           neotest
           nvim-nio
-          tree-sitter-haskell
         ];
 
       preCheck = ''
