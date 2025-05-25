@@ -55,6 +55,11 @@
 https://user-images.githubusercontent.com/12857160/224197351-8ca64bd5-8d89-4689-8c40-18d1d018896e.mp4
 <!-- markdownlint-restore -->
 
+## Requirements
+
+- `neovim >= 0.11`
+- [neotest](https://github.com/nvim-neotest/neotest)
+
 ## Installation
 
 ### rocks.nvim
