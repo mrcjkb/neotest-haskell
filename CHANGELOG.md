@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0](https://github.com/mrcjkb/neotest-haskell/compare/v2.1.1...v3.0.0) (2025-05-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop nvim 0.10 support
+
+### Features
+
+* compatibility with nvim nightly 0.12.0-dev-434 ([5c44219](https://github.com/mrcjkb/neotest-haskell/commit/5c4421973e693a89d0accd5b36fa9ad1b9d8e08e))
+* drop nvim 0.10 support ([e345408](https://github.com/mrcjkb/neotest-haskell/commit/e34540868cab2ec2149fdd8a02125be87a50c28a))
+
 ## [2.1.1](https://github.com/mrcjkb/neotest-haskell/compare/2.1.0...v2.1.1) (2025-01-06)
 
 
