@@ -1,4 +1,8 @@
 describe('Can set up neotest with neotest-haskell adapter', function()
+  local notify_once = stub(vim, 'notify_once')
+  local notify = stub(vim, 'notify')
+  local deprecate = stub(vim, 'deprecate')
+
   it('with default config (cabal and stack)', function()
     ---@diagnostic disable-next-line: missing-fields
     require('neotest').setup {
@@ -55,7 +59,22 @@ describe('Can set up neotest with neotest-haskell adapter', function()
       },
     }
   end)
+  it('no notifications at startup.', function()
+    if not pcall(assert.stub(notify_once).called_at_most, 0) then
+      -- fails and outputs arguments
+      assert.stub(notify_once).called_with(nil)
+    end
+    if not pcall(assert.stub(notify).called_at_most, 0) then
+      assert.stub(notify).called_with(nil)
+    end
+  end)
+  it('no deprecation warnings at startup.', function()
+    if not pcall(assert.stub(deprecate).called_at_most, 0) then
+      assert.stub(deprecate).called_with(nil)
+    end
+  end)
 end)
+
 describe('Fails on invalid config', function()
   it('no build tool is specified', function()
     assert.has_error(function()
