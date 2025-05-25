@@ -55,20 +55,20 @@ end
 
 ---@param opts table
 function validate.validate(opts)
-  vim.validate {
-    build_tools = {
-      opts.build_tools,
-      validate_build_tools,
-      'at least one of ' .. table.concat(runner.supported_build_tools, ', '),
-    },
-    frameworks = {
-      opts.frameworks,
-      validate_frameworks,
-      'List of frameworks or framework specs (supported frameworks: '
-        .. table.concat(runner.supported_frameworks, ', ')
-        .. ')',
-    },
-  }
+  vim.validate(
+    'build_tools',
+    opts.build_tools,
+    validate_build_tools,
+    'at least one of ' .. table.concat(runner.supported_build_tools, ', ')
+  )
+  vim.validate(
+    'frameworks',
+    opts.frameworks,
+    validate_frameworks,
+    'List of frameworks or framework specs (supported frameworks: '
+      .. table.concat(runner.supported_frameworks, ', ')
+      .. ')'
+  )
 end
 
 return validate
