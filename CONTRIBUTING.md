@@ -8,12 +8,24 @@ Please don't forget to add your changes to the "Unreleased" section of [the chan
 ## Commit messages
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+Please make sure your commits/PR titles have appropriate prefixes
+and scopes.
 
 ## Development
 
-I use [`nix`](https://nixos.org/download.html#download-nix) for development and testing.
+I use
 
-Formatting is done with [`stylua`](https://github.com/JohnnyMorganz/StyLua).
+- [`nix`](https://nixos.org/download.html#download-nix) for development and testing.
+- [`stylua`](https://github.com/JohnnyMorganz/StyLua).
+  [`.editorconfig`](https://editorconfig.org/),
+  and [`alejandra`](https://github.com/kamadorueda/alejandra)
+  for formatting.
+- [`luacheck`](https://github.com/mpeterv/luacheck),
+  and [`markdownlint`](https://github.com/DavidAnson/markdownlint),
+  for linting.
+
+You don't need to use Nix, but I recommend it if you want to
+easily reproduce CI.
 
 To enter a development shell:
 
@@ -44,7 +56,7 @@ To run tests locally
 nix-build -A ci
 ```
 
-or (with flakes enabled)
+Or (with flakes enabled)
 
 ```console
 nix build .#checks.<your-system>.ci --print-build-logs
@@ -56,7 +68,7 @@ For formatting:
 nix-build -A formatting
 ```
 
-or (with flakes enabled)
+Or (with flakes enabled)
 
 ```console
 nix build .#checks.<your-system>.formatting --print-build-logs
@@ -67,3 +79,11 @@ If you have flakes enabled and just want to run all checks that are available, r
 ```console
 nix flake check --print-build-logs
 ```
+
+## Type safety
+
+Lua is incredibly responsive, giving immediate feedback for configuration.
+But its dynamic typing makes Neovim plugins susceptible to unexpected bugs
+at the wrong time.
+To mitigate this, I rely on [LuaCATS annotations](https://luals.github.io/wiki/annotations/),
+which are checked in CI.
