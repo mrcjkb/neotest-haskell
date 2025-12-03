@@ -4,6 +4,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1](https://github.com/mrcjkb/neotest-haskell/compare/v3.0.0...v3.0.1) (2025-12-03)
+
+
+### Bug Fixes
+
+* dist-newstile typo ([#272](https://github.com/mrcjkb/neotest-haskell/issues/272)) ([579d84a](https://github.com/mrcjkb/neotest-haskell/commit/579d84a3b38954021f6a9f7d0fda1ee97312ae85))
+
 ## [3.0.0](https://github.com/mrcjkb/neotest-haskell/compare/v2.1.1...v3.0.0) (2025-05-25)
 
 
