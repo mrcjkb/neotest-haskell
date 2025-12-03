@@ -88,6 +88,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "tilin94",
+      "name": "Agustin Jimenez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/159173485?v=4",
+      "profile": "https://github.com/tilin94",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

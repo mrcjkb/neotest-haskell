@@ -24,7 +24,7 @@
 [![Build Status][ci-shield]][ci-url]
 [![LuaRocks][luarocks-shield]][luarocks-url]
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-purple.svg?style=for-the-badge)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-purple.svg?style=for-the-badge)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </div>
 <!-- markdownlint-restore -->
@@ -287,6 +287,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/amaanq"><img src="https://avatars.githubusercontent.com/u/29718261?v=4?s=100" width="100px;" alt="Amaan Qureshi"/><br /><sub><b>Amaan Qureshi</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/commits?author=amaanq" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://bitsbybrad.com"><img src="https://avatars.githubusercontent.com/u/15267511?v=4?s=100" width="100px;" alt="Brad Sherman"/><br /><sub><b>Brad Sherman</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/commits?author=bradsherman" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tilin94"><img src="https://avatars.githubusercontent.com/u/159173485?v=4?s=100" width="100px;" alt="Agustin Jimenez"/><br /><sub><b>Agustin Jimenez</b></sub></a><br /><a href="https://github.com/mrcjkb/neotest-haskell/issues?q=author%3Atilin94" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
