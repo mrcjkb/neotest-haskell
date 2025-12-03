@@ -22,7 +22,7 @@ end
 ---@param name string Name of directory
 ---@return boolean
 base.filter_dir = function(name, _, _)
-  return name ~= 'dist-newstile' and name ~= '.stack-work'
+  return name ~= 'dist-newstyle' and name ~= '.stack-work'
 end
 
 return base
