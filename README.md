@@ -154,8 +154,8 @@ require('neotest').setup {
 }
 ```
 
-This can be useful if you have test files that do not import one of the default modules
-used for framework identification:
+This can be useful if you have test files that do not import
+one of the default modules used for framework identification:
 
 - `tasty`: `modules = { 'Test.Tasty' }`
 - `hspec`: `modules = { 'Test.Hspec' }`
