@@ -57,7 +57,7 @@ https://user-images.githubusercontent.com/12857160/224197351-8ca64bd5-8d89-4689-
 
 ## Requirements
 
-- `neovim >= 0.11`
+- `neovim >= 0.12`
 - [neotest](https://github.com/nvim-neotest/neotest)
 
 ## Installation

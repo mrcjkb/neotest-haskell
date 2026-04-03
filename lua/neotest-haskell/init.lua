@@ -54,6 +54,15 @@
 
 ---@mod neotest-haskell.options Options
 
+if vim.fn.has('nvim-0.12') ~= 1 then
+  vim.notify_once([[
+neotest-haskell officially supports Neovim 0.12 and above.
+It may not work properly with older versions.
+See https://github.com/mrcjkb/neotest-haskell/blob/main/CHANGELOG.md
+to find a version of neotest-haskell that supports your Neovim version.
+]])
+end
+
 ---@class NeotestHaskellOpts
 ---@field build_tools build_tool[] | nil The build tools, ordered by priority. Default: `{ 'stack', 'cabal' }`.
 ---@field frameworks framework_opt[] | nil List of frameworks or framework specs, ordered by priority. Default: `{ 'tasty', 'hspec', 'sydtest' }`.
