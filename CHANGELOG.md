@@ -4,6 +4,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0](https://github.com/mrcjkb/neotest-haskell/compare/v3.0.1...v4.0.0) (2026-04-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop Neovim 0.11 support
+
+### Features
+
+* drop Neovim 0.11 support ([3605464](https://github.com/mrcjkb/neotest-haskell/commit/36054644635441374303b7603dac04d5e2c30dd2))
+
 ## [3.0.1](https://github.com/mrcjkb/neotest-haskell/compare/v3.0.0...v3.0.1) (2025-12-03)
 
 
