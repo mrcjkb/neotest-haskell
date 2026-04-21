@@ -35,12 +35,7 @@
   }: let
     name = "neotest-haskell";
 
-    supportedSystems = [
-      "aarch64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-      "x86_64-linux"
-    ];
+    supportedSystems = builtins.attrNames nixpkgs.legacyPackages;
 
     ci-overlay = import ./nix/ci-overlay.nix {
       inherit
