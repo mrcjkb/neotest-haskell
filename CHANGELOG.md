@@ -4,6 +4,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0](https://github.com/mrcjkb/neotest-haskell/compare/v4.0.0...v4.1.0) (2026-04-28)
+
+
+### Features
+
+* **hspec:** add support for `effectful-hspec` ([6c3576b](https://github.com/mrcjkb/neotest-haskell/commit/6c3576b9affd1180548556fc181cc1678c7fc2f6))
+
 ## [4.0.0](https://github.com/mrcjkb/neotest-haskell/compare/v3.0.1...v4.0.0) (2026-04-25)
 
 
