@@ -4,7 +4,7 @@ local results = require('neotest-haskell.results')
 
 local hspec = {}
 
-hspec.default_modules = { 'Test.Hspec' }
+hspec.default_modules = { 'Test.Hspec', 'Effectful.Hspec' }
 
 hspec.position_query = treesitter.get_position_query('hspec')
 
