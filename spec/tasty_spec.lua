@@ -4,7 +4,6 @@ vim.opt.runtimepath:append(vim.env.TREE_SITTER_HASKELL_DIR)
 vim.opt.runtimepath:append(vim.env.PLENARY_DIR)
 
 local tasty = require('neotest-haskell.tasty')
-local compat = require('neotest-haskell.compat')
 local has_position = require('neotest-haskell.position').has_position
 local async = require('nio').tests
 
@@ -16,7 +15,7 @@ end
 
 local parse_positions = tasty.parse_positions
 
-local test_file = compat.joinpath(test_cwd, 'spec/fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
+local test_file = vim.fs.joinpath(test_cwd, 'spec/fixtures/tasty/cabal/multi-package/tasty-pkg/test/Spec.hs')
 local test_filename = test_file
 
 describe('tasty', function()
@@ -71,7 +70,7 @@ describe('tasty', function()
   describe('parse results', function()
     async.it('test failure', function()
       local tree = parse_positions(test_filename)
-      local test_result_file = compat.joinpath(test_cwd, 'spec/fixtures/results/tasty_test_file_fail.txt')
+      local test_result_file = vim.fs.joinpath(test_cwd, 'spec/fixtures/results/tasty_test_file_fail.txt')
       local result_filename = test_result_file
       local context = {
         file = test_filename,
