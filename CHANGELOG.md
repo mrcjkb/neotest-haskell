@@ -4,6 +4,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.1](https://github.com/mrcjkb/neotest-haskell/compare/v4.1.0...v4.1.1) (2026-07-29)
+
+
+### Bug Fixes
+
+* drop redundant compat layer for pre-nvim-0.11 ([#389](https://github.com/mrcjkb/neotest-haskell/issues/389)) ([437f0e7](https://github.com/mrcjkb/neotest-haskell/commit/437f0e73dbc1b3571a2f65a19c367a9f7277f8da))
+
 ## [4.1.0](https://github.com/mrcjkb/neotest-haskell/compare/v4.0.0...v4.1.0) (2026-04-28)
 
 
