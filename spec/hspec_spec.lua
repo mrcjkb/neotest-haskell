@@ -3,7 +3,6 @@ vim.opt.runtimepath:append(vim.env.NEOTEST_HASKELL_DEV_DIR)
 vim.opt.runtimepath:append(vim.env.TREE_SITTER_HASKELL_DIR)
 vim.opt.runtimepath:append(vim.env.PLENARY_DIR)
 
-local compat = require('neotest-haskell.compat')
 local hspec = require('neotest-haskell.hspec')
 local async = require('nio').tests
 
@@ -30,7 +29,7 @@ local parse_positions = hspec.parse_positions
 describe('hspec', function()
   describe('parse positions', function()
     async.it('unqualified imports 0', function()
-      local test_file = compat.joinpath(test_cwd, 'spec/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
+      local test_file = vim.fs.joinpath(test_cwd, 'spec/fixtures/hspec/cabal/simple/test/FirstSpec.hs')
       local filename = test_file
       local result = parse_positions(filename)
       local file_pos_id = filename
@@ -46,7 +45,7 @@ describe('hspec', function()
   end)
   async.it('unqualified imports 1', function()
     local test_file =
-      compat.joinpath(test_cwd, 'spec/fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+      vim.fs.joinpath(test_cwd, 'spec/fixtures/hspec/cabal/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
     local filename = test_file
     local result = parse_positions(filename)
     local filename_pos_id = filename
@@ -65,7 +64,7 @@ describe('hspec', function()
   end)
   async.it('unqualified imports 2', function()
     local test_file =
-      compat.joinpath(test_cwd, 'spec/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+      vim.fs.joinpath(test_cwd, 'spec/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
     local filename = test_file
     local result = parse_positions(filename)
     local filename_pos_id = filename
@@ -85,7 +84,7 @@ describe('hspec', function()
   end)
   async.it('qualified imports', function()
     local test_file =
-      compat.joinpath(test_cwd, 'spec/fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
+      vim.fs.joinpath(test_cwd, 'spec/fixtures/hspec/cabal/multi-package/subpackage2/test/Fix2/FixtureSpec.hs')
     local filename = test_file
     local result = parse_positions(filename)
     local filename_pos_id = filename
@@ -106,10 +105,10 @@ describe('hspec', function()
   describe('parse results', function()
     async.it('test failure', function()
       local test_file =
-        compat.joinpath(test_cwd, 'spec/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
+        vim.fs.joinpath(test_cwd, 'spec/fixtures/hspec/stack/multi-package/subpackage1/test/Fix1/FixtureSpec.hs')
       local filename = test_file
       local tree = parse_positions(filename)
-      local test_result_file = compat.joinpath(test_cwd, 'spec/fixtures/results/hspec_test_file_fail.txt')
+      local test_result_file = vim.fs.joinpath(test_cwd, 'spec/fixtures/results/hspec_test_file_fail.txt')
       local result_filename = test_result_file
       local context = {
         file = filename,

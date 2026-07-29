@@ -4,7 +4,6 @@ vim.opt.runtimepath:append(vim.env.TREE_SITTER_HASKELL_DIR)
 vim.opt.runtimepath:append(vim.env.PLENARY_DIR)
 
 local sydtest = require('neotest-haskell.sydtest')
-local compat = require('neotest-haskell.compat')
 local async = require('nio').tests
 
 local test_cwd = vim.fn.getcwd()
@@ -28,7 +27,7 @@ end
 local parse_positions = sydtest.parse_positions
 
 describe('sydtest', function()
-  local test_file = compat.joinpath(test_cwd, 'spec/fixtures/sydtest/cabal/simple/test/SydtestFixtureSpec.hs')
+  local test_file = vim.fs.joinpath(test_cwd, 'spec/fixtures/sydtest/cabal/simple/test/SydtestFixtureSpec.hs')
   async.it('parse positions', function()
     local filename = test_file
     local result = parse_positions(filename)
@@ -51,7 +50,7 @@ describe('sydtest', function()
     async.it('test failure', function()
       local filename = test_file
       local tree = parse_positions(filename)
-      local test_result_file = compat.joinpath(test_cwd, 'spec/fixtures/sydtest/results/failure.txt')
+      local test_result_file = vim.fs.joinpath(test_cwd, 'spec/fixtures/sydtest/results/failure.txt')
       local result_filename = test_result_file
       local context = {
         file = filename,
