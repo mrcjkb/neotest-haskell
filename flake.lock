@@ -286,11 +286,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1791546504,
-        "narHash": "sha256-H6dDwWLzhWMJUMDD003rakzF7EVXqbybue8lp+QOJ7k=",
+        "lastModified": 1791717744,
+        "narHash": "sha256-Io1q1j+0wgKDqq3zMj/BqMICDKUgtJLgH0QKFYm/Yjo=",
         "owner": "nvim-neorocks",
         "repo": "neorocks",
-        "rev": "07a6a92bac0445482a025a92b884bee4309d0c2e",
+        "rev": "395a543ee5ae751d8d4a7072be20be6b9c3246fe",
         "type": "github"
       },
       "original": {
@@ -431,11 +431,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1791456040,
-        "narHash": "sha256-H83yz/do+hjOO0uujHyH8RgtIQP2v7Mw+cLwcZK/xKc=",
+        "lastModified": 1791594108,
+        "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e7439b6b14ad3cc35d05608ebca9bce01a25f5f8",
+        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
         "type": "github"
       },
       "original": {
